@@ -1,53 +1,61 @@
 #include <bits/stdc++.h>
-using namespace std; 
+using namespace std;
+void isPrime(long long n, long long k){
 
-vector<int>g[100];
-int visited[100];
-
-void bfs(int s){
-    queue<int> q;
-    q.push(s);
-	visited[s] = 1;
-
-    while(q.empty()==0){
-        int u = q.front();//etar sathe linked node gulate jawa
-        q.pop();
-        //cout<<u;
-        for(int i=0;i<g[u].size();i++){
-            //cout<<g[u][i];// g[1 0] -> 2, g[1 1] -> 3
-            
-            if(visited[g[u][i]]==0){
-                q.push(g[u][i]);
-                visited[g[u][i]] = 1;
-                //cout<<q.front();
-
-            }
-            // if(){
-            //     //q.push(x);
-            //    // cout<<x;
-                
-            // }
-            
-        }
-        //cout<<q.front();
+    vector<long long> ar;
+    for(long long i=2;i<=n;i++){
         
+        bool prime[n+1];
+        memset(prime,true,sizeof(prime));
+
+        for(long long p=2;p*p<=i;p++){
+            if(prime[p]==1){
+                for(long long j=p*p;j<=i;j+=p){
+                    prime[j] = false;
+                }
+            }
+        }
+        //cout<<prime[i]<<" "<<i<<endl;
+        if(prime[i]) ar.push_back(i);
     }
 
-}
-int main() 
-{ 
-	int n,e;
-	cin>>n>>e;
-	for(int i=1;i<=e;i++){
-		int v1,v2;
-		cin>>v1>>v2;
-        g[v1].push_back(v2);
-        g[v2].push_back(v1);
-	}
 
-    int s; //source
-    cin>>s;
-    cin>>s;
-    bfs(s);
-	return 0; 
-} 
+    if(k>=ar.size()){
+        //print all
+        for(auto x: ar){
+            cout<<x<<" ";
+        }
+        cout<<endl;
+    }
+    else{
+        for(long long m=k;m<ar.size();m++){
+            cout<<ar[m]<<" ";
+        }
+        cout<<endl;
+    }
+    
+
+
+
+
+
+    
+    // return prime[n];
+}
+
+void solve(){
+    long long n,k;
+    cin>>n>>k;
+    isPrime(n,k);
+    // if(isPrime(n))cout<<"Prime"<<endl;
+    // else cout<<"Not Prime"<<endl;
+}
+
+
+int main(){
+
+    int t=1;
+    //cin >> t;
+    while(t--)solve(); 
+    return 0;
+}
