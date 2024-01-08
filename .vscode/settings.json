@@ -24,6 +24,7 @@
         "unordered_set": "cpp",
         "any": "cpp",
         "ranges": "cpp",
-        "stacktrace": "cpp"
+        "stacktrace": "cpp",
+        "iosfwd": "cpp"
     }
 }
