@@ -1,3 +1,4 @@
+//0 1 knapsack
 #include <bits/stdc++.h>
 using namespace std;
 int dp[1005][100005];//initially everything is set to 0
