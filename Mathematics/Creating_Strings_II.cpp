@@ -55,9 +55,6 @@ void solve(){
     // cout<<numerator<<endl;
     // cout<<denominator<<endl;
 
-    
-
-
 }
 
 

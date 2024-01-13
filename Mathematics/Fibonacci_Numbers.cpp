@@ -1,18 +1,18 @@
-//fibonacci using dp
 #include <bits/stdc++.h>
 using namespace std;
-
-int dp[100];
-int fib(int n){
+#define ll long long
+int md = 1e9+7;
+ll dp[1000000];
+ll fib(int n){
     if(n==0) return 0;
     if(n==1) return 1;
     if(dp[n]!=-1) return dp[n];
-    return dp[n] = fib(n-2) + fib(n-1);
+    return dp[n] = (fib(n-2)%md + fib(n-1)%md)%md;
 }
 
 void solve(){
     memset(dp,-1,sizeof(dp));
-    int n;
+    ll n;
     cin>>n;
     cout<<fib(n)<<endl;
 }
