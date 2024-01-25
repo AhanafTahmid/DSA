@@ -1,5 +1,9 @@
 //Binary search on answer
 
+//Think: Can I make it monotonous? If you found a monotonic, then it can be solved using BS
+
+
+
 //binary search is basically elimination, removing parts where our answer does not lies
 
 

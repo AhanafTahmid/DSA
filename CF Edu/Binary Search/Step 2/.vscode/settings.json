@@ -1,6 +1,14 @@
 {
     "C_Cpp.errorSquiggles": "disabled",
     "files.associations": {
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "barrier": "cpp",
+        "chrono": "cpp",
+        "latch": "cpp",
+        "limits": "cpp",
+        "random": "cpp",
+        "semaphore": "cpp",
+        "valarray": "cpp",
+        "algorithm": "cpp"
     }
 }
