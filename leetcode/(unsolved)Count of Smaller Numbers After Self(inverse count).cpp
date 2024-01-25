@@ -1,7 +1,8 @@
 //Merge sort
 
-
+//Brute Force
 //O(N*N)
+
 // #include <bits/stdc++.h>
 // using namespace std;
 
@@ -33,20 +34,20 @@
 // }
 
 
-//O(N*logn)
 
 
 
 //Merge sort algorithm
+//O(N*logn)
+
 
 #include <bits/stdc++.h>
 using namespace std;
 
 vector<int> ans;
 map<int,int> mp;
-
+int ct = 0;
 void merge(int ar[],int l,int m, int h){
-    int ct = 0;
     vector<int> temp;
     //low...mid
     //mid+1...high
@@ -98,9 +99,8 @@ void merge(int ar[],int l,int m, int h){
     for (int k = l; k <= h; k++) {
         ar[k] = temp[k-l];//
         //cout<<ar[k]<<" ";
-        mp[k]+= ct;
     }
-    cout<<endl;
+    //cout<<endl;
 
     // for(auto x: ans)cout<<x<<" ";
     // cout<<endl;
@@ -130,7 +130,7 @@ int main(){
     //cin >> t;
     while(t--){
         //int ar[100]={2,1,23,45,22,3,6};
-        int ar[] = {2,1,4,3,1 };
+        int ar[] = {2,1,4,3,10};
         int n = 5;
   
         merge_sort(ar,0,n-1); //high and low
@@ -139,16 +139,16 @@ int main(){
         // }
         // cout<<endl;
 
-        for(auto [x,y]: mp){
-            cout<<x<<" "<<y<<endl;
-        }
+        // for(auto [x,y]: mp){
+        //     cout<<x<<" "<<y<<endl;
+        // }
         // cout<<ct<<endl;
 
         // for(auto x: ans){
         //     cout<<x;
         // }
 
-        //cout<<ct<<endl;
+        cout<<ct<<endl;
 
     }
     return 0;
