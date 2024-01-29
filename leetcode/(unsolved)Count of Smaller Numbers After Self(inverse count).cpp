@@ -69,6 +69,7 @@ void merge(int ar[],int l,int m, int h){
 
             //mp[ar[i]] = (m-i+1);
             ct+=(m-i+1);
+            cout<<ar[i]<<" "<<ct<<endl;
             //mp[ar[i]] = ct++;
             //ct+=(m-i+1);
             //cout<<ct<<" "<<ar[i]<<endl;
@@ -98,7 +99,7 @@ void merge(int ar[],int l,int m, int h){
     // moving all elements to an array / Copy elements from temp back to ar[]
     for (int k = l; k <= h; k++) {
         ar[k] = temp[k-l];//
-        //cout<<ar[k]<<" ";
+        cout<<ar[k]<<" ";
     }
     //cout<<endl;
 
@@ -130,7 +131,7 @@ int main(){
     //cin >> t;
     while(t--){
         //int ar[100]={2,1,23,45,22,3,6};
-        int ar[] = {2,1,4,3,10};
+        int ar[] = {1,2,3,1,5};
         int n = 5;
   
         merge_sort(ar,0,n-1); //high and low

@@ -9,6 +9,7 @@
         "random": "cpp",
         "semaphore": "cpp",
         "valarray": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "string": "cpp"
     }
 }

@@ -204,7 +204,7 @@ void solve(){
     ll n;
     cin>>n;
 
-    ll v = 1e18;// ~=40
+    ll v = 1e18;// ~=41.111
     cout<<log(v)<<endl;
 
 }
@@ -222,3 +222,8 @@ while(ok(r)) r*=2;
 
 //For 00000011111
 while(!ok(r)) r*=2;
+
+
+
+//This limit can also be used Binary search for avoiding overflow
+m = l + (r-l)/2;
