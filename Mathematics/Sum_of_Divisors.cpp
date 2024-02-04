@@ -7,13 +7,7 @@ void solve(){
     cin>>n;
     ll sum = 0;
     for(ll j=1;j<=n;j++){
-        //divisors
-        for(ll i = 1; i*i <= j; i++){
-            if(j % i == 0){
-                sum = (sum + j)%md;
-                if(j != j/i) sum= (sum + (j/i))%md;
-            }
-        }
+        sum +=((n/j)*j);
     }
     cout<<sum<<endl;
     
