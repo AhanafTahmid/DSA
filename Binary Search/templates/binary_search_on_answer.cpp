@@ -226,4 +226,4 @@ while(!ok(r)) r*=2;
 
 
 //This limit can also be used Binary search for avoiding overflow
-m = l + (r-l)/2;
+m = l + (r-l)/2;// l + right distance
