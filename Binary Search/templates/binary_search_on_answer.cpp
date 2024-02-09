@@ -1,11 +1,14 @@
 //Binary search on answer
 
+// Invariant finding: Think about a large values and see if it is true, if true then answer is 000001111, else 11110
+
 //Think: Can I make it monotonous? If you found a monotonic, then it can be solved using BS
 
 
 
 //binary search is basically elimination, removing parts where our answer does not lies
 
+//Be very carefull choosing the 'r' values, might get signed integer overflow because of this
 
 //#######-------Find the first index of '1' of a monotonic functin(upper bound of the previous element)--------########
 

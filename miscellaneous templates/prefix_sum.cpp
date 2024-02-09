@@ -1,3 +1,13 @@
+//1. When making prefix sum, start from 1 index, keep 0 index as 0 or the first value
+
+int pg[100000]={},ps[100000]={};
+for(int i=1;i<=n;i++){
+    pg[i] = pg[i-1]+ (s[i-1]=='G');
+    ps[i] = ps[i-1]+ (s[i-1]=='S');
+}    
+
+
+//////////
 #include <bits/stdc++.h>
 using namespace std;
 

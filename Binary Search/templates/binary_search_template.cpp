@@ -1,6 +1,11 @@
 //####################################################
 //#######-------Built In Templates--------############
 //####################################################
+
+LowerBound <=(greater or equal)
+UpperBound < (always greater)
+
+
 int x=lower_bound(v.begin(),v.end(),right)-v.begin();
 int x=upper_bound(v.begin(),v.end(),right)-v.begin();
 

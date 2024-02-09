@@ -1,0 +1,1 @@
+{"name":"Local: sliding_window","url":"/Volumes/Files/Programming/DSA/Dynamic Programming/templates/sliding_window.cpp","tests":[{"id":1707214514240,"input":"6 3\n1 2 3 4 5 6","output":"15"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/Volumes/Files/Programming/DSA/Dynamic Programming/templates/sliding_window.cpp","group":"local","local":true}
