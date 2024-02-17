@@ -3,7 +3,8 @@
 
 
 - We can make O(N*N) in O(N) using sliding window
-- We have to print (size - k+1) numbers
+- We have to print (size - k+1) numbers[in fixed size window]
+- there could be a possible answer in a window in sliding window
 
 //####################################################################################################
 //####################################################################################################
@@ -216,6 +217,187 @@ void sliding_window(string text, string pat){
     cout<< ct <<endl;
 
 }
+
+
+
+//####################################################################################################
+//####################################################################################################
+
+//#######------- 6th Video - Sliding Window Maximum (Maximum of all subarrays of size K) --------########
+
+/*
+Input: arr[] = {1, 2, 3, 1, 4, 5, 2, 3, 6}, K = 3 
+Output: 3 3 4 5 5 5 6
+Explanation:Maximum of 1, 2, 3 is 3
+            Maximum of 2, 3, 1 is 3
+            Maximum of 3, 1, 4 is 4
+            Maximum of 1, 4, 5 is 5
+            Maximum of 4, 5, 2 is 5 
+            Maximum of 5, 2, 3 is 5
+            Maximum of 2, 3, 6 is 6           
+------
+
+My sample input:
+9
+1 2 3 1 4 5 2 3 6
+3
+
+Output-> 
+3 3 4 5 5 5 6
+
+
+//https://www.geeksforgeeks.org/sliding-window-maximum-maximum-of-all-subarrays-of-size-k/
+
+Step-by-step approach:
+- We are working with indices
+
+1. Create a deque to store first K elements. Add the greatest element index in deque(add in decreasing order)
+2. Run loop for rest of the window
+   a. Print the front element of the deque.(front e always maximum rakhbo)
+   b. Remove out of all window indices from deque
+   c. Add the current val indices in the dequeue(add in decreasing order)
+
+*/
+
+
+//Time complexity is O(N) using deque
+void sliding_window(int ar[], int n, int k){
+    deque<int> dq;
+    for(int i=0;i<k;i++){
+        while(!dq.empty() && ar[dq.back()]<ar[i]){
+            dq.pop_back();
+        }
+        dq.push_back(i);
+    }
+    
+    for(int i=k;i<n;i++){
+        cout<< ar[dq.front()]<<" ";
+        //remove out of all window indices
+        while(dq.front()<=i-k)dq.pop_front();
+        // Add the current val indices in the dequeue
+        while(!dq.empty() && ar[dq.back()]<ar[i]){
+            dq.pop_back();
+        }
+        dq.push_back(i);
+    }
+    cout<< ar[dq.front()]<<endl;
+
+}
+
+
+
+
+
+//####################################################################################################
+//####################################################################################################
+
+//#######------- 7th Video - Longest sub-array having sum k (variable-size sliding window) --------########
+
+//**********Can you do it using map?????????
+
+
+//finding the largest window size of target sum
+
+/*
+Input: arr[] = { 10, 5, 2, 7, 1, 9 }, k = 15
+Output: 4
+Explanation: The sub-array is {5, 2, 7, 1}.
+         
+------
+
+My sample input:
+6
+10 5 2 7 1 9
+15
+Output-> 
+4 (5,2,7,1)
+
+
+//https://www.geeksforgeeks.org/longest-sub-array-sum-k/
+
+Step-by-step approach:
+i = start of window , j = end of window
+
+1. Apply two pointers, i = to delete the sum>target values
+2. If sum==target, j++, update answer
+3. If sum<target , j++ only
+4. ans = (j-i+1)
+
+
+This approach won’t work for negative numbers
+
+1. calculation, in this case doing the sum.
+2. drawing results out of calculations. in this case, extracting the size of the window if the sum reaches K (target).
+
+3. adjusting the window. in this case, increasing the size of the window if the sum is less than K(target) or decreasing the size if the sum is greater than K(target).
+
+
+
+The approach is to use the concept of the variable-size sliding window using 2 pointers
+Initialize i, j, and sum = 0. If the sum is less than k just increment j, if the sum is equal to k compute the max 
+and if the sum is greater than k subtract the ith element while the sum is greater than k.
+
+
+i : we will use i to delete the indexes where sum > x
+j : our normal index
+
+
+
+----------------------------------------------------------------------
+Q. Will the discussed approach work with negative numbers in the array?
+A. No. 
+Because let's say in the given array [4,1,1,1,2,3,5] when we found the sum within the window to be greater than the desired value 5 (i=0, j=2 -> [4,1,1]), we started reducing the size of the window by doing i++. 
+Here we assumed that once the sum of elements within the window becomes greater than 5 then increasing the window size will just add to the sum and hence we will not attain the sum 5 again. 
+This is true when all the element are positive and hence reducing the window size by doing i++ makes sense. But this might not be true if array also contains negative numbers. Consider the array [4,1,1,-2,1,5], here we would have found the sum to be greater than 5 for i=0, j=2 and if we would have now started reducing the window size by doing i++, we would have missed the potential subarray (i=0, j=4).
+In short, the discussed approach will not work with array having negative numbers.
+
+
+
+*/
+
+
+//Time complexity is O(N) 
+void sliding_window(int ar[], int n, int target){
+    //finding the largest window size of target sum
+    int sum = 0,ans = 0;
+    for(int i=0,j=0;j<n;){
+        sum+=ar[j];
+        if(sum==target){
+            //update answer
+            ans = max(ans, j-i+1);
+            //then increase j
+            j++;
+        }
+        else if(sum<target)j++;
+        else if(sum>target){
+            //while chalabo jotokkhn sum<=x hocche na
+            while(sum>target){
+                sum-=ar[i];
+                i++;
+            }
+            if(sum==target){
+                //update answer
+                ans = max(ans, j-i+1);
+            }
+            j++;
+        }
+
+    }
+    cout<< ans <<endl;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
