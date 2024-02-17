@@ -473,7 +473,12 @@ In short, the discussed approach will not work with array having negative number
 //####################################################################################################
 
 //#######------- 10th Video - Find the longest substring with k unique characters in a given string --------########
+//k unique - use unordered map
+//all unique - use normal visited not visited method
 
+
+// - It's a variable size window problem, longest substring = the variable window
+// - understanding condition in variable sliding window is very very important
 
 
 /*
@@ -499,10 +504,387 @@ Output->
 
 Step-by-step approach:
 
+Same like Longest sub-array having sum k but here we have to keep on checking the set size<k or not
+- Here we will have to maintain the distinct size of the window
+
+
+(********----- unordered_map() ----*******)
+i = start of window , j = end of window
+
+1. Apply two pointers, i,j and an unordered map named um
+2. If us.size()==k, j++, update answer (distance from j - distance of i + 1)
+3. If us.size()<k , j++ only
+4. If us.size()>k , keep on deleting the characters until us[s[i]]==0,if so erase us[s[i]] 
+   then update ans = (j-i+1)
+
+
+
+//Using unordered set might be wrong approach
+(********----- unordered_set() ----*******)
+i = start of window , j = end of window
+
+1. Apply two pointers, i,j and an unordered set named us
+2. If us.size()==k, j++, update answer (distance from j - distance of i + 1)
+3. If us.size()<k , j++ only
+4. If us.size()>k , keep on deleting the characters until us.size()==k, then update ans = (j-i+1)
+
+
+*/
+
+
+// #include <bits/stdc++.h>
+// using namespace std;
+// #define endl '\n'
+// #define int long long
+
+
+//Time complexity is O(N) - using unordered map
+// void sliding_window(string s, int n, int k){
+//     unordered_map<char, int> um;
+//     int i = 0, j = 0, ans = 0;
+//     while(j<n){
+//         um[s[j]]++;
+//         if(um.size()==k){
+//             ans = max(ans, j-i+1);
+//             j++;
+//         }
+//         else if(um.size()<k)j++;
+//         else if(um.size()>k){
+//             while(um.size()>k){
+//                 um[s[i]]--;
+//                 if(um[s[i]]==0){
+//                     um.erase(s[i]);
+//                 }
+//                 i++;
+//             }
+
+//             if(um.size()==k){
+//                 ans = max(ans, j-i+1);
+//             }
+//             j++;
+//         }
+//     }
+//     cout<< ans <<endl;
+// }
+
+//Time complexity is O(N) - using unordered set - This approach might be wrong
+// void sliding_window(string s, int n, int k){
+//     unordered_set<int> us;
+//     int i = 0, j = 0, ans = 0;
+//     while(j<n){
+//         us.insert(s[j]);
+//         //this is possible answer
+//         if(us.size()==k){
+//             ans = max(ans, j-i+1);
+//             j++;
+//         }
+//         else if(us.size()<k){
+//             //keep on increasing 
+//             j++;
+//         }
+//         else if(us.size()>k){
+//             //make it equal to k
+//             while(us.size()>k){
+//                 us.erase(us.begin());
+//                 i++;
+//             }
+//             if(us.size()==k){
+//                 ans = max(ans, j-i+1);
+//             }
+//             j++;
+//         }
+//     }
+//     cout<< ans <<endl;
+// }
+
+// void solve(){
+//     string s;cin>>s;
+//     int k; cin>>k;
+//     sliding_window(s, s.size(), k);
+// }
+
+
+// signed main(){
+//     int t=1;
+//     //cin >> t;
+//     while(t--)solve(); 
+//     return 0;
+// }
 
 
 
 
+
+
+
+//####################################################################################################
+//####################################################################################################
+
+//#######------- 11th Video - Length of the longest substring without repeating characters --------########
+
+// - It's a variable size window problem
+
+
+/*
+Input: “GEEKSFORGEEKS”
+Output: 7
+Explanation: The longest substrings without repeating characters are “EKSFORG” and “KSFORGE”, with lengths of 7
+
+------
+
+My sample input:
+GEEKSFORGEEKS
+
+Output-> 
+7
+
+
+//https://www.geeksforgeeks.org/length-of-the-longest-substring-without-repeating-characters/
+
+Step-by-step approach:
+
+visited or not visited approach
+
+
+1. Visited thakle i pointer non visited prjnto niye asha, else j++, and update answer
+    visited na thakle sheta amader potential answer hobe
+
+
+
+1. Intialize two pointers left and right with 0, which define the current window being considered.
+2. The right pointer moves from left to right, extending the current window.
+3. If the character at right pointer is not visited , it’s marked as visited.
+4. If the character at right pointer is visited, it means there is a repeating character. 
+   The left pointer moves to the right while marking visited characters as false until the repeating character is no longer part of the current window.
+5. The length of the current window (right - left + 1) is calculated and answer is updated accordingly.
+
+*/
+
+
+// #include <bits/stdc++.h>
+// using namespace std;
+// #define endl '\n'
+// #define int long long
+
+//Time complexity is O(N)
+// void sliding_window(string s, int n){
+//     int i = 0, j = 0, ans = 0;
+//     bool visited[1000]={};
+//     while(j<n){
+
+//         if(visited[s[j]]){
+//             //that means there is a repeating character
+//             //move the left pointer in this case
+//             while(visited[s[j]]){
+//                 visited[s[i]] = false;
+//                 i++;
+//             }
+//         }
+//         visited[s[j]] = 1;
+//         ans = max(ans, j-i+1);
+//         j++;
+
+//     }
+//     cout<< ans <<endl;
+
+
+
+//     while(j<n){
+//         if(!visited[j])visited[s[j]] = 1, ans = max(ans, j-i+1), j++;//our potential answer
+//         if(visited[s[j]]){
+//             while(visited[s[j]]){
+//                 visited[s[i]] = false;
+//                 i++;
+//             }
+//         }
+//     }
+//     cout<< ans <<endl;
+// }
+
+
+
+//using unordered map
+// void sliding_window(string s, int n){
+//     unordered_map<char, int > um;
+//     int i=0, j = 0, ans = 0;
+//     while(j<n){
+//         um[s[j]]++;
+//         if(um.size()==j-i+1){
+//             //this can be potential answer
+//             ans = max(ans, j-i+1);
+//             j++;
+//         }
+//         else if(um.size()<j-i+1){
+//             while(um.size()<j-i+1){
+//                 um[s[i]]--;
+//                 if(um[s[i]]==0)um.erase(s[i]);
+//                 i++;
+//             }
+//             if(um.size()==j-i+1){
+//                 //this can be potential answer
+//                 ans = max(ans, j-i+1);
+//             }
+//             j++;
+//         }
+//         //um.size()>j-i+1 = this condition will never hit
+//     }
+//     cout<< ans <<endl;
+
+// }
+
+// void solve(){
+//     string s;cin>>s;
+//     sliding_window(s, s.size());
+// }
+
+
+// signed main(){
+//     int t=1;
+//     //cin >> t;
+//     while(t--)solve(); 
+//     return 0;
+// }
+
+
+
+
+
+
+
+
+
+
+//####################################################################################################
+//####################################################################################################
+
+//#######------- 12th Video - Pick Toys --------########
+//largest substring with unique character k = 2
+
+// - It's a variable size window problem, almost same like the previous one
+
+
+/*
+
+------
+
+My sample input:
+abaccab 2[-> a b c those are different types of toys], John can only take 2 types of toys maximized
+
+Output-> 
+4 [4 -> acca ]
+
+
+//https://www.geeksforgeeks.org/maximise-the-number-of-toys-that-can-be-purchased-with-amount-k/
+
+Step-by-step approach:
+1. Keep two pointers and make an unordered map
+2. when the um.size()==k, there is our potential ans
+3. else um.size()>k, keep removing elements until it become lesser than k size
+
+
+1. line s uthao --> mtlb substring
+2. max k types --> max k unique characters in the substring
+type = unique
+
+*/
+
+
+// #include <bits/stdc++.h>
+// using namespace std;
+// #define endl '\n'
+// #define int long long
+
+// //using unordered map
+// void sliding_window(string s, int n, int k){
+//     unordered_map<char,int> um;
+//     int i = 0, j = 0, ans = 0;
+//     while(j<n){
+//         um[s[j]]++;
+//         if(um.size()==k){
+//             ans = max(ans, j-i+1);
+//             j++;
+//         }
+//         else if(um.size()<k){
+//             j++;
+//         }
+//         else if(um.size()>k){
+//             while(um.size()>k){
+//                 um[s[i]]--;
+//                 if(um[s[i]]==0)um.erase(s[i]);
+//                 i++;
+//             }
+//             //our potential answer can be here
+//             if(um.size()==k){
+//                 ans = max(ans, j-i+1 );
+//             }
+//             j++;
+//         }
+//     }
+//     cout<< ans <<endl;
+
+// }
+
+// void solve(){
+//     string s;cin>>s;
+//     int k; cin>> k;
+//     sliding_window(s, s.size(), k);
+// }
+
+
+// signed main(){
+//     int t=1;
+//     //cin >> t;
+//     while(t--)solve(); 
+//     return 0;
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//####################################################################################################
+//####**** CONFUSEDDDDDDDD  ################################################################################################
+
+//#######------- 13th Video - Minimum Window Substring | Variable Size Sliding Window --------########
+
+
+
+/*
+
+Input: string = “this is a test string”, pattern = “tist” 
+Output: “t stri” 
+Explanation: “t stri” contains all the characters of pattern.
+
+------
+
+My sample input:
+this is a test string
+tist
+
+Output-> 
+t stri
+
+//https://www.geeksforgeeks.org/find-the-smallest-window-in-a-string-containing-all-characters-of-another-string/
+//https://takeuforward.org/data-structure/minimum-window-substring/
+
+Step-by-step approach:
+1. Traverse the pattern and make frequency of that, create sz = pat.size() 
+2. Traverse the main pattern
+   a. create two pointer i and j
+   b. if s[i] is present in pattern map then pt[s[i]]--;
+      b.1 if pt[s[i]] == 0 then ct++
+      b.2 after some time, if ct == sz, then it is our potential answer. keep the answer; 
+      b.2.1 and remove the extra characters from the beginning if there
+   c. 
 
 */
 
@@ -512,24 +894,40 @@ using namespace std;
 #define endl '\n'
 #define int long long
 
-//Time complexity is O(N) 
-void sliding_window(int ar[], int n, int target){
+//using unordered map
+// void sliding_window(string s, string pat){
+//     unordered_map<char, int> um;
+//     unordered_map<char, int> um2;
+//     for(int i=0;i<pat.size();i++){
+//         um[pat[i]]++;
+//     }
+//     int st = 0, start = 0, end = 0;
+//     int ct = 0;
+
+//     int n = s.size();
+//     int n2 = pat.size();
+//     int i = 0, j = 0;
+//     for(j=0;j<n;j++){
+//         um2[s[j]]++;
+//         if(um2.size()==n2){
+//             while(um2[str[j]]==)
+//         }
+
+//     }
     
+// }
 
-}
-
-void solve(){
-    int n;cin>>n;
-    int ar[n+1];
-    for(int i=0;i<n;i++)cin>>ar[i];
-    int target;cin>>target;
-    sliding_window(ar, n, target);
-}
+// void solve(){
+//     string s;cin>>s;
+//     string pat;cin>>pat;
+//     int k; cin>> k;
+//     sliding_window(s, pat);
+// }
 
 
-signed main(){
-    int t=1;
-    //cin >> t;
-    while(t--)solve(); 
-    return 0;
-}
+// signed main(){
+//     int t=1;
+//     //cin >> t;
+//     while(t--)solve(); 
+//     return 0;
+// }
