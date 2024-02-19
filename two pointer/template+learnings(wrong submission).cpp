@@ -5,7 +5,7 @@ Instead of trying all possible subsets we can try two pointer
 We can decrease 1 loop with two pointer, if it is N*N we can make it N
 if it is N*N*N we can make it N*N, if N^4 we can make it N^3
 
-
+- two pointer, basically 2 ta pointer niye kaj kora
 - In two pointer, the first thing is sorting, then move from left and right
 - In many two pointer problems, we can just use hashing or binary search
 - when see leftmost and rightmost, think about two pointer

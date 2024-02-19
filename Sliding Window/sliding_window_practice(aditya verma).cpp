@@ -889,10 +889,10 @@ Step-by-step approach:
 */
 
 
-#include <bits/stdc++.h>
-using namespace std;
-#define endl '\n'
-#define int long long
+// #include <bits/stdc++.h>
+// using namespace std;
+// #define endl '\n'
+// #define int long long
 
 //using unordered map
 // void sliding_window(string s, string pat){
@@ -931,3 +931,102 @@ using namespace std;
 //     while(t--)solve(); 
 //     return 0;
 // }
+
+
+
+
+
+
+
+//####################################################################################################
+//####################################################################################################
+
+//#######------- 14th Video - Longest Substring Without Repeating Characters --------########
+
+
+
+/*
+
+Input: s = "abcabcbb"
+Output: 3
+Explanation: The answer is "abc", with the length of 3.
+
+------
+
+
+//https://leetcode.com/problems/longest-substring-without-repeating-characters/
+
+
+
+*/
+
+//Time complexity of this is O(2n)
+// class Solution {
+// public:
+//     int lengthOfLongestSubstring(string s) {
+//         int n = s.size();
+//         bool visited[100000]={};
+//         int l = 0, r = 0, ans = 0;
+//         while(r<n){
+//                 while(visited[s[r]]){
+//                     visited[s[l]] = 0;
+//                     l++;
+//                 }
+//                 ans = max(ans, r - l + 1),visited[s[r]]=1,r++;
+//             }
+//         return ans;
+
+//     }
+    
+// };
+
+
+
+
+
+
+//####################################################################################################
+//####################################################################################################
+
+//#######------- 15th Video - Max Consecutive Ones III --------########
+
+
+
+/*
+
+Input: nums = [1,1,1,0,0,0,1,1,1,1,0], k = 2
+Output: 6
+Explanation: [1,1,1,0,0,1,1,1,1,1,1]
+Bolded numbers were flipped from 0 to 1. The longest subarray is underlined.
+
+------
+
+
+//https://leetcode.com/problems/max-consecutive-ones-iii/
+
+
+
+*/
+
+//Time complexity of this is O(2n)
+// class Solution {
+// public:
+//     int longestOnes(vector<int>& nums, int k) {
+//         int n = nums.size();
+//         int i = 0, j = 0, ans = 0, ct = 0;
+//         while(i<n){
+//             if(nums[i]==0){
+//                 ct++;
+//             }
+//             //move right pointer
+//             while(ct>k){
+//                 if(nums[j]==0)ct--;
+//                 j++;
+//             }
+
+//             ans = max(ans, i-j+1);
+//             i++;
+//         }
+//         return ans;
+//     }
+// };
