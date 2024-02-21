@@ -1030,3 +1030,305 @@ Bolded numbers were flipped from 0 to 1. The longest subarray is underlined.
 //         return ans;
 //     }
 // };
+
+
+
+
+
+//####################################################################################################
+//####################################################################################################
+
+//#######------- 16th Video - 904. Fruit Into Baskets --------########
+
+//Maximum subarray that consists only two distinct element
+
+/*
+
+Input: fruits = [0,1,2,2]
+Output: 3
+Explanation: We can pick from trees [1,2,2].
+If we had started at the first tree, we would only pick from trees [0,1].
+
+------
+
+
+//https://leetcode.com/problems/fruit-into-baskets/
+
+
+*/
+
+//Time complexity of this is O(2n)
+// class Solution {
+// public:
+//     int totalFruit(vector<int>& fruits) {
+//         int n = fruits.size();
+//         int i = 0, j = 0, ans = 0;
+//         unordered_map<int, int> um;
+//         while(i<n){
+//             um[fruits[i]]++;
+//             while(um.size()>2){
+//                 um[fruits[j]]--;
+//                 if(um[fruits[j]]==0)um.erase(fruits[j]);
+//                 j++;
+//             }
+//             ans = max(ans, i-j+1);
+//             i++;
+//         }
+//         return ans;
+//     }
+// };
+
+
+
+
+//####################################################################################################
+//####################################################################################################
+
+//#######------- 17th Video - Longest Repeating Character Replacement --------########
+
+//it's also a variable size window problem, here we will have to find the longest window
+
+/*
+
+Input: fruits = [0,1,2,2]
+Output: 3
+Explanation: We can pick from trees [1,2,2].
+If we had started at the first tree, we would only pick from trees [0,1].
+
+------
+
+
+//https://leetcode.com/problems/longest-repeating-character-replacement/description/
+
+
+*/
+
+//Time complexity of this is O(2n)
+
+//code.....
+
+
+
+//####################################################################################################
+//####################################################################################################
+
+//#######------- 18th Video - Binary Subarrays With Sum --------########
+//Number of subarrays having sum exactly equal to k
+
+/*
+
+Input: nums = [1,0,1,0,1], goal = 2
+Output: 4
+Explanation: The 4 subarrays are bolded and underlined below:
+[1,0,1,0,1]
+[1,0,1,0,1]
+[1,0,1,0,1]
+[1,0,1,0,1]
+
+------
+
+
+//https://leetcode.com/problems/binary-subarrays-with-sum/
+
+
+
+Steps:
+1. make two pointer i and j
+2. add all the previous answer that is possible by using an unordered map
+
+
+*/
+
+//Time complexity of this is O(n)
+
+// class Solution {
+// public:
+//     int numSubarraysWithSum(vector<int>& nums, int goal) {
+//         unordered_map<int,int> um;
+//         um[0] = 1;
+//         int i = 0, j = 0, ans = 0, sum = 0;
+//         int n = nums.size();
+//         while(i<n){
+//             sum+=nums[i];
+//             //check if there is answer previously
+//             if(um.find(sum-goal)!=um.end())ans+=(um[sum-goal]);
+//             um[sum]++;
+//             i++;
+//         }
+//         return ans;
+//     }
+// };
+
+
+
+
+
+//####################################################################################################
+//####################################################################################################
+
+//#######------- 19th Video - Count number of nice subarrays --------########
+//Number of subarrays having sum exactly equal to k
+
+/*
+
+Input: nums = [2,2,2,1,2,2,1,2,2,2], k = 2
+Output: 16
+
+------
+
+
+//https://leetcode.com/problems/count-number-of-nice-subarrays/description/
+
+
+
+Steps:
+1. convert all odds to 1 and even to 0s
+2. apply the Number of subarrays having sum exactly equal to k sum steps
+
+
+*/
+
+//Time complexity of this is O(n)
+//using hashmap
+// class Solution {
+// public:
+//     int numberOfSubarrays(vector<int>& nums, int k) {
+//         int n = nums.size();
+//         for(int i=0;i<n;i++){
+//             if(nums[i]%2) nums[i] = 1;
+//             else nums[i] = 0;
+//         }
+//         unordered_map<int,int> um;
+//         int i=0,j=0,sum=0, ans = 0;
+//         for(int i=0;i<n;i++){
+//             sum += nums[i];
+//             if(sum==k)ans++;
+//             if(um.find(sum-k)!=um.end()){
+//                 ans+=um[sum-k];
+//             }
+//             um[sum]++;
+//         }
+//         return ans;
+//     }
+// };
+
+
+
+//using sliding window
+//1.move right pointer until it is == k . after that count the ct's. Then keep on adding the cts
+/*
+Sliding Window Technique:
+
+The problem can be efficiently solved using the sliding window technique.
+We maintain two pointers: left and right to define the window.
+We move the right pointer to expand the window while keeping track of the count of odd numbers encountered.
+If the count of odd numbers in the window is less than k, we continue expanding the window.
+If the count of odd numbers equals k, we count all possible subarrays with exactly k odd numbers starting from the current position of the left pointer until the window no longer satisfies the condition.
+
+Tracking Odd Numbers:
+
+We keep track of the number of odd numbers encountered within the current window.
+Whenever we move the right pointer, if the number at that position is odd, we increment the count of odd numbers.
+If the count of odd numbers exceeds k, we start moving the left pointer to the right until the count is again less than k.
+
+*/
+
+
+// class Solution {
+// public:
+//     int numberOfSubarrays(vector<int>& nums, int k) {
+//         int i = 0, j = 0 , ans = 0, odd = 0, ct = 0;
+//         int n = nums.size();
+//         for(int i=0;i<n;i++){
+//             if(nums[i]&1)odd++,ct=0;
+//             while(odd==k){
+//                 odd-=nums[j]&1;
+//                 ct++;
+//                 j++;
+//             }
+//             ans+=ct;
+//         }
+//         return ans;
+//     }
+// };
+
+
+
+//####################################################################################################
+//####################################################################################################
+
+//#######------- 20th Video - Number of Substrings Containing All Three Characters --------########
+//atleast 3 distinct elements in a given range
+
+/*
+
+Input: s = "abcabc"
+Output: 10
+Explanation: The substrings containing at least one occurrence of the characters a, b and c are "abc", "abca", "abcab", "abcabc", "bca", "bcab", "bcabc", "cab", "cabc" and "abc" (again). 
+
+------
+
+
+//https://leetcode.com/problems/number-of-substrings-containing-all-three-characters/description/
+
+Steps:
+1. Until the size is 2, we keep on removing the frequency 
+
+*/
+
+//Time complexity of this is O(n)
+
+
+// class Solution {
+// public:
+//     int numberOfSubstrings(string s) {
+//         int n = s.size();
+//         unordered_map<int,int> um;
+//         int i = 0, j = 0, ans = 0;
+//         while(i<n){
+//             um[s[i]]++;
+//             while(um.size()==3){
+//                 ans+=(n-i);
+//                 um[s[j]]--;
+//                 if(um[s[j]]==0)um.erase(s[j]);
+//                 j++; 
+//             }
+//             i++;
+//         }
+//         return ans;
+//     }
+// };
+
+
+
+
+
+
+
+
+
+//####################################################################################################
+//####################################################################################################
+
+//#######------- 21th Video - Maximum Points You Can Obtain from Cards --------########
+//
+
+/*
+
+Input: cardPoints = [1,2,3,4,5,6,1], k = 3
+Output: 12
+Explanation: After the first step, your score will always be 1. However, choosing the rightmost card first will maximize your total score. The optimal strategy is to take the three cards on the right, giving a final score of 1 + 6 + 5 = 12.
+
+------
+
+
+//https://leetcode.com/problems/number-of-substrings-containing-all-three-characters/description/
+
+Steps:
+1. 
+
+*/
+
+//Time complexity of this is O(n)
+
+
