@@ -1517,6 +1517,9 @@ Almost similar to the 23rd one, but it must be in order this time
 forward backward -> forward backward -> forward backward until reaches end
 1. keep on first forward, then if found all, keep on finding backward and each time update the min length size
 
+
+i diye index ber korbo, j diye valid kina check korte thakbo
+
 */
 
 // #include <bits/stdc++.h>
