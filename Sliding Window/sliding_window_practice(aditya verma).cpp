@@ -1322,13 +1322,252 @@ Explanation: After the first step, your score will always be 1. However, choosin
 ------
 
 
-//https://leetcode.com/problems/number-of-substrings-containing-all-three-characters/description/
+//https://leetcode.com/problems/maximum-points-you-can-obtain-from-cards/
 
 Steps:
-1. 
+1. make a prefix sum of the cards
+2. move the window from right to left and check the answer
+
+*/
+
+//Time complexity of this is O(n)
+
+// class Solution {
+// public:
+//     int maxScore(vector<int>& cardPoints, int k) {
+//         int allsum = cardPoints[0];
+//         int n = cardPoints.size();
+//         long long pr[100000]={};
+//         pr[0] = cardPoints[0];
+//         for(int i=1;i<n;i++){
+//             pr[i] = pr[i-1] + cardPoints[i];
+//             allsum+=cardPoints[i];
+//         }
+//         if(n==k)return allsum;
+//         long long ans = 0;
+//         for(int i=0,j=n-k-1;i<=k;i++,j++){
+//             if(i==0)ans = allsum - pr[j] ;
+//             else ans = max(ans, (allsum - (pr[j] - pr[i-1])));
+//         }
+//         return ans;
+//     }
+// };
+
+
+
+
+
+
+
+//####################################################################################################
+//####################################################################################################
+
+//#######------- 22nd Video - Subarrays with K Different Integers--------########
+//Subarrays with k distinct elements
+
+/*
+
+Input: nums = [1,2,1,2,3], k = 2
+Output: 7
+Explanation: Subarrays formed with exactly 2 different integers: [1,2], [2,1], [1,2], [2,3], [1,2,1], [2,1,2], [1,2,1,2]
+
+------
+
+
+//https://leetcode.com/problems/subarrays-with-k-different-integers/description/
+
+
+Steps:
+1. Atmost k subarray(total subarray with <k elements) - atmost k-1 = exactly count
+3 ta diye jotota banaite parbo(ekhane 2ta walao ase) - 2 ta diye jotota banaite parbo(only 2 ta and 1 ta wala) = tahole bakigula 3 ta walai hobe
+
+Intuition:
+Example:
+Suppose we have calculated the count of subarrays with at most 3 distinct elements (at most k) and found it to be 10.
+Suppose we have also calculated the count of subarrays with at most 2 distinct elements (at most k-1) and found it to be 6.
+Then, the count of subarrays with exactly 3 distinct elements is at most k minus at most k-1, i.e., 10 - 6 = 4.
+
 
 */
 
 //Time complexity of this is O(n)
 
 
+// class Solution {
+// public:
+//     int atmost(vector<int>& nums, int k) {
+//         unordered_map<int,int> um;
+//         int i=0, j = 0, ans = 0;
+//         int n = nums.size();
+//         while(i<n){
+//             um[nums[i]]++;
+//             while(um.size()>k){
+//                 um[nums[j]]--;
+//                 if(um[nums[j]]==0) um.erase(nums[j]);
+//                 j++;
+//             }
+//             ans+=(i-j+1);
+//             i++;
+//         }
+//         return ans;
+//     }
+
+//     int subarraysWithKDistinct(vector<int>& nums, int k) {
+//         return atmost(nums, k) - atmost(nums, k-1); 
+//     }
+// };
+
+
+
+
+
+
+
+//####################################################################################################
+//####################################################################################################
+
+//#######------- 23rd Video - Minimum window substring --------########
+
+/*
+
+Input: s = "ADOBECODEBANC", t = "ABC"
+Output: "BANC"
+Explanation: The minimum window substring "BANC" includes 'A', 'B', and 'C' from string t.
+
+------
+
+
+//https://leetcode.com/problems/minimum-window-substring/description/
+
+
+Steps:
+1. make frequency of all the characters that are present in the array
+2. if frequency > 0 then ct++
+3. while(ct==pn)then move the start pointer until it becomes false, keep the start and end windoww
+4. answer would be string from start(j) to end(i-j+1)
+
+decreasing the frequency → I am using the character
+increasing the frequency → I am not using the character
+
+*/
+
+//Time complexity of this is O(n)
+
+
+// class Solution {
+// public:
+//     string minWindow(string s, string t) {
+//         int n = s.size();
+//         int pn = t.size();
+//         vector<int> p(256,0);
+//         for(char ch: t){
+//            p[ch]++;
+//         }
+//         if(n<pn)return "";
+//         int ans = 0, ct = 0;
+//         int start = 0, end = 0, mn = INT_MAX;
+//         int i = 0, j = 0;
+//         for(i=0,j=0;i<n;i++){
+//             if(p[s[i]]>0)ct++;
+//             p[s[i]]--;
+//             while(ct==pn){
+//                 //ei window te answer ase
+//                 if(mn>(i-j+1) && ct==pn){
+//                     mn = (i-j+1);
+//                     start = j;
+//                 }
+//                 p[s[j]]++;
+//                 if(p[s[j]]>0)ct--;
+//                 j++;
+//             }
+
+//         }
+//         end = mn;
+//         if(mn==INT_MAX) return "";
+//         return s.substr(start,end);//delete everything outside this range
+//     }
+// };
+
+
+
+
+//####################################################################################################
+//####################################################################################################
+
+//#######------- 24th Video - Minimum window substring --------########
+
+/*
+
+str1: geeksforgeeks
+str2: eksrg
+Output: 
+eksforg
+Explanation: 
+Eksforg satisfies all required conditions. str2 is its subsequence and it is longest and leftmost among all possible valid substrings of str1.
+
+------
+
+
+//https://leetcode.com/problems/minimum-window-substring/description/
+
+
+Steps:
+Almost similar to the 23rd one, but it must be in order this time
+
+forward backward -> forward backward -> forward backward until reaches end
+1. keep on first forward, then if found all, keep on finding backward and each time update the min length size
+
+*/
+
+// #include <bits/stdc++.h>
+// using namespace std;
+// #define endl '\n'
+// #define int long long
+
+// void solve(){
+//     string s1;cin>>s1;
+//     string s2;cin>>s2;
+//     int n = s1.size();
+//     int pn = s2.size();
+//     int i = 0, j = 0, end = -1, mn = INT_MAX;
+//     string ans = "";
+//     while(i<n){
+//         if(s1[i]==s2[j]){
+//             j++;
+//         }
+//         if(j==pn){
+//             //move j as you can
+//             end = i + 1;
+//             j--;
+//             while(j>=0){
+//                 if(s1[i]==s2[j])j--;
+//                 i--;
+//             }
+//             i++;
+//             j++;
+//             if(end-i<mn){
+//                 mn = end-i;
+//                 ans = s1.substr(i, mn);
+//             }
+//             //cout<< s1.substr(j,end)<<endl;
+//             //cout<< i <<" = "<<end<<" = "<<mn <<endl;
+            
+//         }
+//         i++;
+//     }
+//     cout<< ans <<endl;
+// }
+
+
+// signed main(){
+//     int t=1;
+//     //cin >> t;
+//     while(t--)solve(); 
+//     return 0;
+// }
+
+
+
+
+//####################################################################################################
+//####################################################################################################

@@ -5,7 +5,7 @@
 
 
 
-//When given 'contiguos' then we should only be using sliding window
+//When given 'contiguos' then we should think sliding window approach atleast
 //Elements should be continuous
 
 //Possible Questions: maximum sum, minimun sum, finding longest something, shortest something, sum of perfect square
