@@ -2,6 +2,7 @@
 
 
 - Sliding window — In any sliding window based problem we have two pointers. The right pointer whose job is to expand the current window and then we have the left pointer whose job is to contract a given window. At any point in time only one of these pointers moves and the other one remains fixed.
+- we use dequeue in sliding window
 
 - We can make O(N*N) in O(N) using sliding window
 - We have to print total (size - k+1) numbers[in fixed size window]
@@ -11,7 +12,7 @@
 - array -> subarray thakbe
 - string -> substring thakbe
 
-- We use two pointer and prefix sum a lot in sliding window problems, using both two pointer and prefix sum is sliding window
+- We use dequeue, two pointer and prefix sum a lot in sliding window problems, using both two pointer and prefix sum is sliding window
 
 - keep solving the problems,  while we move the pointers
 - we can make two pointer from left to right, or left and right pointer both in the same point, keep solving as we move the both pointer

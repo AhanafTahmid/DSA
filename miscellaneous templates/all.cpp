@@ -1,1 +1,0 @@
-//all templates is here
