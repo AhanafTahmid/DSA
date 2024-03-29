@@ -33,3 +33,18 @@ int main(){
     while(t--)solve(); 
     return 0;
 }
+
+
+//#######-------Version 2--------########
+int lim = 100000;
+vector<bool>primes(lim, 0);
+void sieve(){
+    primes[0] = primes[1] = 1;//0 and 1 is not prime
+    for(int i=2;i*i<=lim;i++){
+        if(!primes[i]){
+            for(int j=i*i;j<=lim;j+=i){
+                primes[j] = 1;
+            }
+        }
+    }
+}
