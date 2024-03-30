@@ -98,3 +98,13 @@ ll power(ll a, ll b) {
 
 
 
+//Mainnnnnnnnnn**********--------########
+int power(int a,int b){
+    int ans = 1;
+    while(b>0){
+        if(p&1) ans = ans * a;
+        a = a * a;
+        b>>=1;
+    }
+    return ans;
+}

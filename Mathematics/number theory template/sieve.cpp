@@ -36,8 +36,8 @@ int main(){
 
 
 //#######-------Version 2--------########
-int lim = 100000;
-vector<bool>primes(lim, 0);
+const int lim = 100000;
+vector<bool>primes(lim, 0);//bool is of 1 byte, use this instead of int,which is of 4 bytes
 void sieve(){
     primes[0] = primes[1] = 1;//0 and 1 is not prime
     for(int i=2;i*i<=lim;i++){
