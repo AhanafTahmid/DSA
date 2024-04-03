@@ -1,3 +1,5 @@
+
+//template 1
 #include <bits/stdc++.h>
 using namespace std;
 #define ll long long
@@ -27,3 +29,26 @@ int main(){
     while(t--)solve(); 
     return 0;
 }
+
+
+//template 2
+//another template bs on answer
+while (l <= r){
+    int mid = (l + r) / 2;
+    if (ok () ){
+        l = mid + 1;
+    }
+    else{
+        r = mid - 1;
+    }
+}
+
+//template 3
+while(l<r){
+    mid = (l+r+1)/2;
+    if(ok() ){
+        
+    }
+    else r = mid - 1;
+}
+

@@ -1,10 +1,11 @@
 //Segmented Sieve
 
+//if there is range in problem, use segmented sieve
 //Range will always be in between 10^6 to 10^7, will not be given more than that
 
 /*
 Steps
-1. Count primes of the sqrt of the total length using normal siever
+1. Count primes of the sqrt of the total length using normal sieve
 2. Total area of the prime vector should be = r-l+1,0
 3. We will start our loop from ----- (low/the_prime_number)*the_prime_number   ------ (l/x)*x;
 4. we will keep marking the prime multiples as non prime
@@ -51,8 +52,8 @@ vector<int> primes;
 void precalc_sieve(int x){
     vector<int>pr(x+1,0);
 
-    pr[0] = 1;//0 and 1 is not prime
-    pr[1] = 1;
+    pr[0] = pr[1] = 1;//0 and 1 is not prime
+    
     for(int i=2;i*i<=x;i++){
         if(!pr[i]){
             for(int j=i*i;j<=x;j+=i){
