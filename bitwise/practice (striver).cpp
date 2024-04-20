@@ -10,7 +10,6 @@ My sample input:
 Output-> 
 
 
-
 //https://www.geeksforgeeks.org/given-two-sorted-arrays-number-x-find-pair-whose-sum-closest-x/
 
 Step-by-step approach:
