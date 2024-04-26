@@ -1,6 +1,6 @@
 //https://www.geeksforgeeks.org/bitwise-sieve/
 //https://www.shafaetsplanet.com/?p=855
-// Bitwise Sieve of Eratosthene
+// Bitwise Sieve of Eratosthenes
 #include <bits/stdc++.h>
 using namespace std;
 

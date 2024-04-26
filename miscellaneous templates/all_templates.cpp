@@ -1524,6 +1524,99 @@ void solve(){
     else cout<<"Not Prime"<<endl;
 }
 
+
+
+//https://www.geeksforgeeks.org/bitwise-sieve/
+//https://www.shafaetsplanet.com/?p=855
+// Bitwise Sieve of Eratosthenes
+#include <bits/stdc++.h>
+using namespace std;
+
+bool ifnotPrime(int prime[], int x){
+	return (prime[x/64] & (1 << ((x >> 1) & 31)));
+}
+
+bool makeComposite(int prime[], int x){
+	prime[x/64] |= (1 << ((x >> 1) & 31));
+}
+
+void bitWiseSieve(int n)
+{
+	int prime[n/64];
+	memset(prime, 0, sizeof(prime));
+
+	for (int i = 3; i * i <= n; i += 2) {
+		if (!ifnotPrime(prime, i))
+			for (int j = i * i, k = i << 1; j < n; j += k)
+				makeComposite(prime, j);
+	}
+
+	printf("2\n");
+
+	for (int i = 3; i <= n; i += 2){
+        if (!ifnotPrime(prime, i)){
+            printf("%d\n", i);
+        }
+    }
+		
+        
+			
+            
+}
+
+// Driver code
+int main()
+{
+	int n = 10000000;
+	bitWiseSieve(n);
+	return 0;
+}
+
+
+//#######-------Another version(bitwise sieve)--------########
+//https://www.shafaetsplanet.com/?p=855
+
+#include <bits/stdc++.h>
+using namespace std;
+#define endl '\n'
+#define int long long
+const int lim = 1e8;
+
+int N =lim,prime[lim]; 
+int status[3200000];
+
+bool check(int N,int pos){return (bool)(N & (1<<pos));}
+int Set(int N,int pos){	return N=N | (1<<pos);}
+
+void bitwise_sieve(){
+    int i, j; 
+    for( i = 3; i * i <= N; i += 2 ) 
+    {
+        if(check(status[j>>5],i & 31)==0){
+            for( j = i*i; j <= N; j += (i<<1)){
+                status[j>>5]=Set(status[j>>5],j & 31);
+            }
+        }
+    }
+    printf("%lld\n",2);
+    for(i=3;i<=N;i+=2){
+        if(check(status[j>>5],i & 31)==0)printf("%d\n",i);
+    }
+}
+
+void solve(){
+    bitwise_sieve();
+}
+
+int32_t main(){
+    ios::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    int t=1;
+    //cin >> t;
+    while(t--)solve(); 
+    return 0;
+}
+
+
 //#######-------Binary Search On Answer--------########
 #include <bits/stdc++.h>
 using namespace std;
@@ -2115,7 +2208,107 @@ int main()
 
 
 
-//#######-------xxxxxxxx-------########
+//#######-------Bitwise-------########
+
+// Resource: https://youtu.be/LGrE0siZ-ZA
+//bitwise Operators
+//1. even or odd
+    // x&1
+    cout<< (5&1) <<endl;//prints 1, odd, compare binary 5 and binary 1, rest beocomes zero
+    cout<< (6&1) <<endl;//prints 0, even
+
+//2. Power of two
+    // x & (x-1)
+    cout<< (32 & (32-1)) <<endl;//prints 0, cause 32 is power two
+    cout<< (5 & (5-1)) <<endl;//prints 4, non zero value
+
+//3. Manipulating bits
+    //check if kth bit is set
+    // x & (1<<k)
+    cout<< (4 & (1<<2)) <<endl;//prints 4, as 4th bit is set, works in 0 base index, right to left
+    cout<< (4 & (1<<1)) <<endl;//prints 0, as 1 index is 0
+
+    //Toggle the kth bit
+    // x ^ (1<<k)
+    cout<< (4 ^ (1<<2)) <<endl;//prints 0, toggle the 4th bit
+    cout<< (4 ^ (1<<1)) <<endl;//prints 6, toggle the 2th bit, 100 ^ 010 -> 110
+
+    //Set the kth bit
+    // x | (1<<k)
+    cout<< (4 | (1<<1)) <<endl;//prints 6, sets the 2nd bit 1
+
+    //Unset the kth bit
+    // x ~ (1<<k)
+    cout<< (4 &  ~(1<<2)) <<endl;//prints 0
+    cout<< (4 &  ~(1<<1)) <<endl;//prints 4
+
+//4. Multiply or divide a number
+    //Multiply
+    // x << k
+    cout<< (4 << 1) <<endl;//8
+    cout<< (4 << 3) <<endl;//32 -> 4 * 8
+
+    //Division
+    // x >> k
+    cout<< (4 >> 1) <<endl;//0
+    cout<< (16 >> 1) <<endl;//8
+
+//5. Find x % 2^k
+    // x & ((1<<k)-1)
+    cout<< (4 << 1) <<endl;//8
+
+//6. Swap 2 numbers
+    // x = x^y
+    // y = x^y
+    // x = x^y
+    int t1 = 12; 
+    int t2 = 112;
+    cout<< t1 <<' '<<t2<<endl;//12 112
+    t1 = t1 ^ t2;
+    t2 = t1 ^ t2;
+    t1 = t1 ^ t2;
+    cout<< t1 <<' '<<t2<<endl;//112 12
+
+//7. Toggle assignment(Finding out the the number)
+    // x = a^b^x;
+
+//8. important identities
+    // a + b = (a^b) + 2 (a&b)
+    // a + b = (a|b) + (a&b)
+
+//9. Count set bits
+    cout<< __builtin_popcount(4) <<endl;// 1
+    cout<< __builtin_popcountll(4) <<endl;//1
+
+
+
+
+/////Bitset
+
+//print bitset
+bitset<32>bset;//1st way
+bitset<32>bset(5);//2nd way //print 5 binary with 32 bits
+cout<<bset<<endl; 
+bitset<32>bset(string("101"));//3rd way
+cout<< bset.to_ulong()<<endl;//unsigned long, binary string sset to number, print binary to unsigned long
+cout<< bset.to_ullong() <<endl; //unsigned long long
+
+//print bitset
+bitset<32>bset;
+bset.set();//setting all bits to 1
+bset.reset();//setting all bits to 0
+cout<<bset<<endl;
+
+//count how many one's in the bitset(like builtinpopcount)
+bitset<32>bset;
+bset.set(10);
+cout<<bset.count()<<endl;//counting the total 1's
+cout<< bset.flip() <<endl;//flipping 0 to 1, 1 to 0
+cout<< bset[0] <<endl;//after flipping, 1 ans, 
+//indexing ulta theke bitset e hoi, karon binary te ultatheke count hoi
+
+
+
 //#######-------xxxxxxxx-------########
 //#######-------xxxxxxxx-------########
 

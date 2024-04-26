@@ -2,7 +2,7 @@
 //bitwise Operators
 //1. even or odd
     // x&1
-    cout<< (5&1) <<endl;//prints 1, odd
+    cout<< (5&1) <<endl;//prints 1, odd, compare binary 5 and binary 1, rest beocomes zero
     cout<< (6&1) <<endl;//prints 0, even
 
 //2. Power of two
@@ -13,7 +13,8 @@
 //3. Manipulating bits
     //check if kth bit is set
     // x & (1<<k)
-    cout<< (4 & (1<<2)) <<endl;//prints 4, as 4th bit is set
+    cout<< (4 & (1<<2)) <<endl;//prints 4, as 4th bit is set, works in 0 base index, right to left
+    cout<< (4 & (1<<1)) <<endl;//prints 0, as 1 index is 0
 
     //Toggle the kth bit
     // x ^ (1<<k)
