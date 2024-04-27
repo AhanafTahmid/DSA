@@ -67,3 +67,19 @@
 //9. Count set bits
     cout<< __builtin_popcount(4) <<endl;// 1
     cout<< __builtin_popcountll(4) <<endl;//1
+
+
+
+//$$$$$$$$$$$$
+//get the rightmost set bit
+/* Get the xor of all array elements */
+for (i = 1; i < n; i++)
+    xor1 = xor1 ^ arr[i];
+
+/* XOR the previous result with numbers 
+    from 1 to n*/
+for (i = 1; i <= n; i++)
+    xor1 = xor1 ^ i;
+
+/* Get the rightmost set bit in set_bit_no */
+set_bit_no = xor1 & ~(xor1 - 1);
