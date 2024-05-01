@@ -102,7 +102,7 @@ ll power(ll a, ll b) {
 int power(int a,int b){
     int ans = 1;
     while(b>0){
-        if(p&1) ans = ans * a;
+        if(b&1) ans = ans * a;
         a = a * a;
         b>>=1;
     }
