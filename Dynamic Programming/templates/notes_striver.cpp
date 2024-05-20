@@ -1,6 +1,10 @@
+- Every types first video is the most important
+- Learn to write bottom up table
+- Learn to draw solving recursively
+
 How to think in recursion: 
 1. Play with indexes, find the base case(destination, or out of bound cases). Always write the out of bounds first
-2. explore all paths
+2. explore all paths / Try out all possible choices at a given index.
 3. Find minimum, maximum based on the problem statement
 
 Steps to Memoise(DP):
@@ -20,10 +24,25 @@ converting:
 3d DP -> 2d DP 
 
 
+FOR ALL THE COUNT PROBLEMS:
+if the condition is satisfied return 1, else return 0
+
+
 1. In grid take x,y as dp[x][y]
 2. in subsequences, take dp[ind][target]
+
+Confusions:
+1. 
+Dp 16. Partition A Set Into Two Subsets With Minimum Absolute Sum Difference | DP on Subsequences
+for(int i=0;i<=k;i++){//Getting WA for k/2 on top down approach.
+		if(dp[n-1][i]==1)ans = min(ans,abs(i - (sum-i)) );
+	}
+2. DP 17. Counts Subsets with Sum K | Dp on Subsequences, handling 0 case in bottom up
+
+
 ---------------------------------------------------------------------------------------------------------
 Stiver DP Playlist: https://www.youtube.com/playlist?list=PLgUwDviBIf0qUlt5H_kiKYaNSqJ81PMMY
+Tutorials: https://takeuforward.org/dynamic-programming/striver-dp-series-dynamic-programming-problems/
 ---------------------------------------------------------------------------------------------------------
 //#######################################################################
 //#######-------DP 1. Introduction to Dynamic Programming--------########
@@ -959,14 +978,31 @@ int maximumChocolates(int r, int c, vector<vector<int>> &grid) {
 //#######################################################################
 //#######################################################################
 
+- Either take it or not take it concept
+
+int f(int i, int target, vector<int>&arr, vector<vector<int>>&dp){
+    if(i==0){
+
+    }
+    int not_taken = 
+    int taken = 
+    if(){
+        taken = 
+    }
+    return 
+
+}
 
 //#######################################################################
 //#######-------DP 14. Subset Sum Equals to Target | Identify DP on Subsequences and Ways to Solve them--------########
 //Question Type: DP on Subsequences, 
 //Tutorial: https://takeuforward.org/data-structure/subset-sum-equal-to-target-dp-14/
+//Tushar  : https://youtu.be/s6FhG--P7z0
 //Problem:  https://www.naukri.com/code360/problems/subset-sum-equal-to-k_1550954
 
+//--------
 //Top Down
+//--------
 #include <bits/stdc++.h> 
 bool f(int i, int target, vector<int> &arr, vector<vector<int>> &dp ){
     if(target==0)return true;
@@ -983,14 +1019,19 @@ bool subsetSumToK(int n, int k, vector<int> &arr) {
     vector<vector<int>>dp(n,vector<int>(k+1, -1));
     return f(n-1,k, arr, dp);
 }
+//--------
 //Bottom Up
+//--------
 #include <bits/stdc++.h> 
 bool subsetSumToK(int n, int k, vector<int> &arr) {
     vector<vector<int>>dp(n,vector<int>(k+1, 0));
     for(int i=0;i<n;i++){
         dp[i][0] = true;
     }
+
+    //Base case: If the first element of 'arr' is less than or equal to 'k', set prev[arr[0]] to true
     //if target is lesser than first value
+    //example out of bound: if n=1,k=5,arr[0]=10, it will be out of bounds 
     if (arr[0] <= k)dp[0][arr[0]] = true;
     for(int i=1;i<n;i++){
         for(int target=1;target<=k;target++){
@@ -1002,7 +1043,9 @@ bool subsetSumToK(int n, int k, vector<int> &arr) {
     }
     return dp[n-1][k];
 }
+//--------
 //Bottom Up(space optimized)
+//--------
 #include <bits/stdc++.h> 
 bool subsetSumToK(int n, int k, vector<int> &arr) {
     vector<int>prev(k+1,0);
@@ -1030,12 +1073,95 @@ bool subsetSumToK(int n, int k, vector<int> &arr) {
 //Tutorial: https://takeuforward.org/data-structure/partition-equal-subset-sum-dp-15/
 //Problem:  https://www.naukri.com/code360/problems/partition-equal-subset-sum_892980
 
+//--------
 //Top Down
+//--------
+bool f(int ind, int target, vector<int> &arr,vector<vector<int>> &dp){
+	if(target==0) return true;
+	if(ind == 0) return arr[ind] == target;
+	if(dp[ind][target]!=-1) return dp[ind][target];
 
+	bool not_taken = f(ind-1, target, arr,dp);
+	bool taken = false;
+	if(arr[ind]<=target){
+		taken = f(ind-1, target-arr[ind], arr, dp);
+	}
+	return dp[ind][target] = taken || not_taken;
+}
+
+bool canPartition(vector<int> &arr, int n)
+{
+	int sum = 0;
+	for(auto x: arr) sum+=x;
+	if(sum%2) return false;
+	else{
+		int target = sum/2;
+		vector<vector<int>> dp(n, vector<int>(target+1, -1));
+		return f(n-1, target, arr, dp);
+	}
+}
+
+//--------
 //Bottom Up
+//--------
+bool canPartition(vector<int> &arr, int n)
+{
+	int sum = 0;
+	for(auto x: arr) sum+=x;
+	if(sum%2) return false;
+	else{
+		int target = sum/2;
+		vector<vector<int>> dp(n, vector<int>(target+1, 0));
+		for(int ind=0;ind<n;ind++){
+			dp[ind][0] = true;
+		}
+        if (arr[0] <= target) dp[0][arr[0]] = true;
 
+		for(int ind=1;ind<n;ind++){
+			for(int t=1;t<=target;t++){
+				bool not_taken = dp[ind-1][t];
+				bool taken = false;
+				if(arr[ind]<=t){
+					taken = dp[ind-1][t-arr[ind]];
+				}
+				dp[ind][t] = taken || not_taken;
+			}
+		}
+		return dp[n-1][target];
+	}
+}
+
+
+
+//--------
 //Bottom Up(Space optimized)
+//--------
+bool canPartition(vector<int> &arr, int n)
+{
+	int sum = 0;
+	for(auto x: arr) sum+=x;
+	if(sum%2) return false;
+	else{
+		int target = sum/2;
+		vector<int> prev(target+1, 0), cur(target+1,0);
+		prev[0] = true;
+		cur[0] = true;
+        if (arr[0] <= target) prev[arr[0]] = true;
 
+		for(int ind=1;ind<n;ind++){
+			for(int t=1;t<=target;t++){
+				bool not_taken = prev[t];
+				bool taken = false;
+				if(arr[ind]<=t){
+					taken = prev[t-arr[ind]];
+				}
+				cur[t] = taken || not_taken;
+			}
+			prev = cur;
+		}
+		return cur[target];
+	}
+}
 
 
 //#######################################################################
@@ -1044,13 +1170,107 @@ bool subsetSumToK(int n, int k, vector<int> &arr) {
 //Tutorial: https://takeuforward.org/data-structure/partition-set-into-2-subsets-with-min-absolute-sum-diff-dp-16/
 //Problem:  https://www.naukri.com/code360/problems/partition-a-set-into-two-subsets-such-that-the-difference-of-subset-sums-is-minimum_842494
 
+Steps:
+1. Generate the whole dp from dp[0][0] to dp[n-1][target] (target sum concept)
+2. The answer lies in dp[n-1][0] to dp[n-1][target], get the minimum from there, Going till half is enough
+
+//--------
 //Top Down
+//--------
+
+bool f(int i, int target, vector<int> &arr, vector<vector<int>> &dp ){
+    if(target==0)return true;
+    if(i==0)return (arr[0]==target);
+    if(dp[i][target]!=-1)return dp[i][target];
+    bool not_taken = f(i-1,target,arr,dp);
+    bool taken = false;
+    if(arr[i]<=target){
+        taken = f(i-1, target-arr[i],arr,dp);
+    }
+    return dp[i][target] = taken || not_taken;
+}
+
+int minSubsetSumDifference(vector<int>& arr, int n)
+{
+	int sum = 0;
+	for(auto x: arr) sum+=x;
+	int k = sum;
+
+	vector<vector<int>>dp(n,vector<int>(k+1, -1));
+	//solve the answer for all 0 to target values
+	for(int i=0;i<=k;i++) f(n-1,i, arr, dp);
+	
+	int ans = 1e9;
+	for(int i=0;i<=k;i++){//Getting WA for k/2 on top down approach.
+		if(dp[n-1][i]==1)ans = min(ans,abs(i - (sum-i)) );
+	}
+	return ans;
+
+}
 
 
+//--------
 //Bottom Up
+//--------
+int minSubsetSumDifference(vector<int>& arr, int n)
+{
+	int sum = 0;
+	for(auto x: arr) sum+=x;
+	int k = sum;
+	vector<vector<int>>dp(n,vector<int>(k+1, 0));
+	for(int i=0;i<n;i++){
+        dp[i][0] = true;
+    }
 
+	if (arr[0] <= k)dp[0][arr[0]] = true;
+    for(int i=1;i<n;i++){
+        for(int target=1;target<=k;target++){
+            bool not_taken = dp[i-1][target];
+            bool taken = false;
+            if(target>=arr[i]) taken = dp[i-1][target-arr[i]];
+            dp[i][target] = taken || not_taken;
+        }
+    }
+
+	int ans = 1e9;
+	for(int i=0;i<=k/2;i++){
+		if(dp[n-1][i]==1)ans = min(ans,abs(i - (sum-i)) );
+	}
+	return ans;
+}
+
+//--------
 //Bottom Up(Space optimized)
+//--------
+int minSubsetSumDifference(vector<int>& arr, int n)
+{
+	int sum = 0;
+	for(auto x: arr) sum+=x;
+	int target = sum;
+	vector<int> prev(target+1, 0), cur(target+1,0);
+	prev[0] = true;
+	cur[0] = true;
+	if (arr[0] <= target) prev[arr[0]] = true;
 
+	for(int ind=1;ind<n;ind++){
+		for(int t=1;t<=target;t++){
+			bool not_taken = prev[t];
+			bool taken = false;
+			if(arr[ind]<=t){
+				taken = prev[t-arr[ind]];
+			}
+			cur[t] = taken || not_taken;
+		}
+		prev = cur;
+	}
+
+    //this is the main part of this problem
+	int ans = 1e9;
+	for(int i=0;i<=target/2;i++){
+		if(prev[i]==1)ans = min(ans,abs(i - (sum-i)) );
+	}
+	return ans;
+}
 
 
 //#######################################################################
@@ -1059,11 +1279,78 @@ bool subsetSumToK(int n, int k, vector<int> &arr) {
 //Tutorial: https://takeuforward.org/data-structure/count-subsets-with-sum-k-dp-17/
 //Problem:  https://www.naukri.com/code360/problems/number-of-subsets_3952532
 
-//Top Down
+FOR ALL THE COUNT PROBLEMS:
+if the condition is satisfied return 1, else return 0
+- To explore all the paths, best way is to do recursion, that is why we are using recursion
+------
+for handling the cases in which the array contains 0 --> 
+use only one base condition -->
+if(ind < 0) return tar == 0;
 
+or you can use--> 
+if(ind == 0){
+         if(num[0] == 0 && tar == 0) return 2;
+         if(num[0] == tar || tar == 0) return 1;
+         return 0;
+   }
+-----
+
+//--------
+//Top Down(HANDLE 0 case, getting wa)
+//--------
+
+const int md = 1e9+7;
+int f(int i, int target,vector<int>& arr,  vector<vector<int>>&dp){
+	if(i==0){
+		if(target==0 && arr[i]==0) return 2;
+		else if(target==arr[i] || target==0) return 1;
+		else return 0;
+	}
+	if(dp[i][target]!=-1)return dp[i][target];
+	int not_taken = f(i-1, target, arr, dp);
+	int taken = 0;
+	if(arr[i]<=target){
+		taken = f(i-1, target-arr[i], arr, dp);
+	}
+	return dp[i][target] = (taken + not_taken)%md;
+}
+int findWays(vector<int>& arr, int k)
+{	
+	int n = arr.size();
+	vector<vector<int>>dp(n, vector<int>(k+1, -1));
+	return f(n-1, k, arr, dp);
+}
+
+
+//---------
 //Bottom Up
+//---------
 
+const int md = 1e9+7;
+int findWays(vector<int>& arr, int k)
+{	
+	int n = arr.size();
+	vector<vector<int>>dp(n, vector<int>(k+1, 0));
+	if(arr[0] == 0) dp[0][0] = 2;  // 2 cases -pick and not pick
+    else dp[0][0] = 1;  // 1 case - not pick
+    if(arr[0]!=0 && arr[0]<=k) dp[0][arr[0]] = 1;  // 1 case -pick
+
+	for(int i=1;i<n;i++){
+		for(int t=0;t<=k;t++){
+			int not_taken = dp[i-1][t];
+			int taken = 0;
+			if(arr[i]<=t){
+				taken = dp[i-1][t-arr[i]];
+			}
+			dp[i][t] = (taken + not_taken)%md;
+		}
+	}
+	return dp[n-1][k];
+}
+
+//---------
 //Bottom Up(Space optimized)
+//---------
 
 
 //#######################################################################
@@ -1072,38 +1359,306 @@ bool subsetSumToK(int n, int k, vector<int> &arr) {
 //Tutorial: https://takeuforward.org/data-structure/count-partitions-with-given-difference-dp-18/
 //Problem:  https://www.naukri.com/code360/problems/partitions-with-given-difference_3751628
 
+Steps:
+(this is just dp 17 with modified target)
+1. count the subsets where sum is equal to , s2 = (tot - d)/2;
+2. 2 ta ghor fillup kora first row er(what if there is 0 in arr[0])
+
+//---------
 //Top Down
+//---------
 
+const int md = 1e9+7;
+int f(int i, int target,vector<int> &arr, vector<vector<int>>&dp ){
+    if(i==0){
+		if(target==0 && arr[i]==0) return 2;
+		else if(target==arr[i] || target==0) return 1;
+		else return 0;
+	}
+	if(dp[i][target]!=-1)return dp[i][target];
+	int not_taken = f(i-1, target, arr, dp);
+	int taken = 0;
+	if(arr[i]<=target){
+		taken = f(i-1, target-arr[i], arr, dp);
+	}
+	return dp[i][target] = (taken + not_taken)%md;
+}
+
+int countPartitions(int n, int d, vector<int> &arr) {
+    int sum = 0;
+    for(auto x: arr)sum+=x;
+    int target = (sum-d);
+    //target%2 -> s2/target er value decimal hoite parbe na
+    if(target<0 || target%2) return 0;
+    target/=2;
+    vector<vector<int>>dp(n, vector<int>(target+1,-1));
+    return f(n-1,target, arr,dp);
+}
+
+//---------
 //Bottom Up
+//---------
+const int md = 1e9+7;
+int countPartitions(int n, int d, vector<int> &arr) {
+    int sum = 0;
+    for(auto x: arr)sum+=x;
+    int target = (sum-d);
+    if(target<0 || target%2) return 0;
+    target/=2;
+    vector<vector<int>>dp(n, vector<int>(target+1,0));
+    
+    //2 ta ghor fillup kora first row er
+    if(arr[0]==0) dp[0][0] = 2;
+    else dp[0][0] = 1;
+    if(arr[0]!=0 && arr[0]<=target) dp[0][arr[0]] = 1;
 
+    for(int i=1;i<n;i++){
+        for(int t=0;t<=target;t++){
+            int not_taken = dp[i-1][t];
+            int taken = 0;
+            if(arr[i]<=t){
+                taken = dp[i-1][t-arr[i]];
+            }
+            dp[i][t] = (taken + not_taken)%md;
+        }
+    }
+
+    return dp[n-1][target];
+}
+//---------
 //Bottom Up(Space optimized)
+//---------
+const int md = 1e9+7;
+int countPartitions(int n, int d, vector<int> &arr) {
+    int sum = 0;
+    for(auto x: arr)sum+=x;
+    int target = (sum-d);
+    if(target<0 || target%2) return 0;
+    target/=2;
+    vector<int>prev(target+1),cur(target+1);
+
+    if(arr[0]==0) prev[0] = 2;
+    else prev[0] = 1;
+    if(arr[0]!=0 && arr[0]<=target) prev[arr[0]] = 1;
 
 
+    for(int i=1;i<n;i++){
+        for(int t=0;t<=target;t++){
+            int not_taken = prev[t];
+            int taken = 0;
+            if(arr[i]<=t){
+                taken = prev[t-arr[i]];
+            }
+            cur[t] = (taken + not_taken)%md;
+        }
+        prev = cur;
+    }
+
+    return prev[target];
+}
 
 //#######################################################################
 //#######-------DP 19. 0/1 Knapsack | Recursion to Single Array Space Optimised Approach--------########
 //Question Type: DP on Subsequences, 
 //Tutorial: https://takeuforward.org/data-structure/0-1-knapsack-dp-19/
 //Problem:  https://www.naukri.com/code360/problems/0-1-knapsack_920542
+- When there is no uniformity, you cannot apply greedy
+- Think base case as a single element
 
+//---------
 //Top Down
+//---------
+#include <bits/stdc++.h> 
+int f(int i, int w, vector<int> wg, vector<int> vl, vector<vector<int>>&dp){
+	if(i==0){
+		if(wg[i]<=w) return vl[i];
+		else return 0;
+	}
+	if(dp[i][w]!=-1) return dp[i][w];
+	int not_taken = 0 + f(i-1, w, wg, vl, dp);
+	int taken = 0;
+	if(wg[i]<=w){
+		taken = vl[i]+ f(i-1, w-wg[i], wg, vl, dp);
+	}
+	return dp[i][w] = max(taken , not_taken);
+}
+int knapsack(vector<int> weight, vector<int> value, int n, int maxWeight) 
+{
+	vector<vector<int>>dp(n, vector<int>(maxWeight+1,-1));
+	return f(n-1, maxWeight, weight, value, dp);
+}
 
+//---------
 //Bottom Up
+//---------
 
+#include <bits/stdc++.h> 
+int knapsack(vector<int> weight, vector<int> value, int n, int maxWeight) 
+{
+	vector<vector<int>>dp(n, vector<int>(maxWeight+1,0));
+	for(int i=0;i<n;i++) dp[i][0] = 0;
+	for(int i=1;i<=maxWeight;i++){
+		if(i>=weight[0]) dp[0][i] = value[0];
+		else dp[0][i] = 0;
+	}
+
+	for(int i=1;i<n;i++){
+		for(int w=1;w<=maxWeight;w++){
+			int not_taken = 0 + dp[i-1][w];
+			int taken = 0;
+			if(weight[i]<=w){
+				taken = value[i]+ dp[i-1][w-weight[i]];
+			}
+			dp[i][w] = max(taken , not_taken);
+		}
+	}
+	return dp[n-1][maxWeight];
+}
+
+
+//---------
 //Bottom Up(Space optimized)
+//---------
+#include <bits/stdc++.h> 
+int knapsack(vector<int> weight, vector<int> value, int n, int maxWeight) 
+{
+	vector<int>prev(maxWeight+1,0), cur(maxWeight+1,0);
+	for(int i=weight[0];i<=maxWeight;i++){
+		prev[i] = value[0];
+	}
 
+	for(int i=1;i<n;i++){
+		for(int w=1;w<=maxWeight;w++){
+			int not_taken = 0 + prev[w];
+			int taken = 0;
+			if(weight[i]<=w){
+				taken = value[i]+ prev[w-weight[i]];
+			}
+			cur[w] = max(taken , not_taken);
+		}
+		prev = cur;
+	}
+	return prev[maxWeight];
+}
+
+//---------
+//Bottom Up(Space optimized, without cur array, 1 array optimization)
+//---------
+
+#include <bits/stdc++.h> 
+int knapsack(vector<int> weight, vector<int> value, int n, int maxWeight) 
+{
+	vector<int>prev(maxWeight+1,0);
+	for(int i=weight[0];i<=maxWeight;i++){
+		prev[i] = value[0];
+	}
+
+	for(int i=1;i<n;i++){
+		for(int w=maxWeight;w>=1;w--){
+			int not_taken = 0 + prev[w];
+			int taken = 0;
+			if(weight[i]<=w){
+				taken = value[i]+ prev[w-weight[i]];
+			}
+			prev[w] = max(taken , not_taken);
+		}
+	}
+	return prev[maxWeight];
+}
 
 //#######################################################################
 //#######-------DP 20. Minimum Coins | DP on Subsequences | Infinite Supplies Pattern--------########
 //Question Type: DP on Subsequences, 
 //Tutorial: https://takeuforward.org/data-structure/minimum-coins-dp-20/
 //Problem:  https://www.naukri.com/code360/problems/minimum-elements_3843091
+- when find minimum apply INT_MAX to not consider it
+- when find maximum apply INT_MIN to not consider it
+- Infinite supply, multiple use -> take is always will be in that index
+- Time complexity in recursion - >>O(2^n)
 
+//---------
 //Top Down
+//---------
 
+#include <bits/stdc++.h> 
+int f(int i, int target, vector<int> &num, vector<vector<int>>&dp ){
+    if(i==0){
+        if(target%num[i]==0) return target/num[i];
+        else return 1e9;
+    }
+    if(dp[i][target]!=-1) return dp[i][target];
+    int not_taken = f(i-1, target, num, dp);
+    int taken = 1e9;//confuse
+    if(num[i]<=target){
+        taken = 1 + f(i, target-num[i], num, dp);//confuse
+    }
+    return dp[i][target] = min(not_taken , taken);
+}
+int minimumElements(vector<int> &num, int x)
+{  
+    int n = num.size();
+    vector<vector<int>>dp(n, vector<int>(x+1,-1));
+    int ans = f(n-1, x, num, dp);
+    if(ans>=1e9) return -1;
+    return ans;
+}
+
+//---------
 //Bottom Up
+//---------
+#include <bits/stdc++.h> 
+int minimumElements(vector<int> &num, int x)
+{  
+    int n = num.size();
+    vector<vector<int>>dp(n, vector<int>(x+1,0));
 
+    for(int i=1;i<=x;i++){
+        if(i%num[0]==0)dp[0][i] = i/num[0];
+        else dp[0][i] = 1e9;
+    }
+    for(int i=1;i<n;i++){
+        for(int t=1;t<=x;t++){
+            int not_taken = dp[i-1][t];//uporer ta
+            int taken = 1e9;//current row ta
+            if(num[i]<=t){
+                taken = 1 + dp[i][t-num[i]];
+            }
+            dp[i][t] = min(taken, not_taken);
+        }
+    }
+    int ans = dp[n-1][x];
+    if(ans>=1e9) return -1;
+    return ans;
+}
+
+//---------
 //Bottom Up(Space optimized)
+//---------
+#include <bits/stdc++.h> 
+int minimumElements(vector<int> &num, int x)
+{  
+    int n = num.size();
+    vector<int>prev(x+1,0),cur(x+1,0);
+
+    for(int i=1;i<=x;i++){
+        if(i%num[0]==0)prev[i] = i/num[0];
+        else prev[i] = 1e9;
+    }
+    for(int i=1;i<n;i++){
+        for(int t=1;t<=x;t++){
+            int not_taken = prev[t];
+            int taken = 1e9;
+            if(num[i]<=t){
+                taken = 1 + cur[t-num[i]];
+            }
+            cur[t] = min(taken, not_taken);
+        }
+        prev = cur;
+    }
+    int ans = prev[x];
+    if(ans>=1e9) return -1;
+    return ans;
+}
 
 //#######################################################################
 //#######-------DP 21. Target Sum | DP on Subsequences--------########
@@ -1111,12 +1666,50 @@ bool subsetSumToK(int n, int k, vector<int> &arr) {
 //Tutorial: https://takeuforward.org/data-structure/target-sum-dp-21/
 //Problem:  https://www.naukri.com/code360/problems/target-sum_4127362
 
+Same as DP 18. Count Partitions With Given Difference
+
+//---------
 //Top Down
+//---------
+#include <bits/stdc++.h> 
 
+int f(int i, int target,vector<int> &arr, vector<vector<int>>&dp ){
+    if(i==0){
+		if(target==0 && arr[i]==0) return 2;
+		else if(target==arr[i] || target==0) return 1;
+		else return 0;
+	}
+	if(dp[i][target]!=-1)return dp[i][target];
+	int not_taken = f(i-1, target, arr, dp);
+	int taken = 0;
+	if(arr[i]<=target){
+		taken = f(i-1, target-arr[i], arr, dp);
+	}
+	return dp[i][target] = (taken + not_taken);
+}
+
+int countPartitions(int n, int d, vector<int> &arr) {
+    int sum = 0;
+    for(auto x: arr)sum+=x;
+    int target = (sum-d);
+    if(target<0 || target%2) return 0;
+    target/=2;
+    vector<vector<int>>dp(n, vector<int>(target+1,-1));
+    return f(n-1,target, arr,dp);
+}
+
+int targetSum(int n, int target, vector<int>& arr) {
+    return countPartitions(n, target, arr);
+}
+
+//---------
 //Bottom Up
-
+//---------
+Same as DP 18.
+//---------
 //Bottom Up(Space optimized)
-
+//---------
+Same as DP 18.
 
 //#######################################################################
 //#######-------DP 22. Coin Change 2 | Infinite Supply Problems--------########
@@ -1124,16 +1717,269 @@ bool subsetSumToK(int n, int k, vector<int> &arr) {
 //Tutorial: https://takeuforward.org/data-structure/coin-change-2-dp-22/
 //Problem:  https://www.naukri.com/code360/problems/ways-to-make-coin-change_630471
 
+Recursion time complexity for this: more than 2^n
+
+//---------
 //Top Down
-
+//---------
+#include <bits/stdc++.h> 
+long f(int i, int target, int *arr, vector<vector<long>>&dp){
+    if(i==0){
+        if(target%arr[0]==0) return 1;//last e jodi 1 or emn value thake
+        else return 0;
+    }
+    if(dp[i][target]!=-1) return dp[i][target];
+    long not_taken = f(i-1,target,arr,dp);
+    long taken = 0;
+    if(arr[i]<=target){
+        taken = f(i, target-arr[i],arr, dp);
+    }
+    return dp[i][target] = taken + not_taken;
+}
+long countWaysToMakeChange(int *denominations, int n, int value)
+{
+    vector<vector<long>>dp(n, vector<long>(value+1, -1));
+    return f(n-1, value,denominations, dp);
+}
+//---------
 //Bottom Up
+//---------
+#include <bits/stdc++.h> 
+long countWaysToMakeChange(int *denominations, int n, int value)
+{
+    vector<vector<long>>dp(n, vector<long>(value+1, 0));
+    for(int i=1;i<=value;i++) if(i%denominations[0]==0)dp[0][i] = 1;
+    //if cannot select any that is one way
+    for(int i=0;i<n;i++)dp[i][0] = 1;
+    for(int i=1;i<n;i++){
+        for(int t=1;t<=value;t++){
+            long not_taken = dp[i-1][t];
+            long taken = 0;
+            if(denominations[i]<=t){
+                taken = dp[i][t-denominations[i]];
+            }
+            dp[i][t] = taken + not_taken;
+        }
+    }
+    return dp[n-1][value];
+}
 
+//---------
 //Bottom Up(Space optimized)
+//---------
+#include <bits/stdc++.h> 
+long countWaysToMakeChange(int *denominations, int n, int value)
+{
+    vector<long>prev(value+1, 0), cur(value+1,0);
+    for(int i=1;i<=value;i++) if(i%denominations[0]==0)prev[i] = 1;
+    //if cannot select any that is one way
+    prev[0] = cur[0] = 1;
+    for(int i=1;i<n;i++){
+        for(int t=1;t<=value;t++){
+            long not_taken = prev[t];
+            long taken = 0;
+            if(denominations[i]<=t){
+                taken = cur[t-denominations[i]];
+            }
+            cur[t] = taken + not_taken;
+        }
+        prev = cur;
+    }
+    return prev[value];
+}
+
+
+//---------
+//Bottom Up(Space optimized) - 1d array
+//---------
+#include <bits/stdc++.h> 
+long countWaysToMakeChange(int *denominations, int n, int value)
+{
+    vector<long>prev(value+1, 0);
+    for(int i=1;i<=value;i++) if(i%denominations[0]==0)prev[i] = 1;
+    //if cannot select any that is one way
+    prev[0] = 1;
+    for(int i=1;i<n;i++){
+        for(int t=1;t<=value;t++){
+            long not_taken = prev[t];
+            long taken = 0;
+            if(denominations[i]<=t){
+                taken = prev[t-denominations[i]];
+            }
+            prev[t] = taken + not_taken;
+        }
+    }
+    return prev[value];
+}
 
 
 
+//#######################################################################
+//#######-------DP 23. Unbounded Knapsack | 1-D Array Space Optimised Approach--------########
+//Question Type: DP on Subsequences, 
+//Tutorial: https://takeuforward.org/data-structure/unbounded-knapsack-dp-23/
+//Problem:  https://www.naukri.com/code360/problems/unbounded-knapsack_1215029
 
-******2 more videos
+Unbounded - multiple time taking allowed(infinite supply)
+bounded - multiple time taking not allowed
+- when there is infinite supply it will always be in that index
+
+//---------
+//Top Down
+//---------
+
+int f(int i, int w, vector<int> &profit, vector<int> &weight,vector<vector<int>>&dp){
+    if(i==0){
+        return (w/weight[i])*profit[i];
+    }
+    if(dp[i][w]!=-1) return dp[i][w];
+    int not_taken = f(i-1, w, profit, weight,dp);
+    int taken = 0;
+    if(weight[i]<=w){
+        taken = profit[i] + f(i, w-weight[i], profit, weight,dp);
+    }
+    return dp[i][w] = max(not_taken, taken);
+}
+
+int unboundedKnapsack(int n, int w, vector<int> &profit, vector<int> &weight){
+    vector<vector<int>>dp(n, vector<int>(w+1,-1));
+    return f(n-1, w, profit, weight,dp);
+}
+
+//---------
+//Bottom Up
+//---------
+int unboundedKnapsack(int n, int w, vector<int> &profit, vector<int> &weight){
+    vector<vector<int>>dp(n, vector<int>(w+1,0));
+    for(int i=0;i<=w;i++) dp[0][i] = (i/weight[0])*profit[0];
+    for(int i=1;i<n;i++){
+        for(int wg=1;wg<=w;wg++){
+            int not_taken = dp[i-1][wg];
+            int taken = 0;
+            if(weight[i]<=wg){
+                taken = profit[i] + dp[i][wg-weight[i]];
+            }
+            dp[i][wg] = max(not_taken, taken);
+        }
+    }
+    return dp[n-1][w];
+}
+//---------
+//Bottom Up(Space optimized)
+//---------
+int unboundedKnapsack(int n, int w, vector<int> &profit, vector<int> &weight){
+    vector<int>prev(w+1,0), cur(w+1,0);
+    for(int i=0;i<=w;i++) prev[i] = (i/weight[0])*profit[0];
+    for(int i=1;i<n;i++){
+        for(int wg=1;wg<=w;wg++){
+            int not_taken = prev[wg];
+            int taken = 0;
+            if(weight[i]<=wg){
+                taken = profit[i] + cur[wg-weight[i]];
+            }
+            cur[wg] = max(not_taken, taken);
+        }
+        prev = cur;
+    }
+    return prev[w];
+}
+
+//---------
+//Bottom Up(Space optimized) - 1d array
+- Because we only need current top element, and current-thatelement value
+//---------
+int unboundedKnapsack(int n, int w, vector<int> &profit, vector<int> &weight){
+    vector<int>prev(w+1,0);
+    for(int i=0;i<=w;i++) prev[i] = (i/weight[0])*profit[0];
+    for(int i=1;i<n;i++){
+        for(int wg=1;wg<=w;wg++){
+            int not_taken = prev[wg];
+            int taken = 0;
+            if(weight[i]<=wg){
+                taken = profit[i] + prev[wg-weight[i]];
+            }
+            prev[wg] = max(not_taken, taken);
+        }
+    }
+    return prev[w];
+}
+
+//#######################################################################
+//#######-------DP 24. Rod Cutting Problem | 1D Array Space Optimised Approach--------########
+//Question Type: DP on Subsequences, 
+//Tutorial: https://takeuforward.org/data-structure/rod-cutting-problem-dp-24/
+//Problem:  https://www.naukri.com/code360/problems/rod-cutting-problem_800284
+
+//---------
+//Top Down
+//---------
+int f(int i, int target, vector<int> &price,vector<vector<int>>&dp){
+	if(i==0){
+		return target*price[0];
+	}
+	if(dp[i][target]!=-1) return dp[i][target];
+	int not_taken = f(i-1,target, price, dp);
+	int taken = 0;
+	int rd = i+1;
+	if(rd<=target){
+		taken = price[i] + f(i,target-rd, price, dp);
+	}
+	return dp[i][target] = max(taken, not_taken);
+}
+int cutRod(vector<int> &price, int n)
+{	
+	vector<vector<int>>dp(n,vector<int>(n+1,-1));
+	return f(n-1, n, price,dp);
+}
+
+//---------
+//Bottom Up
+//---------
+int cutRod(vector<int> &price, int n)
+{	
+	vector<vector<int>>dp(n,vector<int>(n+1,0));
+	for(int i=0;i<=n;i++){
+		dp[0][i] = i*price[0];
+	}
+	for(int i=1;i<n;i++){
+		for(int t=1;t<=n;t++){
+			int not_taken = dp[i-1][t];
+			int taken = 0;
+			int rd = i+1;
+			if(rd<=t){
+				taken = price[i] + dp[i][t-rd];
+			}
+			dp[i][t] = max(taken, not_taken);
+		}
+	}
+	return dp[n-1][n];
+}
+//---------
+//Bottom Up(Space optimized) - 1d array
+//---------
+
+- We donot need 2 array in unbounded knapsack type problems, we can space optimize with 1 array only
+
+int cutRod(vector<int> &price, int n)
+{	
+	vector<int>prev(n+1,0);
+	for(int i=0;i<=n;i++){
+		prev[i] = i*price[0];
+	}
+	for(int i=1;i<n;i++){
+		for(int t=1;t<=n;t++){
+			int not_taken = prev[t];
+			int taken = 0;
+			int rd = i+1;
+			if(rd<=t){
+				taken = price[i] + prev[t-rd];
+			}
+			prev[t] = max(taken, not_taken);
+		}
+	}
+	return prev[n];
+}
+
 
 //#######################################################################
 //#######################################################################
