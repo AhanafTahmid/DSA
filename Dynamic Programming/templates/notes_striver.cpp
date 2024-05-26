@@ -21,7 +21,7 @@ Steps to Memoise(DP):
 - Both 2 rowr kaj at the same time thakle one 1d array te convert korte pari na
 - Make the dp of changing parameters
 - write changing parameter in opposite fashion in tabulation(when converting recursive to tabulation)
-
+- FOR ALL THE COUNT PROBLEMS: if the condition is satisfied return 1, else return 0
 
 
 Space optimization:
@@ -29,10 +29,6 @@ converting:
 1d DP -> two variables
 2d DP -> 1d DP 
 3d DP -> 2d DP 
-
-
-FOR ALL THE COUNT PROBLEMS:
-if the condition is satisfied return 1, else return 0
 
 
 1. In grid take x,y as dp[x][y]
@@ -126,6 +122,41 @@ int fib() {
 //#######################################################################
 //#######################################################################
 //#######################################################################
+
+1D DP Code: 
+//Top Down
+#include <bits/stdc++.h> 
+int rec(int i, vector<int>&heights, vector<int>&dp){
+    if(i==0) return 0;
+    //n-1 to 1
+    if(dp[i]!=-1) return dp[i];
+    int f1 = rec(i-1, heights,dp) + abs(heights[i]-heights[i-1]);
+    int f2 = INT_MAX;
+    if(i>1) f2 = rec(i-2, heights,dp) + abs(heights[i]-heights[i-2]);
+
+    return dp[i] = min(f1,f2);
+}
+int frogJump(int n, vector<int> &heights)
+{   
+    vector<int> dp(n+1,-1);
+    return rec(n-1, heights,dp);
+}
+//Bottom Up
+#include <bits/stdc++.h> 
+int frogJump(int n, vector<int> &heights)
+{
+    vector<int> dp(1000000,-1);
+    dp[0] = 0;
+    for(int i=1;i<heights.size();i++){
+        int jump1 = dp[i-1] + abs(heights[i-1]-heights[i]);
+        int jump2 = INT_MAX;
+        if(i>1) jump2 = dp[i-2] + abs(heights[i]-heights[i-2]);//dp[i-2] will not always be valid, so i>1 condition
+        dp[i] = min(jump1,jump2);
+    }
+    return dp[n-1];
+}
+
+
 
 //#######################################################################
 //#######-------DP 2. Climbing Stairs--------########
@@ -411,6 +442,53 @@ long long int houseRobber(vector<int>& valueInHouse)
 //#######################################################################
 //#######################################################################
 //#######################################################################
+
+DP on Grids(2d,3d) Code: 
+//Top Down
+int rec(int day, int last, vector<vector<int>> &points, vector<vector<int>> &dp){
+    if(dp[day][last]!=-1)return dp[day][last];
+    if(day==0){
+        int mx = 0;
+        for(int j=0;j<=2;j++){
+            if(j!=last){
+                mx = max(mx, points[0][j]);
+            }
+        }
+        return dp[0][last] = mx;
+    }
+    int mx = 0;
+    for(int j=0;j<=2;j++){
+        if(j!=last){
+            int activity = points[day][j] + rec(day-1, j, points, dp);
+            mx = max(mx, activity);
+        }
+    }
+    return dp[day][last] = mx;
+}
+//Bottom Up 
+int ninjaTraining(int n, vector<vector<int>> &points)
+{
+    vector< vector<int> > dp(n, vector<int>(4,-1));
+    //for every value, removing each position see which one is maximum, compute the first
+    dp[0][0] = max(points[0][1],points[0][2]);
+    dp[0][1] = max(points[0][0],points[0][2]);
+    dp[0][2] = max(points[0][0],points[0][1]);
+    dp[0][3] = max(max(points[0][1],points[0][1]),points[0][2]);
+
+    for(int day = 1;day<n;day++){
+        for(int last=0;last<4;last++){
+            int mx = 0;
+            for(int t=0;t<3;t++){
+                if(last!=t){
+                    mx = max(mx, points[day][t]+dp[day-1][t]);
+                    dp[day][last] = mx;
+                }
+            }
+        }
+    }
+    return dp[n-1][3];
+}
+
 
 //#######################################################################
 /////////REVISITTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
@@ -1032,7 +1110,46 @@ int f(int i, int target, vector<int>&arr, vector<vector<int>>&dp){
         taken = 
     }
     return 
+}
+DP on Subsequences/Subsets Code: 
+//Top Down 
+#include <bits/stdc++.h> 
+bool f(int i, int target, vector<int> &arr, vector<vector<int>> &dp ){
+    if(target==0)return true;
+    if(i==0)return (arr[0]==target);//same hoe jabe or 0 hoe jabe target
+    if(dp[i][target]!=-1)return dp[i][target];
+    bool not_taken = f(i-1,target,arr,dp);
+    bool taken = false;
+    if(arr[i]<=target){
+        taken = f(i-1, target-arr[i],arr,dp);
+    }
+    return dp[i][target] = taken || not_taken;
+}
+bool subsetSumToK(int n, int k, vector<int> &arr) {
+    vector<vector<int>>dp(n,vector<int>(k+1, -1));
+    return f(n-1,k, arr, dp);
+}
+//Bottom Up
+#include <bits/stdc++.h> 
+bool subsetSumToK(int n, int k, vector<int> &arr) {
+    vector<vector<int>>dp(n,vector<int>(k+1, 0));
+    for(int i=0;i<n;i++){
+        dp[i][0] = true;
+    }
 
+    //Base case: If the first element of 'arr' is less than or equal to 'k', set prev[arr[0]] to true
+    //if target is lesser than first value
+    //example out of bound: if n=1,k=5,arr[0]=10, it will be out of bounds 
+    if (arr[0] <= k)dp[0][arr[0]] = true;
+    for(int i=1;i<n;i++){
+        for(int target=1;target<=k;target++){
+            bool not_taken = dp[i-1][target];
+            bool taken = false;
+            if(target>=arr[i]) taken = dp[i-1][target-arr[i]];
+            dp[i][target] = taken || not_taken;
+        }
+    }
+    return dp[n-1][k];
 }
 
 //#######################################################################
@@ -2046,6 +2163,44 @@ DP on strings concepts: Dp 25. Longest Common Subsequence, DP 32. Distinct Subse
 
 - There is not dp[-1] index, not possible in c++
 - For string related dp problem, when doing tabulation think about empty sequence also
+
+DP ON Strings Code:
+
+//Top Down
+#include<bits/stdc++.h>
+int f(int i, int j, string s, string t, vector<vector<int>>&dp){
+    if(i<0 || j<0) return 0;
+    if(dp[i][j]!=-1)return dp[i][j];
+    if(s[i]==t[j]){
+        return dp[i][j] = 1 + f(i-1,j-1,s,t,dp);
+    }
+    return dp[i][j] = max(f(i-1,j,s,t,dp), f(i,j-1,s,t,dp));
+}
+
+int lcs(string s, string t)
+{      
+    int n = s.size(), m = t.size();
+    vector<vector<int>>dp(n, vector<int>(m,-1));
+	return f(n-1, m-1, s, t, dp);
+}
+
+//Bottom Up
+#include<bits/stdc++.h>
+int lcs(string s, string t)
+{      
+    int n = s.size(), m = t.size();
+    vector<vector<int>>dp(n+1, vector<int>(m+1,0));
+
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=m;j++){
+            if(s[i-1]==t[j-1]){
+                dp[i][j] = 1 + dp[i-1][j-1];
+            }
+            else dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+        }
+    }
+	return dp[n][m];
+}
 
 //#######################################################################
 //#######-------Dp 25. Longest Common Subsequence --------########
@@ -3156,6 +3311,27 @@ DP 37. Buy and Sell Stocks III                  - 2 transaction
 DP 38. Buy and Stock Sell IV                    - k transaction
 DP 39. Buy and Sell Stocks With Cooldown        - cannot buy and sell consecutive day, (after selling there is atleast 1 day gap)
 DP 40. Buy and Sell Stocks With Transaction Fee - with transaction fee
+
+DP ON Stocks Code:
+#include<bits/stdc++.h>
+
+long getMaximumProfit(long *values, int n)
+{   
+    vector<vector<long>>dp(n+1, vector<long>(2,0));
+
+    dp[n][1]=dp[n][0] = 0;
+    for(int i=n-1;i>=0;i--){
+        for(buy : {0,1}){
+            long prof = 0;
+            if(buy){
+                prof = max(-values[i] + dp[i+1][0], dp[i+1][1]);//kine felle values kombe, barbe, then take or not take
+            }
+            else prof = max(values[i] + dp[i+1][1], dp[i+1][0]);
+            dp[i][buy] = prof;
+        }
+    }
+    return dp[0][1];
+}
 
 //#######################################################################
 //#######-------DP 35. Best Time to Buy and Sell Stock | DP on Stocks--------########
