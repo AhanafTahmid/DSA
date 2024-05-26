@@ -15,6 +15,13 @@ Steps to Memoise(DP):
 ////
 - we write tabulation method to reduce the stackspace
 - In 2d array, solve the position and previous positions with recursion
+- Memoization code will not give TLE if both the strings are passed by reference in the function... 
+  as no copies will be generated which will limit the memory and Time
+  if no passed by reference it will create a new copy everytime and will take a lot of space
+- Both 2 rowr kaj at the same time thakle one 1d array te convert korte pari na
+- Make the dp of changing parameters
+- write changing parameter in opposite fashion in tabulation(when converting recursive to tabulation)
+
 
 
 Space optimization:
@@ -38,12 +45,32 @@ for(int i=0;i<=k;i++){//Getting WA for k/2 on top down approach.
 		if(dp[n-1][i]==1)ans = min(ans,abs(i - (sum-i)) );
 	}
 2. DP 17. Counts Subsets with Sum K | Dp on Subsequences, handling 0 case in bottom up
-
+3. DP 27. Longest Common Substring . Why memoization code does not work here? https://www.geeksforgeeks.org/longest-common-substring-dp-29/, solve this dp problem in memoization also
+4. DP 33. Edit Distance | Recursive to 1D Array Optimised Solution draw the recursive tree
+5. draw and learn the tabulation of bottom up : DP 37. Buy and Sell Stocks III , gettting WA
+6. DP 47. Number of Longest Increasing Subsequences intuition bujhtesi na??
+7. DP 48. Matrix Chain Multiplication 
 
 ---------------------------------------------------------------------------------------------------------
 Stiver DP Playlist: https://www.youtube.com/playlist?list=PLgUwDviBIf0qUlt5H_kiKYaNSqJ81PMMY
 Tutorials: https://takeuforward.org/dynamic-programming/striver-dp-series-dynamic-programming-problems/
 ---------------------------------------------------------------------------------------------------------
+
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//###################-------Introduction to DP--------###################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+
+
 //#######################################################################
 //#######-------DP 1. Introduction to Dynamic Programming--------########
 //Tutorial: https://takeuforward.org/data-structure/dynamic-programming-introduction/
@@ -85,6 +112,21 @@ int fib() {
     }
     cout<<prev;
 }
+
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#####################-------1D DP--------##############################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+
 //#######################################################################
 //#######-------DP 2. Climbing Stairs--------########
 //Tutorial: https://takeuforward.org/data-structure/dynamic-programming-climbing-stairs/
@@ -1885,7 +1927,7 @@ int unboundedKnapsack(int n, int w, vector<int> &profit, vector<int> &weight){
 }
 
 //---------
-//Bottom Up(Space optimized) - 1d array
+//Bottom Up(Space optimized) - one 1d array
 - Because we only need current top element, and current-thatelement value
 //---------
 int unboundedKnapsack(int n, int w, vector<int> &profit, vector<int> &weight){
@@ -1955,7 +1997,7 @@ int cutRod(vector<int> &price, int n)
 	return dp[n-1][n];
 }
 //---------
-//Bottom Up(Space optimized) - 1d array
+//Bottom Up(Space optimized) - one 1d array
 //---------
 
 - We donot need 2 array in unbounded knapsack type problems, we can space optimize with 1 array only
@@ -1987,7 +2029,7 @@ int cutRod(vector<int> &price, int n)
 //#######################################################################
 //#######################################################################
 //#######################################################################
-//#####################-------DP on Strings--------#########
+//#####################-------DP on Strings--------######################
 //#######################################################################
 //#######################################################################
 //#######################################################################
@@ -1995,15 +2037,2449 @@ int cutRod(vector<int> &price, int n)
 //#######################################################################
 //#######################################################################
 
+Problems on this 
+- Comparision 
+- Replacement 
+- edit
+
+DP on strings concepts: Dp 25. Longest Common Subsequence, DP 32. Distinct Subsequences[Those 2 videos are most important]
+
+- There is not dp[-1] index, not possible in c++
+- For string related dp problem, when doing tabulation think about empty sequence also
 
 //#######################################################################
 //#######-------Dp 25. Longest Common Subsequence --------########
 //Question Type: DP on Strings, 
 //Tutorial: https://takeuforward.org/data-structure/longest-common-subsequence-dp-25/
+//BOTTOM UP: https://youtu.be/NnD96abizww?list=PLrmLmBdmIlpsHaNTPP_jHHDx_os9ItYXr
 //Problem:  https://www.naukri.com/code360/problems/longest-common-subsequence_624879
 
+Sequence: maintains order
+
+//---------
 //Top Down
+//---------
 
+#include<bits/stdc++.h>
+int f(int i, int j, string s, string t, vector<vector<int>>&dp){
+    if(i<0 || j<0) return 0;
+    if(dp[i][j]!=-1)return dp[i][j];
+    if(s[i]==t[j]){
+        return dp[i][j] = 1 + f(i-1,j-1,s,t,dp);
+    }
+    return dp[i][j] = max(f(i-1,j,s,t,dp), f(i,j-1,s,t,dp));
+}
+
+int lcs(string s, string t)
+{      
+    int n = s.size(), m = t.size();
+    vector<vector<int>>dp(n, vector<int>(m,-1));
+	return f(n-1, m-1, s, t, dp);
+}
+
+
+////////Both if else statement in return 
+#include<bits/stdc++.h>
+int f(int i, int j, string s, string t, vector<vector<int>>&dp){
+    if(i<0 || j<0) return 0;
+    if(dp[i][j]!=-1)return dp[i][j];
+    if(s[i]==t[j]){
+        return dp[i][j] = 1 + f(i-1,j-1,s,t,dp);
+    }
+    else return dp[i][j] = max(f(i-1,j,s,t,dp), f(i,j-1,s,t,dp));
+}
+
+int lcs(string s, string t)
+{      
+    int n = s.size(), m = t.size();
+    vector<vector<int>>dp(n, vector<int>(m,-1));
+	return f(n-1, m-1, s, t, dp);
+}
+
+//---------
 //Bottom Up
+//---------
 
+#include<bits/stdc++.h>
+int lcs(string s, string t)
+{      
+    int n = s.size(), m = t.size();
+    vector<vector<int>>dp(n+1, vector<int>(m+1,0));
+
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=m;j++){
+            if(s[i-1]==t[j-1]){
+                dp[i][j] = 1 + dp[i-1][j-1];
+            }
+            else dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+        }
+    }
+	return dp[n][m];
+}
+
+//---------
 //Bottom Up(Space optimized)
+//---------
+#include<bits/stdc++.h>
+int lcs(string s, string t)
+{      
+    int n = s.size(), m = t.size();
+    vector<int>prev(m+1), cur(m+1);
+
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=m;j++){
+            if(s[i-1]==t[j-1]){
+                cur[j] = 1 + prev[j-1];
+            }
+            else cur[j] = max(prev[j], cur[j-1]);
+        }
+        prev = cur;
+    }
+	return prev[m];
+}
+
+
+//#######################################################################
+//#######-------DP 26. Print Longest Common Subsequence | Dp on Strings--------########
+//Question Type: DP on Strings, 
+//Tutorial: https://takeuforward.org/data-structure/print-longest-common-subsequence-dp-26/
+//Problem:  https://www.naukri.com/code360/problems/longest-common-subsequence_624879
+
+- If there are multiple answers, you cannot apply using a dp table, but for this you can
+
+//---------
+//Bottom Up(just prints the sequence)
+//---------
+
+adebc
+dcadb
+->adb 
+
+Time complexity: worst case O(n+m), best case O(n)
+
+//Full Code Printing Longest Common Subsequence 
+#include <bits/stdc++.h>
+using namespace std;
+#define endl '\n'
+#define int long long
+
+void lcs(string s, string t)
+{      
+    int n = s.size(), m = t.size();
+    vector<vector<int>>dp(n+1, vector<int>(m+1,0));
+
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=m;j++){
+            if(s[i-1]==t[j-1]){
+                dp[i][j] = 1 + dp[i-1][j-1];
+            }
+            else dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+        }
+    }
+
+    int index = dp[n][m];
+	vector<char>ans(index, 0);
+
+    int i = n, j = m;
+    while(i>0 && j>0){
+        if(s[i-1]==t[j-1]){
+            ans[index-1] = s[i-1];
+            i--;
+            j--;
+            index--;
+        }
+        else{
+            if(dp[i][j-1]>dp[i-1][j]){
+                j--;
+            }
+            else{
+                i--;
+            }
+        }
+    }
+
+    for(auto x: ans) cout<<x;
+}
+
+int32_t main(){
+    ios::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    int t=1;
+    //cin >> t;
+    while(t--)lcs("adebc","dcadb");
+    return 0;
+}
+
+//#######################################################################
+//#######-------DP 27. Longest Common Substring | DP on Strings--------########
+//Question Type: DP on Strings, 
+//Tutorial: https://takeuforward.org/data-structure/longest-common-substring-dp-27/
+//Tutorial 2: https://www.geeksforgeeks.org/longest-common-substring-dp-29/
+//Problem:  https://www.naukri.com/code360/problems/longest-common-substring_1235207
+
+- Since, this is consecutive you are not dependant on the previous guy
+
+//---------
+//Top Down
+//---------
+
+NOT SURE??????
+
+//---------
+//Bottom Up
+//---------
+int lcs(string &str1, string &str2){
+    int n = str1.size(), m = str2.size();
+    vector<vector<int>>dp(n+1, vector<int>(m+1));
+    int ans = 0;
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=m;j++){
+            if(str1[i-1]==str2[j-1]){
+                dp[i][j] = 1 + dp[i-1][j-1];
+                ans = max(ans, dp[i][j]);
+            }
+        }
+    }
+    return ans;
+}
+//---------
+//Bottom Up(Space optimized)
+//---------
+
+int lcs(string &str1, string &str2){
+    int n = str1.size(), m = str2.size();
+    vector<int>prev(m+1), cur(m+1);
+    int ans = 0;
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=m;j++){
+            if(str1[i-1]==str2[j-1]){
+                cur[j] = 1 + prev[j-1];
+                ans = max(ans, cur[j]);
+            }
+            else cur[j] = 0;
+        }
+        prev = cur;
+    }
+    return ans;
+}
+
+//---------
+//Bottom Up(Space optimized) - 1d array only ones
+//---------
+
+int lcs(string &str1, string &str2){
+    int n = str1.size(), m = str2.size();
+    vector<int>prev(m+1);
+    int ans = 0;
+    for(int i=1;i<=n;i++){
+        for(int j=m;j>0;j--){
+            if(str1[i-1]==str2[j-1]){
+                prev[j] = 1 + prev[j-1];
+                ans = max(ans, prev[j]);
+            }
+            else prev[j] = 0;
+        }
+    }
+    return ans;
+}
+
+//#######################################################################
+//#######-------DP 28. Longest Palindromic Subsequence--------########
+//Question Type: DP on Strings, 
+//Tutorial: https://takeuforward.org/data-structure/longest-palindromic-subsequence-dp-28/
+//Problem:  https://www.naukri.com/code360/problems/longest-palindromic-subsequence_842787
+
+- This is just an extension of longtest common subsequence
+- Just reverse the string and find the longest common subsequence
+
+string s1 = "bbabcbcab";
+string s2 = s1;
+reverse(s2.begin(),s2.end());
+while(t--) lcs(s1,s2);
+
+
+
+//---------
+//Top Down
+//---------
+
+Top down approach of longest common subsequence where s1 = string and s2 = reverse(s1);
+
+#include <bits/stdc++.h> 
+int f(int i, int j, string s, string t, vector<vector<int>>&dp){
+    if(i<0 || j<0) return 0;
+    if(dp[i][j]!=-1)return dp[i][j];
+    if(s[i]==t[j]){
+        return dp[i][j] = 1 + f(i-1,j-1,s,t,dp);
+    }
+    return dp[i][j] = max(f(i-1,j,s,t,dp), f(i,j-1,s,t,dp));
+}
+
+int lcs(string s, string t)
+{      
+    int n = s.size(), m = t.size();
+    vector<vector<int>>dp(n, vector<int>(m,-1));
+	return f(n-1, m-1, s, t, dp);
+}
+
+int longestPalindromeSubsequence(string s)
+{   
+    string s1 = s;
+    reverse(s.begin(),s.end());
+    string s2 = s;
+    return lcs(s1,s2);
+}
+
+//---------
+//Bottom Up
+//---------
+
+Bottom Up approach of longest common subsequence where s1 = string and s2 = reverse(s1); 
+
+#include <bits/stdc++.h> 
+int lcs(string s, string t)
+{      
+    int n = s.size(), m = t.size();
+    vector<vector<int>>dp(n+1, vector<int>(m+1,0));
+
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=m;j++){
+            if(s[i-1]==t[j-1]){
+                dp[i][j] = 1 + dp[i-1][j-1];
+            }
+            else dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+        }
+    }
+	return dp[n][m];
+}
+
+int longestPalindromeSubsequence(string s)
+{   
+    string s1 = s;
+    reverse(s.begin(),s.end());
+    string s2 = s;
+    return lcs(s1,s2);
+}
+
+
+//---------
+//Bottom Up(Space optimized)
+//---------
+Bottom Up(Space optimized) approach of longest common subsequence where s1 = string and s2 = reverse(s1);
+
+#include <bits/stdc++.h> 
+int lcs(string s, string t)
+{      
+    int n = s.size(), m = t.size();
+    vector<int>prev(m+1), cur(m+1);
+
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=m;j++){
+            if(s[i-1]==t[j-1]){
+                cur[j] = 1 + prev[j-1];
+            }
+            else cur[j] = max(prev[j], cur[j-1]);
+        }
+        prev = cur;
+    }
+	return prev[m];
+}
+
+int longestPalindromeSubsequence(string s)
+{   
+    string s1 = s;
+    reverse(s.begin(),s.end());
+    string s2 = s;
+    return lcs(s1,s2);
+}
+
+//FULL CODE - Printing Longest Palindromic Subsequence
+
+#include <bits/stdc++.h>
+using namespace std;
+#define endl '\n'
+#define int long long
+
+void lcs(string s, string t)
+{      
+    int n = s.size(), m = t.size();
+    vector<vector<int>>dp(n+1, vector<int>(m+1,0));
+
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=m;j++){
+            if(s[i-1]==t[j-1]){
+                dp[i][j] = 1 + dp[i-1][j-1];
+            }
+            else dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+        }
+    }
+
+    int index = dp[n][m];
+	vector<char>ans(index, 0);
+
+    int i = n, j = m;
+    while(i>0 && j>0){
+        //If same diagonally then only go!
+        if(s[i-1]==t[j-1]){
+            ans[index-1] = s[i-1];
+            i--;
+            j--;
+            index--;
+        }
+        else{
+            if(dp[i][j-1]>dp[i-1][j]){
+                j--;
+            }
+            else{
+                i--;
+            }
+        }
+    }
+
+    for(auto x: ans) cout<<x;
+}
+
+int32_t main(){
+    ios::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    int t=1;
+    //cin >> t;
+    string s1 = "bbabcbcab";
+    string s2 = s1;
+    reverse(s2.begin(),s2.end());
+
+    while(t--)lcs(s1,s2);
+    return 0;
+}
+
+//#######################################################################
+//#######-------DP 29. Minimum Insertions to Make String Palindrome--------########
+//Question Type: DP on Strings, 
+//Tutorial: https://takeuforward.org/data-structure/minimum-insertions-to-make-string-palindrome-dp-29/
+//Problem:  https://www.naukri.com/code360/problems/minimum-insertions-to-make-palindrome_985293
+
+Steps:
+Longest Palindromic Subsequence and n - Longest Palindromic Subsequence
+
+//---------
+//Top Down
+//---------
+
+Top Down of Longest Palindromic Subsequence and n - Longest Palindromic Subsequence;
+
+int f(int i, int j, string s, string t, vector<vector<int>>&dp){
+    if(i<0 || j<0) return 0;
+    if(dp[i][j]!=-1)return dp[i][j];
+    if(s[i]==t[j]){
+        return dp[i][j] = 1 + f(i-1,j-1,s,t,dp);
+    }
+    return dp[i][j] = max(f(i-1,j,s,t,dp), f(i,j-1,s,t,dp));
+}
+
+int lcs(string s, string t)
+{      
+    int n = s.size(), m = t.size();
+    vector<vector<int>>dp(n, vector<int>(m,-1));
+	return f(n-1, m-1, s, t, dp);
+}
+
+int longestPalindromeSubsequence(string s)
+{   
+    string s1 = s;
+    reverse(s.begin(),s.end());
+    string s2 = s;
+    return lcs(s1,s2);
+}
+int minimumInsertions(string &str)
+{
+	return str.size() - longestPalindromeSubsequence(str);
+}
+
+//---------
+//Bottom Up
+//---------
+
+Bottom Up of Longest Palindromic Subsequence and n - Longest Palindromic Subsequence;
+
+int lcs(string s, string t)
+{      
+    int n = s.size(), m = t.size();
+    vector<vector<int>>dp(n+1, vector<int>(m+1,0));
+
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=m;j++){
+            if(s[i-1]==t[j-1]){
+                dp[i][j] = 1 + dp[i-1][j-1];
+            }
+            else dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+        }
+    }
+	return dp[n][m];
+}
+
+int longestPalindromeSubsequence(string s)
+{   
+    string s1 = s;
+    reverse(s.begin(),s.end());
+    string s2 = s;
+    return lcs(s1,s2);
+}
+int minimumInsertions(string &str)
+{
+	return str.size() - longestPalindromeSubsequence(str);
+}
+
+
+//---------
+//Bottom Up(Space optimized)
+//---------
+
+Bottom Up(Space optimized) of Longest Palindromic Subsequence and n - Longest Palindromic Subsequence;
+
+int lcs(string s, string t)
+{      
+    int n = s.size(), m = t.size();
+    vector<int>prev(m+1), cur(m+1);
+
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=m;j++){
+            if(s[i-1]==t[j-1]){
+                cur[j] = 1 + prev[j-1];
+            }
+            else cur[j] = max(prev[j], cur[j-1]);
+        }
+        prev = cur;
+    }
+	return prev[m];
+}
+
+int longestPalindromeSubsequence(string s)
+{   
+    string s1 = s;
+    reverse(s.begin(),s.end());
+    string s2 = s;
+    return lcs(s1,s2);
+}
+int minimumInsertions(string &str)
+{
+	return str.size() - longestPalindromeSubsequence(str);
+}
+
+
+//#######################################################################
+//#######-------DP 30. Minimum Insertions/Deletions to Convert String A to String B--------########
+//Question Type: DP on Strings, 
+//Tutorial: https://takeuforward.org/data-structure/minimum-insertions-deletions-to-convert-string-dp-30/
+//Problem:  https://www.naukri.com/code360/problems/can-you-make_4244510
+
+Steps:
+(n - lcs(s1,s2)) + (m - lcs(s1,s2))
+
+//---------
+//Top Down
+//---------
+
+int f(int i, int j, string s, string t, vector<vector<int>>&dp){
+    if(i<0 || j<0) return 0;
+    if(dp[i][j]!=-1)return dp[i][j];
+    if(s[i]==t[j]){
+        return dp[i][j] = 1 + f(i-1,j-1,s,t,dp);
+    }
+    return dp[i][j] = max(f(i-1,j,s,t,dp), f(i,j-1,s,t,dp));
+}
+
+int lcs(string s, string t)
+{      
+    int n = s.size(), m = t.size();
+    vector<vector<int>>dp(n, vector<int>(m,-1));
+	return f(n-1, m-1, s, t, dp);
+}
+
+int canYouMake(string &s1, string &s2){
+    int n = s1.size(), m = s2.size();
+    return (n - lcs(s1,s2)) + (m - lcs(s1,s2));
+}
+
+//---------
+//Bottom Up
+//---------
+int lcs(string s, string t)
+{      
+    int n = s.size(), m = t.size();
+    vector<vector<int>>dp(n+1, vector<int>(m+1,0));
+
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=m;j++){
+            if(s[i-1]==t[j-1]){
+                dp[i][j] = 1 + dp[i-1][j-1];
+            }
+            else dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+        }
+    }
+	return dp[n][m];
+}
+int canYouMake(string &s1, string &s2){
+    int n = s1.size(), m = s2.size();
+    return (n - lcs(s1,s2)) + (m - lcs(s1,s2));
+}
+
+//---------
+//Bottom Up(Space optimized)
+//---------
+
+int lcs(string s, string t)
+{      
+    int n = s.size(), m = t.size();
+    vector<int>prev(m+1), cur(m+1);
+
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=m;j++){
+            if(s[i-1]==t[j-1]){
+                cur[j] = 1 + prev[j-1];
+            }
+            else cur[j] = max(prev[j], cur[j-1]);
+        }
+        prev = cur;
+    }
+	return prev[m];
+}
+
+int canYouMake(string &s1, string &s2){
+    int n = s1.size(), m = s2.size();
+    return (n - lcs(s1,s2)) + (m - lcs(s1,s2));
+}
+
+
+//#######################################################################
+//#######-------DP 31. Shortest Common Supersequence | DP on Strings--------########
+//Question Type: DP on Strings, 
+//Tutorial: https://takeuforward.org/data-structure/shortest-common-supersequence-dp-31/
+//Problem:  https://www.naukri.com/code360/problems/shortest-supersequence_4244493
+
+The length is n + m - lcs(n,m)
+Steps:
+1. Apply LCS 
+2. Add string part of that is same(diagonal) + that is getting reduced(vertical or horizontal)
+
+
+//---------
+//Top Down
+//---------
+
+Just apply the steps portion
+
+//---------
+//Bottom Up
+//---------
+
+#include <bits/stdc++.h> 
+
+string lcs(string s, string t)
+{      
+    int n = s.size(), m = t.size();
+    vector<vector<int>>dp(n+1, vector<int>(m+1,0));
+
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=m;j++){
+            if(s[i-1]==t[j-1]){
+                dp[i][j] = 1 + dp[i-1][j-1];
+            }
+            else dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+        }
+    }
+
+	string ans = "";
+
+    int i = n, j = m;
+    while(i>0 && j>0){
+        if(s[i-1]==t[j-1]){
+            ans+= s[i-1];
+            i--;
+            j--;
+        }
+        else{
+            if(dp[i][j-1]<dp[i-1][j]){
+				ans+=s[i-1];
+                i--;
+            }
+            else{
+				ans+=t[j-1];
+                j--;
+            }
+        }
+    }
+
+	while(i>0) ans+=s[i-1],i--;
+	while(j>0) ans+=t[j-1],j--;
+	reverse(ans.begin(),ans.end());
+	return ans;
+}
+
+string shortestSupersequence(string a, string b)
+{
+	return lcs(a,b);
+}
+
+
+//---------
+//Bottom Up(Space optimized)
+//---------
+
+Just apply the steps portion
+
+
+//#######################################################################
+//#######-------DP 32. Distinct Subsequences | 1D Array Optimisation Technique--------########
+//Question Type: DP on Strings, 
+//Tutorial: https://takeuforward.org/data-structure/distinct-subsequences-dp-32/
+//Problem:  https://www.naukri.com/code360/problems/subsequence-counting_3755256
+
+
+Steps:
+1. j == -1 means j has passed all, so return 1, and if i==-1 means i has passed all and did not matched, so return 0
+2. if(s1[i]==s2[j]) check in above and above left, else check only above
+
+//---------
+//Top Down
+//---------
+
+//0 base indexing
+const int md = 1e9+7;
+int f(int i, int j,string &s1,string &s2,vector<vector<int>>&dp ){
+	if(j<0) return 1;
+	if(i<0) return 0;
+	if(dp[i][j]!=-1) return dp[i][j];
+	if(s1[i]==s2[j]){
+		return dp[i][j] = (f(i-1,j-1,s1,s2,dp) + f(i-1,j,s1,s2,dp))%md;
+	}
+	else return dp[i][j] = f(i-1,j,s1,s2,dp)%md;
+}
+int distinctSubsequences(string &str, string &sub)
+{
+	int n = str.size(), m = sub.size();
+	vector<vector<int>>dp(n, vector<int>(m,-1));
+	return f(n-1,m-1,str,sub,dp);
+}
+
+//1 base indexing
+const int md = 1e9+7;
+int f(int i, int j,string &s1,string &s2,vector<vector<int>>&dp ){
+	if(j==0) return 1;
+	if(i==0) return 0;
+	if(dp[i][j]!=-1) return dp[i][j];
+	if(s1[i-1]==s2[j-1]){
+		return dp[i][j] = (f(i-1,j-1,s1,s2,dp) + f(i-1,j,s1,s2,dp))%md;
+	}
+	else return dp[i][j] = f(i-1,j,s1,s2,dp)%md;
+}
+int distinctSubsequences(string &str, string &sub)
+{
+	int n = str.size(), m = sub.size();
+	vector<vector<int>>dp(n+1, vector<int>(m+1,-1));
+	return f(n,m,str,sub,dp);
+}
+
+//---------
+//Bottom Up
+//---------
+- If matched take both diagonal and upor else take only upor
+
+const int md = 1e9+7;
+int distinctSubsequences(string &str, string &sub)
+{
+	int n = str.size(), m = sub.size();
+	vector<vector<int>>dp(n+1, vector<int>(m+1,0));
+	for(int i=0;i<=m;i++)dp[0][i] = 0;
+	for(int i=0;i<=n;i++) dp[i][0] = 1;
+
+	for(int i=1;i<=n;i++){
+		for(int j=1;j<=m;j++){
+			if(str[i-1]==sub[j-1]){
+				dp[i][j] = (dp[i-1][j-1] +dp[i-1][j])%md;
+			}
+			else dp[i][j] = dp[i-1][j]%md;
+		}
+	}
+	return dp[n][m];
+}
+
+//---------
+//Bottom Up(Space optimized)
+//---------
+
+const int md = 1e9+7;
+
+int distinctSubsequences(string &str, string &sub)
+{
+	int n = str.size(), m = sub.size();
+	vector<int>prev(m+1,0), cur(m+1);
+	prev[0] = 1, cur[0] = 1;
+	for(int i=1;i<=n;i++){
+		for(int j=1;j<=m;j++){
+			if(str[i-1]==sub[j-1]){
+				cur[j] = (prev[j-1] + prev[j])%md;
+			}
+			else cur[j] = prev[j]%md;
+		}
+		prev = cur;
+	}
+	return prev[m];
+}
+
+//---------
+//Bottom Up(Space optimized) - one 1d array
+//---------
+
+const int md = 1e9+7;
+
+int distinctSubsequences(string &str, string &sub)
+{
+	int n = str.size(), m = sub.size();
+	vector<int>prev(m+1,0);
+	prev[0] = 1;
+	for(int i=1;i<=n;i++){
+		for(int j=m;j>=1;j--){
+			//don't need the last index after computing, just override that
+			if(str[i-1]==sub[j-1]){
+				prev[j] = (prev[j-1] + prev[j])%md;
+			}
+			else prev[j] = prev[j]%md;
+		}
+	}
+	return prev[m];
+}
+
+//#######################################################################
+//#######-------DP 33. Edit Distance | Recursive to 1D Array Optimised Solution--------########
+//Question Type: DP on Strings, 
+//Tutorial: https://takeuforward.org/data-structure/edit-distance-dp-33/
+//Problem:  https://www.naukri.com/code360/problems/edit-distance_630420
+
+if same -> diagonal side 
+else -> minimum of the 3 side + 1
+
+
+Delete,Replace,Insert
+
+Step:
+1. If same then move ahead
+2. If not same, do one of (Delete,Replace,Insert)
+
+
+
+//---------
+//Top Down
+//---------
+
+//0 base indexing
+int f(int i, int j, string &s1, string &s2, vector<vector<int>>&dp){
+    if(i<0) return j+1;//add all j
+    if(j<0) return i+1;//delete all i
+    if(dp[i][j]!=-1)return dp[i][j];
+
+    //If same then move ahead
+    if(s1[i]==s2[j]){
+        return dp[i][j] = f(i-1,j-1,s1,s2,dp);
+    }
+    //insert, delete, replace
+    int ins = 1 + f(i, j-1,s1,s2,dp);//insert
+    int del = 1 + f(i-1,j,s1,s2,dp);//delete
+    int rep = 1 + f(i-1,j-1,s1,s2,dp);//replace
+    return dp[i][j] = min(min(ins,del), rep);//minimum of all
+}
+int editDistance(string str1, string str2)
+{   
+    int n = str1.size(), m = str2.size();
+    vector<vector<int>>dp(n, vector<int>(m,-1));
+    return f(n-1, m-1, str1, str2, dp);
+}
+
+//1 base indexing
+int f(int i, int j, string &s1, string &s2, vector<vector<int>>&dp){
+    if(i==0) return j;//add all j
+    if(j==0) return i;//delete all i
+    if(dp[i][j]!=-1)return dp[i][j];
+
+    //If same then move ahead
+    if(s1[i-1]==s2[j-1]){
+        return dp[i][j] = f(i-1,j-1,s1,s2,dp);
+    }
+    //insert, delete, replace
+    int ins = 1 + f(i, j-1,s1,s2,dp);
+    int del = 1 + f(i-1,j,s1,s2,dp);
+    int rep = 1 + f(i-1,j-1,s1,s2,dp);
+    return dp[i][j] = min(min(ins,del), rep);
+}
+int editDistance(string str1, string str2)
+{   
+    int n = str1.size(), m = str2.size();
+    vector<vector<int>>dp(n+1, vector<int>(m+1,-1));
+    return f(n, m, str1, str2, dp);
+}
+
+//---------
+//Bottom Up
+//---------
+
+int editDistance(string str1, string str2)
+{   
+    int n = str1.size(), m = str2.size();
+    vector<vector<int>>dp(n+1, vector<int>(m+1,0));
+    //for empty sequence matching
+    for(int i=0;i<=n;i++) dp[i][0] = i;//for deleting extra sequence from s2
+    for(int i=0;i<=m;i++) dp[0][i] = i;//for adding  
+
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=m;j++){
+            if(str1[i-1]==str2[j-1]) dp[i][j] = dp[i-1][j-1];
+            else{
+                int ins = 1 + dp[i][j-1];//insert
+                int del = 1 + dp[i-1][j];//delete
+                int rep = 1 + dp[i-1][j-1];//replace
+                dp[i][j] = min(min(ins,del), rep);
+            }           
+        }
+    }
+    return dp[n][m];
+}
+
+//---------
+//Bottom Up(Space optimized) 
+//---------
+
+int editDistance(string str1, string str2)
+{   
+    int n = str1.size(), m = str2.size();
+    vector<int>prev(m+1,0), cur(m+1,0);
+
+    for(int i=0;i<=m;i++) prev[i] = i;
+    for(int i=1;i<=n;i++){
+        cur[0] = i;
+        for(int j=1;j<=m;j++){
+            if(str1[i-1]==str2[j-1]) cur[j] = prev[j-1];
+            else{
+                int ins = 1 + cur[j-1];//insert
+                int del = 1 + prev[j];//delete
+                int rep = 1 + prev[j-1];//replace
+                cur[j] = min(min(ins,del), rep);
+            }           
+        }
+        prev = cur;
+    }
+    return prev[m];
+}
+
+
+//#######################################################################
+//#######-------DP 34. Wildcard Matching | Recursive to 1D Array Optimisation--------########
+//Question Type: DP on Strings, 
+//Tutorial: https://takeuforward.org/data-structure/wildcard-matching-dp-34/
+//Problem:  https://www.naukri.com/code360/problems/wildcard-pattern-matching_701650
+
+Steps:
+1. if both are exhausted then it is true
+   if i is exhausted and j is still remaining then it is never possible
+   if j is exhausted and i is still remaining then all remaining in i must be '*'
+2. if both index has same value or '?' then shrink the string, f(i-1,j-1)
+3. if s1[i]=='*' then apply take or not take condition 
+4. else it is false(the both indices have different values)
+
+//---------
+//Top Down
+//---------
+
+//0 base indexing
+#include<bits/stdc++.h>
+bool f(int i, int j, string &s1, string &s2, vector<vector<int>>&dp){
+   if(i<0 && j<0) return true;
+   if(i<0 && j>=0)return false;
+   if(i>=0 && j<0){
+      //rest should be * only
+      for(int k=0;k<=i;k++){
+         if(s1[k]!='*') return false;
+      }
+      return true;
+   }
+
+   if(dp[i][j]!=-1) return dp[i][j];
+
+   if(s1[i]==s2[j] || s1[i]=='?'){
+      return dp[i][j] = f(i-1,j-1,s1,s2,dp);
+   }
+   else if(s1[i]=='*'){
+      //take or not take
+      return dp[i][j] = f(i,j-1,s1,s2,dp) || f(i-1,j,s1,s2,dp);
+   }
+   else false;
+}
+bool wildcardMatching(string pattern, string text)
+{
+   int n = pattern.size();
+   int m = text.size();
+   vector<vector<int>>dp(n, vector<int>(m,-1));
+   return f(n-1, m-1, pattern, text, dp);
+}
+
+//1 base indexing
+#include<bits/stdc++.h>
+bool f(int i, int j, string &s1, string &s2, vector<vector<int>>&dp){
+   if(i==0 && j==0) return true;
+   if(i==0 && j>0)return false;
+   if(i>0 && j==0){
+      //rest should be * only
+      for(int k=0;k<i;k++){
+         if(s1[k]!='*') return false;
+      }
+      return true;
+   }
+
+   if(dp[i][j]!=-1) return dp[i][j];
+
+   if(s1[i-1]==s2[j-1] || s1[i-1]=='?'){
+      return dp[i][j] = f(i-1,j-1,s1,s2,dp);
+   }
+   else if(s1[i-1]=='*'){
+      //take or not take
+      return dp[i][j] = f(i,j-1,s1,s2,dp) || f(i-1,j,s1,s2,dp);
+   }
+   else false;
+}
+bool wildcardMatching(string pattern, string text)
+{
+   int n = pattern.size();
+   int m = text.size();
+   vector<vector<int>>dp(n+1, vector<int>(m+1,-1));
+   return f(n, m, pattern, text, dp);
+}
+
+//---------
+//Bottom Up
+//---------
+
+#include<bits/stdc++.h>
+
+bool wildcardMatching(string pattern, string text)
+{
+   int n = pattern.size();
+   int m = text.size();
+   string s1 = pattern;
+   string s2 = text;
+   
+   vector<vector<int>>dp(n+1, vector<int>(m+1,0));
+   dp[0][0] = 1;
+   for(int i=1;i<=m;i++) dp[0][i] = 0;
+   for(int i=1;i<=n;i++){
+      bool ok = 1;
+      for(int k=0;k<i;k++){
+         if(pattern[k] != '*'){
+            ok = 0;
+            break;
+         }
+         if(ok)dp[i][0] = 1;
+      }
+   }
+
+   for(int i=1;i<=n;i++){
+      for(int j=1;j<=m;j++){
+         if(s1[i-1]==s2[j-1] || s1[i-1]=='?'){
+            dp[i][j] = dp[i-1][j-1];
+         }
+         else if(s1[i-1]=='*'){
+            dp[i][j] = dp[i][j-1] || dp[i-1][j];
+         }
+         else dp[i][j] = 0;
+      }
+   }
+
+   return dp[n][m];
+}
+
+//---------
+//Bottom Up(Space optimized)
+//---------
+
+#include<bits/stdc++.h>
+
+bool wildcardMatching(string pattern, string text)
+{
+   int n = pattern.size();
+   int m = text.size();
+   string s1 = pattern;
+   string s2 = text;
+   
+   vector<int>prev(m+1,0), cur(m+1,0);
+   prev[0] = 1;
+   for(int i=1;i<=m;i++) prev[i] = 0;
+   
+   for(int i=1;i<=n;i++){
+      bool ok = 1;
+      for(int k=0;k<i;k++){
+         if(pattern[k] != '*'){
+            ok = 0;
+            break;
+         }
+      }
+      cur[0] = ok;
+
+      for(int j=1;j<=m;j++){
+         if(s1[i-1]==s2[j-1] || s1[i-1]=='?'){
+            cur[j] = prev[j-1];
+         }
+         else if(s1[i-1]=='*'){
+            cur[j] = cur[j-1] || prev[j];
+         }
+         else cur[j] = 0;
+      }
+      prev = cur;
+   }
+
+   return prev[m];
+}
+
+
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#####################-------DP on Stocks--------#######################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+
+
+DP 35. Best Time to Buy and Sell Stock          - 1 transaction
+DP 36. Buy and Sell Stock - II                  - unlimited transaction
+DP 37. Buy and Sell Stocks III                  - 2 transaction
+DP 38. Buy and Stock Sell IV                    - k transaction
+DP 39. Buy and Sell Stocks With Cooldown        - cannot buy and sell consecutive day, (after selling there is atleast 1 day gap)
+DP 40. Buy and Sell Stocks With Transaction Fee - with transaction fee
+
+//#######################################################################
+//#######-------DP 35. Best Time to Buy and Sell Stock | DP on Stocks--------########
+//Tutorial: https://takeuforward.org/data-structure/stock-buy-and-sell-dp-35/
+//Problem:  https://www.naukri.com/code360/problems/stocks-are-profitable_893405
+
+We are solving smaller problems to solve bigger problems, this is why this is dp problem
+- It is also a constructive algorithm problem
+first buy, then sell
+
+Steps:
+1. first minimum is the first value and initially the answer is 0
+2. keep the minimum prices and keep the mamxium answer possible
+
+//---------
+//Top Down
+//---------
+
+
+//---------
+//Bottom Up
+//---------
+
+#include <bits/stdc++.h> 
+int maximumProfit(vector<int> &prices){
+    int mn = prices[0], ans = 0;
+    for(int i=1;i<prices.size();i++){
+        mn = min(mn, prices[i]);
+        ans = max(ans, prices[i] - mn);
+    }
+    return ans;
+}
+
+
+//---------
+//Bottom Up(Space optimized)
+//---------
+
+
+//#######################################################################
+//#######-------DP 36. Buy and Sell Stock - II | Recursion to Space Optimisation--------########
+//Tutorial: https://takeuforward.org/data-structure/buy-and-sell-stock-ii-dp-36/
+//Problem:  https://www.naukri.com/code360/problems/selling-stock_630282
+
+BSBSBSBS is allowed but BBBSSS not allowed
+
+Steps:
+1. On that day, kinle/sell krle profit kombe or barbe[this is take case]
+2. On that day, na kinle/sell krle profit kombe na or barbe na[this is not take case]
+
+//---------
+//Top Down
+//---------
+
+#include<bits/stdc++.h>
+long f(int i, int buy, int n, long *values,vector<vector<long>>&dp ){
+    if(i==n) return 0;
+    if(dp[i][buy]!=-1)return dp[i][buy];
+    long prof = 0;
+    if(buy){
+        prof = max(-values[i] + f(i+1,0,n,values, dp), f(i+1,1,n,values, dp));//kine felle values kombe, barbe, then take or not take
+    }
+    else prof = max(values[i] + f(i+1,1,n,values, dp), f(i+1,0,n,values, dp));
+
+    return dp[i][buy] = prof;
+}
+long getMaximumProfit(long *values, int n)
+{   
+    vector<vector<long>>dp(n, vector<long>(2,-1));
+    return f(0,1,n,values, dp);
+}
+
+//---------
+//Bottom Up
+//---------
+
+#include<bits/stdc++.h>
+
+long getMaximumProfit(long *values, int n)
+{   
+    vector<vector<long>>dp(n+1, vector<long>(2,0));
+
+    dp[n][1]=dp[n][0] = 0;
+    for(int i=n-1;i>=0;i--){
+        for(buy : {0,1}){
+            long prof = 0;
+            if(buy){
+                prof = max(-values[i] + dp[i+1][0], dp[i+1][1]);//kine felle values kombe, barbe, then take or not take
+            }
+            else prof = max(values[i] + dp[i+1][1], dp[i+1][0]);
+            dp[i][buy] = prof;
+        }
+    }
+    return dp[0][1];
+}
+
+//---------
+//Bottom Up(Space optimized)
+//---------
+
+#include<bits/stdc++.h>
+
+long getMaximumProfit(long *values, int n)
+{   
+    vector<long> prev(2, 0), cur(2,0);
+    for(int i=n-1;i>=0;i--){
+        for(buy : {0,1}){
+            long prof = 0;
+            if(buy){
+                prof = max(-values[i] + prev[0], prev[1]);
+            }
+            else prof = max(values[i] + prev[1], prev[0]);
+            cur[buy] = prof;
+        }
+        prev = cur;
+    }
+    return prev[1];
+}
+
+
+//#######################################################################
+//#######-------DP 37. Buy and Sell Stocks III | Recursion to Space Optimisation--------########
+//Tutorial: https://takeuforward.org/data-structure/buy-and-sell-stock-iii-dp-37/
+//Problem:  https://www.naukri.com/code360/problems/buy-and-sell-stock_1071012
+
+only when buy + sell done a transaction is completed
+There are 3 changing states in this problem: index, total transactions, buy or not buy
+
+Steps:
+1. 
+
+
+//---------
+//Top Down(Partially Accepted)
+//---------
+
+long f(int i, int buy, int k, int n, vector<int>&values,vector<vector<vector<int>>>&dp){
+    if(k==0) return 0;
+    if(i==n) return 0;
+    if(dp[i][buy][k]!=-1)return dp[i][buy][k];
+    long prof = 0;
+    if(buy){
+        prof = max(-values[i] + f(i+1,0,k, n,values, dp), f(i+1,1,k,n,values, dp));
+    }
+    else prof = max(values[i] + f(i+1,1,k-1, n,values, dp), f(i+1,0,k, n,values, dp));
+    //only when buy + sell done a transaction is completed
+
+    return dp[i][buy][k] = prof;
+}
+int maxProfit(vector<int>& prices)
+{
+    int n = prices.size();
+    vector<vector<vector<int>>>dp(n, vector<vector<int>>(2, vector<int>(3,-1)));
+    return f(0, 1, 2,n, prices, dp);
+}
+
+//---------
+//Bottom Up
+//---------
+draw the tabulation of bottom up
+WA
+int maxProfit(vector<int>& prices)
+{
+    int n = prices.size();
+    vector<vector<vector<int>>>dp(n+1, vector<vector<int>>(2, vector<int>(3,0)));
+
+    for(int i=n-1;i>=0;i--){
+        for(int buy=0;buy<=1;buy++){
+            for(int k=1;k<=2;k++){
+                long prof = 0;
+                if(buy){
+                    prof = max(-prices[i] + dp[i+1][1][k], dp[i+1][0][k]);
+                }
+                else prof = max(prices[i] + dp[i+1][1][k-1], dp[i+1][0][k]);
+                dp[i][buy][k] = prof;
+            }
+        }
+    }
+   return dp[0][1][2];
+}
+
+//---------
+//Bottom Up(Space optimized)
+//---------
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+//Using 2 changing parameters
+//---------
+//Top Down
+//---------
+
+1. there are only 2 transaction, so BSBS, hence k is 0123 
+
+int f(int i, int k, int n,vector<int>& prices,vector<vector<int>>&dp){
+    if(i==n || k==4)return 0;
+    if(dp[i][k]!=-1) return dp[i][k];
+    int profit = 0;
+    if(k%2==0){
+        profit = max(-prices[i] + f(i+1, k+1, n, prices, dp), f(i+1, k, n, prices, dp));
+    }
+    else {
+        profit = max(prices[i] + f(i+1, k+1, n, prices, dp), f(i+1, k, n, prices, dp));
+    }
+    return dp[i][k] = profit;
+}
+
+int maxProfit(vector<int>& prices)
+{
+    int n = prices.size();
+    vector<vector<int>>dp(n, vector<int>(4,-1));
+    return f(0, 0, n, prices, dp);
+}
+
+
+//---------
+//Bottom Up
+//---------
+int maxProfit(vector<int>& prices)
+{
+    int n = prices.size();
+    vector<vector<int>>dp(n+1, vector<int>(4,0));
+
+    for(int i=n-1;i>=0;i--){
+        for(int k=0;k<4;k++){
+            int profit = 0;
+            if(k%2==0){
+                profit = max(-prices[i] + dp[i+1][k+1], dp[i+1][k]);
+            }
+            else {
+                profit = max(prices[i] + dp[i+1][k+1], dp[i+1][k]);
+            }
+            dp[i][k] = profit;
+        }
+    }
+    return dp[0][0];
+}
+
+//---------
+//Bottom Up(Space optimized) - one 1d array
+//---------
+
+int maxProfit(vector<int>& prices)
+{
+    int n = prices.size();
+    vector<int>prev(4,0);
+
+    for(int i=n-1;i>=0;i--){
+        for(int k=0;k<4;k++){
+            int profit = 0;
+            if(k%2==0){
+                profit = max(-prices[i] + prev[k+1], prev[k]);
+            }
+            else {
+                profit = max(prices[i] + prev[k+1], prev[k]);
+            }
+            prev[k] = profit;
+        }
+    }
+    return prev[0];
+}
+
+
+
+//#######################################################################
+//#######-------DP 38. Buy and Stock Sell IV | Recursion to Space Optimisation--------########
+//Tutorial: https://takeuforward.org/data-structure/buy-and-sell-stock-iv-dp-38/
+//Problem:  https://www.naukri.com/code360/problems/best-time-to-buy-and-sell-stock_1080698
+
+Steps:
+1. apply k in the transaction part, instead of 2(previous question)
+
+//---------
+//Top Down
+//---------
+
+#include <bits/stdc++.h> 
+long f(int i, int buy, int k, int n, vector<int>&values,vector<vector<vector<int>>>&dp){
+    if(k==0) return 0;
+    if(i==n) return 0;
+    if(dp[i][buy][k]!=-1)return dp[i][buy][k];
+    long prof = 0;
+    if(buy){
+        prof = max(-values[i] + f(i+1,0,k, n,values, dp), f(i+1,1,k,n,values, dp));
+    }
+    else prof = max(values[i] + f(i+1,1,k-1, n,values, dp), f(i+1,0,k, n,values, dp));
+    return dp[i][buy][k] = prof;
+}
+
+int maximumProfit(vector<int> &prices, int n, int k)
+{
+    vector<vector<vector<int>>>dp(n, vector<vector<int>>(2, vector<int>(k+1,-1)));
+    return f(0, 1, k,n, prices, dp);
+}
+
+
+//---------
+//Bottom Up - 3d dp
+//---------
+
+#include <bits/stdc++.h> 
+
+int maximumProfit(vector<int> &prices, int n, int t)
+{
+    vector<vector<vector<int>>>dp(n+1, vector<vector<int>>(2, vector<int>(t+1,0)));
+    for(int i=n-1;i>=0;i--){
+        for(int buy=0;buy<=1;buy++){
+            for(int k=1;k<=t;k++){
+                long prof = 0;
+                if(buy){
+                    prof = max(-prices[i] + dp[i+1][0][k], dp[i+1][1][k]);
+                }
+                else prof = max(prices[i] + dp[i+1][1][k-1], dp[i+1][0][k]);
+                dp[i][buy][k] = prof;
+            }
+        }
+    }
+    
+    return dp[0][1][t];
+}
+
+
+//---------
+//Bottom Up(Space optimized) - 2d dp
+//---------
+#include <bits/stdc++.h> 
+
+int maximumProfit(vector<int> &prices, int n, int t)
+{
+    vector<vector<int>>dp(2, vector<int>(t+1,0));
+    for(int i=n-1;i>=0;i--){
+        for(int buy=0;buy<=1;buy++){
+            for(int k=1;k<=t;k++){
+                long prof = 0;
+                if(buy){
+                    prof = max(-prices[i] + dp[0][k], dp[1][k]);
+                }
+                else prof = max(prices[i] + dp[1][k-1], dp[0][k]);
+                dp[buy][k] = prof;
+            }
+        }
+    }
+    
+    return dp[1][t];
+}
+
+//---------
+//Bottom Up(Space optimized) - 1d dp
+//---------
+#include <bits/stdc++.h> 
+
+int maximumProfit(vector<int> &prices, int n, int t)
+{
+    vector<int>prev(2*t+1),cur(2*t+1);
+    for(int i=n-1;i>=0;i--){
+       for(int k=2*t-1;k>=0;k--){
+            long prof = 0;
+            if(k%2==0){
+                prof = max(-prices[i] + prev[k+1], cur[k]);
+            }
+            else prof = max(prices[i] + prev[k+1], cur[k]);
+            cur[k] = prof;
+        } 
+        prev = cur;
+    }
+    return prev[0];
+}
+
+
+//#######################################################################
+//#######-------DP 39. Buy and Sell Stocks With Cooldown | Recursion to Space Optimisation--------########
+//Tutorial: https://takeuforward.org/data-structure/buy-and-sell-stocks-with-cooldown-dp-39/
+//Problem:  https://www.naukri.com/code360/problems/highway-billboards_3125969
+
+Steps:
+1. just apply i+2 on the selling day
+
+//---------
+//Top Down
+//---------
+
+long f(int i, int buy, int n,vector<int> &prices,vector<vector<int>>&dp ){
+    if(i==n || i==n+1) return 0;
+    if(dp[i][buy]!=-1)return dp[i][buy];
+    long prof = 0;
+    if(buy){
+        prof = max(-prices[i] + f(i+1,0,n,prices, dp), f(i+1,1,n,prices, dp));
+    }
+    else prof = max(prices[i] + f(i+2,1,n,prices, dp), f(i+1,0,n,prices, dp));
+
+    return dp[i][buy] = prof;
+}
+
+int stockProfit(vector<int> &prices){
+    int n = prices.size();
+    vector<vector<int>>dp(n, vector<int>(2,-1));
+    return f(0, 1, n, prices, dp);
+}
+
+//---------
+//Bottom Up
+//---------
+
+int stockProfit(vector<int> &prices){
+    int n = prices.size();
+    vector<vector<int>>dp(n+2, vector<int>(2,0));
+    for(int i=n-1;i>=0;i--){
+        for(int buy:{0,1}){
+            long prof = 0;
+            if(buy){
+                prof = max(-prices[i] + dp[i+1][0], dp[i+1][1]);
+            }
+            else prof = max(prices[i] + dp[i+2][1], dp[i+1][0]);
+            dp[i][buy] = prof;
+        }
+    }
+    return dp[0][1];
+}
+
+//Omitting buy portion, explicitly writing it
+int stockProfit(vector<int> &prices){
+    int n = prices.size();
+    vector<vector<int>>dp(n+2, vector<int>(2,0));
+    for(int i=n-1;i>=0;i--){
+        dp[i][1] = max(-prices[i] + dp[i+1][0], dp[i+1][1]);
+        dp[i][0] = max(prices[i] + dp[i+2][1], dp[i+1][0]);
+    }
+    return dp[0][1];
+}
+
+//---------
+//Bottom Up(Space optimized) - 3 1d array
+//---------
+- Here, we need 3 rows, so keep the 3 rows 
+
+int stockProfit(vector<int> &prices){
+    int n = prices.size();
+    vector<int> cur(2, 0); 
+    vector<int> front1(2, 0);
+    vector<int> front2(2, 0);    
+    for(int i=n-1;i>=0;i--){
+        cur[1] = max(-prices[i] + front1[0], front1[1]);
+        cur[0] = max(prices[i] + front2[1], front1[0]);
+        front2 = front1;
+        front1 = cur;
+    }
+    return cur[1];
+}
+
+//#######################################################################
+//#######-------DP 40. Buy and Sell Stocks With Transaction Fee | Recursion to Space Optimisation--------########
+//Tutorial:https://takeuforward.org/data-structure/buy-and-sell-stocks-with-transaction-fees-dp-40/
+//Problem:  https://www.naukri.com/code360/problems/rahul-and-his-chocolates_3118974
+
+Steps:
+1. Just delete fee everytime you buy or sell, [delete only 1 time]
+
+//---------
+//Top Down
+//---------
+long f(int i, int buy, int n,vector<int> &prices,int fee, vector<vector<int>>&dp ){
+    if(i==n) return 0;
+    if(dp[i][buy]!=-1)return dp[i][buy];
+    long prof = 0;
+    if(buy){
+        prof = max(-prices[i] + f(i+1,0,n,prices, fee, dp), f(i+1,1,n,prices, fee, dp));
+    }
+    else prof = max(prices[i]-fee + f(i+1,1,n,prices,fee, dp), f(i+1,0,n,prices,fee, dp));
+
+    return dp[i][buy] = prof;
+}
+
+int maximumProfit(vector<int> &prices, int n, int fee)
+{
+    vector<vector<int>>dp(n, vector<int>(2,-1));
+	return f(0, 1, n, prices,fee, dp);
+}
+
+//---------
+//Bottom Up
+//---------
+int maximumProfit(vector<int> &prices, int n, int fee)
+{
+    vector<vector<int>>dp(n+1, vector<int>(2,0));
+    for(int i=n-1;i>=0;i--){
+        dp[i][1] = max(-prices[i] + dp[i+1][0], dp[i+1][1]);
+        dp[i][0] = max(prices[i]-fee + dp[i+1][1], dp[i+1][0]);
+    }
+    return dp[0][1];
+}
+
+//---------
+//Bottom Up(Space optimized)
+//---------
+int maximumProfit(vector<int> &prices, int n, int fee)
+{
+    vector<int> ahead(2, 0); 
+    vector<int> cur(2, 0);
+    for(int i=n-1;i>=0;i--){
+        cur[1] = max(-prices[i] + ahead[0], ahead[1]);
+        cur[0] = max(prices[i]-fee + ahead[1], ahead[0]);
+        ahead = cur;
+    }
+    return ahead[1];
+}
+//a little different
+int maximumProfit(vector<int> &prices, int n, int fee)
+{
+    vector<int> ahead(2, 0); 
+    vector<int> cur(2, 0);
+    for(int i=n-1;i>=0;i--){
+        cur[1] = max(-prices[i] + ahead[0], cur[1]);
+        cur[0] = max(prices[i]-fee + ahead[1], cur[0]);
+        ahead = cur;
+    }
+    return ahead[1];
+}
+
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#####################-------DP on LIS--------##########################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+
+LIS CODE: 
+#include<bits/stdc++.h>
+int longestIncreasingSubsequence(int arr[], int n)
+{
+    vector<int>dp(n,1);
+    for(int i=0;i<n;i++){
+        for(int j=0;j<i;j++){
+            if(arr[i]>arr[j]){
+                dp[i] = max(1+dp[j], dp[i]);
+            }
+        }
+    }
+    int ans = 0;
+    for(int i=0;i<n;i++) ans = max(ans, dp[i]);
+    return ans;
+}
+
+//#######################################################################
+//#######-------DP 41. Longest Increasing Subsequence | Memoization--------########
+//Tutorial: https://takeuforward.org/data-structure/longest-increasing-subsequence-dp-41/
+//Problem:  https://www.naukri.com/code360/problems/longest-increasing-subsequence_630459
+
+Steps:
+1. At first set previous anything -1,-100 anything
+2. if taken, previous would be that index and move main index to index + 1    
+   if not taken, previous would be same, index+1 would go on 
+
+
+//---------
+//Top Down(Runtime error because of constraints)
+//---------
+#include<bits/stdc++.h>
+int f(int i, int j, int n,int arr[], vector<vector<int>>&dp){
+    if(i==n)return 0;
+    if(dp[i][j+1]!=-1)return dp[i][j+1];
+    int taken = 0;
+    int not_taken = f(i+1,j,n,arr,dp);
+    if(j==-1 || arr[i]>arr[j]){
+        taken = 1 + f(i+1,i,n,arr,dp);
+    }
+    return dp[i][j+1] = max(not_taken, taken);
+}
+int longestIncreasingSubsequence(int arr[], int n)
+{
+    vector<vector<int>>dp(n, vector<int>(n+1,-1));
+    return f(0, -1, n, arr,dp);
+}
+
+
+//#######################################################################
+//#######-------DP 42. Printing Longest Increasing Subsequence | Tabulation | Algorithm--------########
+//Tutorial: https://takeuforward.org/data-structure/printing-longest-increasing-subsequence-dp-42/
+//Problem:  https://www.naukri.com/code360/problems/longest-increasing-subsequence_630459
+
+Steps:
+1. by backtracking print the array
+
+//---------
+//Bottom Up(TLE cause of constraints)
+//---------
+
+#include<bits/stdc++.h>
+int longestIncreasingSubsequence(int arr[], int n)
+{
+    vector<int>dp(n,1);
+    for(int i=0;i<n;i++){
+        for(int j=0;j<i;j++){
+            if(arr[i]>arr[j]){
+                dp[i] = max(1+dp[j], dp[i]);
+            }
+        }
+    }
+    int ans = 0;
+    for(int i=0;i<n;i++) ans = max(ans, dp[i]);
+    return ans;
+}
+
+//---------
+//Bottom Up(Print the full increasing sequence by backtrack)
+//---------
+
+#include<bits/stdc++.h>
+int longestIncreasingSubsequence(int arr[], int n)
+{
+    vector<int>dp(n,1), hash(n,1);
+    for(int i=0;i<n;i++){
+        hash[i] = i;
+        for(int j=0;j<i;j++){
+            if(arr[i]>arr[j] && 1+dp[j]>dp[i] ){
+                dp[i] = 1+dp[j];
+                hash[i] = j;
+            }
+        }
+    }
+    int ans = 0, last = -1;
+    for(int i=0;i<n;i++){
+        if(dp[i]>ans){
+            ans = dp[i];
+            last = i;
+        }
+    }
+    vector<int>tmp;
+    tmp.push_back(arr[last]);
+    while(hash[last] != last){
+        last = hash[last];
+        tmp.push_back(arr[last]);    
+    }
+    reverse(tmp.begin(),tmp.end());
+    for(auto x: tmp)cout<< x << ' ';
+
+    return ans;
+}
+
+
+//#######################################################################
+//#######-------DP 43. Longest Increasing Subsequence | Binary Search | Intuition--------########
+//Tutorial: https://takeuforward.org/data-structure/longest-increasing-subsequence-binary-search-dp-43/
+//Problem:  https://www.naukri.com/code360/problems/longest-increasing-subsequence_630459
+
+To regenerate the sequence you have to do a lot more things, but doing binary search you can get the length
+Steps:
+1. if the element is greater than the last element add it in the array 
+   else change the value with arr[index]
+
+
+
+//---------
+//Binary Search Approach(nlogn)
+//---------
+
+#include<bits/stdc++.h>
+int longestIncreasingSubsequence(int arr[], int n)
+{
+    vector<int>v;
+    for(int i=0;i<n;i++){
+        int lw = lower_bound(v.begin(),v.end(),arr[i]) - v.begin();
+        if(v.size()==lw) v.push_back(arr[i]);
+        else v[lw] = arr[i];
+    }
+    return v.size();
+}
+
+//#######################################################################
+//#######-------DP 44. Largest Divisible Subset | Longest Increasing Subsequence--------########
+//Tutorial: https://takeuforward.org/data-structure/longest-common-subsequence-dp-25/
+//Problem:  https://www.naukri.com/code360/problems/divisible-set_3754960
+
+Steps:
+1. sort the array (and apply lIS)
+2. 1 -> 4 -> 8 -> 16 (to become divisible 16 must be 16%4==0, 8%4==0, previous should be divisible) 
+
+//---------
+//Bottom Up
+//---------
+vector<int> divisibleSet(vector<int> &arr)
+{   
+    int n = arr.size();
+    vector<int>dp(n,1), hash(n);
+    sort(arr.begin(),arr.end());
+    for(int i=0;i<n;i++){
+        hash[i] = i;
+        for(int j=0;j<i;j++){
+            if(arr[i]%arr[j]==0 && dp[i]<dp[j]+1){
+                dp[i] = dp[j]+1;
+                hash[i] = j;
+            }
+        }
+    }
+    
+    int ans = 0, last = -1;
+    for(int i=0;i<n;i++){
+        if(dp[i]>ans){
+            ans = dp[i];
+            last = i;
+        }
+    }
+    vector<int>tmp;
+    tmp.push_back(arr[last]);
+    while(hash[last] != last){
+        last = hash[last];
+        tmp.push_back(arr[last]);    
+    }
+    reverse(tmp.begin(),tmp.end());
+
+    return tmp;
+}
+
+
+
+//#######################################################################
+//#######-------DP 45. Longest String Chain | Longest Increasing Subsequence | LIS--------########
+//Tutorial: https://takeuforward.org/data-structure/longest-string-chain-dp-45/
+//Problem:  https://www.naukri.com/code360/problems/longest-string-chain_3752111
+
+Steps:
+1. Apply LIS 
+2. sort the string array in terms of size
+3. write a check function and see if the s1.size() == s2.size() + 1 and all except 1 is different
+*****before comparing it must be sorted(missed in the video)
+//---------
+//Bottom Up
+//---------
+bool check(string &s1, string &s2){
+    //s1 is greater in size than s2
+    if(s1.size()!=s2.size()+1) return false;
+    int f = 0, l = 0;
+    sort(s1.begin(),s1.end());
+    sort(s2.begin(),s2.end());
+    while(f<s1.size()){
+        if(s2.size()>l && s1[f]==s2[l]){
+            f++;
+            l++;
+        }
+        else f++;
+    }
+    if(f==s1.size() && l==s2.size()) return true;
+    else return false;
+}
+
+int longestStrChain(vector<string> &arr){
+    sort(arr.begin(),arr.end(), 
+        [](string &s1,string &s2){
+            return s1.size()<s2.size();
+    });
+    int n = arr.size();
+    vector<int>dp(n,1);
+    for(int i=0;i<n;i++){
+        for(int j=0;j<i;j++){
+            if(check(arr[i],arr[j]) && dp[i]<dp[j]+1){
+                dp[i] = dp[j]+1;
+            }
+        }
+    }
+    
+    int ans = 0;
+    for(int i=0;i<n;i++) ans = max(ans, dp[i]);
+    return ans;
+}
+
+//#######################################################################
+//#######-------DP 46. Longest Bitonic Subsequence | LIS--------########
+//Tutorial: https://takeuforward.org/data-structure/longest-bitonic-subsequence-dp-46/
+//        : https://youtu.be/TWHytKnOPaQ?list=PLrmLmBdmIlpsHaNTPP_jHHDx_os9ItYXr
+//Problem:  https://www.naukri.com/code360/problems/longest-bitonic-sequence_1062688
+
+bitonic: first increases then decreases
+
+Steps:
+1. Find LIS from front and from back, 
+2. the answer is max(front[i] + back[i] - 1)
+
+//---------
+//Bottom Up
+//---------
+
+#include<bits/stdc++.h>
+int longestBitonicSubsequence(vector<int>& arr, int n)
+{
+	vector<int>dp(n,1);
+    for(int i=0;i<n;i++){
+        for(int j=0;j<i;j++){
+            if(arr[i]>arr[j]){
+                dp[i] = max(1+dp[j], dp[i]);
+            }
+        }
+    }
+
+	reverse(arr.begin(),arr.end());
+	vector<int>dp2(n,1);
+    for(int i=0;i<n;i++){
+        for(int j=0;j<i;j++){
+            if(arr[i]>arr[j]){
+                dp2[i] = max(1+dp2[j], dp2[i]);
+            }
+        }
+    }
+	reverse(dp2.begin(),dp2.end());
+
+	int ans = 0;
+    for(int i=0;i<n;i++) ans = max(ans, dp[i]+dp2[i]-1);
+    return ans;
+
+}
+
+//#######################################################################
+//#######-------DP 47. Number of Longest Increasing Subsequences--------########
+//Tutorial: https://takeuforward.org/data-structure/number-of-longest-increasing-subsequences-dp-47/
+//Problem:  https://www.naukri.com/code360/problems/number-of-longest-increasing-subsequence_3751627
+
+If you want to verify, this is how the solution should look:
+array:  1 5 4 3 2 6 7 10 8 9 
+length: 1 2 2 2 2 3 4 5 5 6 
+count:  1 1 1 1 1 4 4 4 4 4
+
+
+Steps:
+1. manage a max length(dp) and count of the sequences 
+2. at the end if found the max length count the total max 
+
+//---------
+//Bottom Up
+//---------
+
+confused
+
+
+//---------
+//Bottom Up(DO THE BELOW DRY RUN FOR BETTER UNDERSTANDING)
+//---------
+#include <bits/stdc++.h>
+using namespace std;
+
+// Function to find the count of Longest Increasing Subsequences (LIS)
+void findNumberOfLIS(vector<int>& arr) {
+    int n = arr.size();
+
+    vector<int> dp(n, 1); // dp[i] stores the length of the LIS ending at arr[i]
+    vector<int> ct(n, 1); // ct[i] stores the count of LIS ending at arr[i]
+
+    int maxi = 1; // Initialize the maximum length as 1
+
+    for (int i = 0; i < n; i++) {
+        for (int prev_index = 0; prev_index < i; prev_index++) {
+            if (arr[prev_index] < arr[i] && dp[prev_index] + 1 > dp[i]) {
+                dp[i] = dp[prev_index] + 1;
+                // Inherit count
+                ct[i] = ct[prev_index];
+            } else if (arr[prev_index] < arr[i] && dp[prev_index] + 1 == dp[i]) {
+                // Increase the count
+                ct[i] = ct[i] + ct[prev_index];
+            }
+        }
+        maxi = max(maxi, dp[i]);
+    }
+
+    int numberOfLIS = 0;
+
+    for (int i = 0; i < n; i++) {
+        if (dp[i] == maxi) {
+            numberOfLIS += ct[i];
+        }
+    }
+
+    for(int i=0;i<n;i++){
+        cout<< arr[i] << ' ';
+    }
+    cout<<endl;
+
+    for(int i=0;i<n;i++){
+        cout<< dp[i] << ' ';
+    }
+    cout<<endl;
+
+    for(int i=0;i<n;i++){
+        cout<< ct[i] << ' ';
+    }
+    cout<<endl;
+
+    cout<< numberOfLIS <<endl;
+
+    //return numberOfLIS;
+}
+
+int main() {
+    vector<int> arr = {1, 5, 4, 3, 2, 6, 7, 10, 8 , 9};
+    findNumberOfLIS(arr);
+
+    //cout << "The count of Longest Increasing Subsequences (LIS) is " << findNumberOfLIS(arr) << endl;
+
+    return 0;
+}
+
+
+
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//##################-------MCM DP/Partition DP--------###################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+
+- When there are multiple ways to solve it is partition dp 
+- solve portion and return  
+
+
+Steps:
+1. Start with entire block
+2. Try all partitions 
+3. Return the best possible 2 partition
+
+MCM DP/Partition DP CODE:
+
+#include <bits/stdc++.h> 
+int f(int i, int j, vector<int> &arr, vector<vector<int>>&dp){
+    if(i==j) return 0;
+    if(dp[i][j]!=-1) return dp[i][j];
+    int mn = 1e9;
+    for(int k=i;k<j;k++){
+        int v = f(i,k,arr,dp) + f(k+1,j,arr,dp) + arr[i-1] *arr[k] *arr[j];
+        //i, k should be different, that is why i-1
+        mn = min(mn, v);
+    }
+    return dp[i][j] = mn;
+}
+int matrixMultiplication(vector<int> &arr, int N)
+{
+    int i = 1;
+    int j = N-1;
+    vector<vector<int>>dp(N, vector<int>(N,-1));
+    return f(i, j, arr,dp);
+}
+
+//#######################################################################
+//#######-------DP 48. Matrix Chain Multiplication | MCM | Partition DP Starts--------########
+//Tutorial: https://takeuforward.org/dynamic-programming/matrix-chain-multiplication-dp-48/
+//Tutorial2: https://www.geeksforgeeks.org/matrix-chain-multiplication-dp-8/
+//Problem:  https://www.naukri.com/code360/problems/matrix-chain-multiplication_975344
+
+- col1, row2 must be same to multiply two matrices 
+
+Steps:
+1. the matrix is from 0 to n-1 index, multiply with any 3 index and find the minimum, i must be lesser than k, so start with 1
+
+
+//---------
+//Top Down
+//---------
+#include <bits/stdc++.h> 
+int f(int i, int j, vector<int> &arr, vector<vector<int>>&dp){
+    if(i==j) return 0;
+    if(dp[i][j]!=-1) return dp[i][j];
+    int mn = 1e9;
+    for(int k=i;k<j;k++){
+        int v = f(i,k,arr,dp) + f(k+1,j,arr,dp) + arr[i-1] *arr[k] *arr[j];
+        //i, k should be different, that is why i-1
+        mn = min(mn, v);
+    }
+    return dp[i][j] = mn;
+}
+int matrixMultiplication(vector<int> &arr, int N)
+{
+    int i = 1;
+    int j = N-1;
+    vector<vector<int>>dp(N, vector<int>(N,-1));
+    return f(i, j, arr,dp);
+}
+
+//#######################################################################
+//#######-------DP 49. Matrix Chain Multiplication | Bottom-Up | Tabulation--------########
+//Tutorial: https://takeuforward.org/data-structure/matrix-chain-multiplication-tabulation-method-dp-49/
+//Problem:  https://www.naukri.com/code360/problems/matrix-chain-multiplication_975344
+
+Steps:
+1. 
+
+//---------
+//Bottom Up
+//---------
+
+#include <bits/stdc++.h> 
+int matrixMultiplication(vector<int> &arr, int N)
+{
+    int ii = 1;
+    int jj = N-1;
+    vector<vector<int>>dp(N, vector<int>(N,0));
+    for(int i=N-1;i>=1;i--){
+        //j is always right side of i
+        for(int j=i+1;j<N;j++){
+            int mn = 1e9;
+            for(int k=i;k<j;k++){
+                int v = dp[i][k] + dp[k+1][j] + arr[i-1] *arr[k] *arr[j];
+                mn = min(mn, v);
+            }
+            dp[i][j] = mn;
+        }
+    }
+    return dp[ii][jj];
+}
+
+
+//#######################################################################
+//#######-------DP 50. Minimum Cost to Cut the Stick--------########
+//Tutorial: https://takeuforward.org/data-structure/minimum-cost-to-cut-the-stick-dp-50/
+//Problem:  https://www.naukri.com/code360/problems/cost-to-cut-a-chocolate_3208460
+
+Steps:
+1. 
+
+
+Confused??? DRAW tabulation to understand
+
+//---------
+//Top Down
+//---------
+
+
+//---------
+//Bottom Up
+//---------
+
+
+//---------
+//Bottom Up(Space optimized)
+//---------
+
+
+//#######################################################################
+//#######-------DP 51. Burst Balloons | Partition DP--------########
+//Tutorial: https://takeuforward.org/data-structure/burst-balloons-partition-dp-dp-51/
+//Problem:  https://www.naukri.com/code360/problems/mining-diamonds_4244494
+
+Steps:
+1. 
+
+Confused??
+
+//---------
+//Top Down
+//---------
+
+
+//---------
+//Bottom Up
+//---------
+
+
+//---------
+//Bottom Up(Space optimized)
+//---------
+
+
+//#######################################################################
+//#######-------DP 52. Evaluate Boolean Expression to True | Partition DP--------########
+//Tutorial: https://takeuforward.org/data-structure/evaluate-boolean-expression-to-true-partition-dp-dp-52/
+//Problem:  https://www.naukri.com/code360/problems/problem-name-boolean-evaluation_1214650
+
+Steps:
+1. 
+
+//---------
+//Top Down
+//---------
+Confused??
+
+//---------
+//Bottom Up
+//---------
+
+
+//---------
+//Bottom Up(Space optimized)
+//---------
+
+
+//#######################################################################
+//#######-------DP 53. Palindrome Partitioning - II | Front Partition--------########
+//Tutorial: https://takeuforward.org/data-structure/palindrome-partitioning-ii-front-partition-dp-53/
+//Problem:  https://www.naukri.com/code360/problems/palindrome-partitioning_873266
+
+Steps:
+1. 
+
+//---------
+//Top Down
+//---------
+
+int pal(int i, int j, string &s){
+    while(i<j){
+        if(s[i]!=s[j]) return false;
+        i++,j--;
+    }
+    return true;
+}
+int f(int i, string &str, vector<int>&dp){
+    if(i==str.size()) return 0;
+    if(dp[i]!=-1) return dp[i];
+    int mn = 1e19;
+    for(int j=i;j<str.size();j++){
+        if( pal(i, j, str) ){
+            int v = 1 + f(j+1, str, dp);//+1 and solve for other length
+            mn = min(mn, v);
+        }
+    }
+    return dp[i] = mn;
+}
+int palindromePartitioning(string str)
+{
+    int n = str.size();
+    vector<int>dp(n, -1);
+    return f(0, str, dp)-1;
+}
+
+
+//---------
+//Bottom Up
+//---------
+int pal(int i, int j, string &s){
+    while(i<j){
+        if(s[i]!=s[j]) return false;
+        i++,j--;
+    }
+    return true;
+}
+
+int palindromePartitioning(string str)
+{
+    int n = str.size();
+    vector<int>dp(n+1, -1);
+    for(int i=n-1;i>=0;i--){
+        int mn = 1e19;
+        for(int j=i;j<str.size();j++){
+            if( pal(i, j, str) ){
+                int v = 1 + dp[j+1];
+                mn = min(mn, v);
+            }
+        }
+        dp[i] = mn;
+    }
+    return dp[0];
+}
+
+
+draw tabulation for this
+
+
+//#######################################################################
+//#######-------DP 54. Partition Array for Maximum Sum | Front Partition--------########
+//Tutorial: https://takeuforward.org/data-structure/partition-array-for-maximum-sum-front-partition-dp-54/
+//Problem:  https://www.naukri.com/code360/problems/maximum-subarray_3755255
+
+Steps:
+1. 
+
+//---------
+//Top Down
+//---------
+
+#include<bits/stdc++.h>
+int f(int i, int k,vector<int> &arr, vector<int> &dp ){
+    int n = arr.size();
+    if(i==n) return 0;
+    if(dp[i]!=-1) return dp[i];
+    int mx = INT_MIN, l = 0,mxsum = INT_MIN;
+    for(int j=i;j<min(n,i+k);j++){
+        l++;
+        mx = max(mx, arr[j]);
+        int v = mx * l + f(j+1, k, arr,dp);//solve rest
+        mxsum = max(v, mxsum);
+    }
+    return dp[i] = mxsum;
+}
+int maximumSubarray(vector<int> &arr, int k){
+    vector<int>dp(arr.size(),-1);
+    return f(0, k, arr, dp);
+}
+
+//---------
+//Bottom Up
+//---------
+
+#include<bits/stdc++.h>
+int maximumSubarray(vector<int> &arr, int k){
+    int n = arr.size();
+    vector<int>dp(n+1,0);
+
+    for(int i=n-1;i>=0;i--){
+        int mx = INT_MIN, l = 0,mxsum = INT_MIN;
+        for(int j=i;j<min(n,i+k);j++){
+            l++;
+            mx = max(mx, arr[j]);
+            int v = mx * l + dp[j+1];
+            mxsum = max(v, mxsum);
+        }
+        dp[i] = mxsum;
+    }
+    return dp[0];
+}
+
+
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#####################-------DP On Squares--------######################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+
+
+//#######################################################################
+//#######-------DP 55. Maximum Rectangle Area with all 1's | DP on Rectangles--------########
+//Histogram problem: https://takeuforward.org/data-structure/area-of-largest-rectangle-in-histogram/
+//Tutorial: https://takeuforward.org/data-structure/maximum-rectangle-area-with-all-1s-dp-on-rectangles-dp-55/
+//Problem:  https://www.naukri.com/code360/problems/maximum-size-rectangle-sub-matrix-with-all-1-s_893017
+
+Steps:
+1. Get the Histogram problem function 
+2. for every row run the Histogram problem function  and get the maximum rectangle
+
+
+//---------
+//Bottom Up
+//---------
+
+#include<bits/stdc++.h>
+int largestRectangleArea(vector < int > & histo) {
+	stack < int > st;
+	int maxA = 0;
+	int n = histo.size();
+	for (int i = 0; i <= n; i++) {
+	while (!st.empty() && (i == n || histo[st.top()] >= histo[i])) {
+		int height = histo[st.top()];
+		st.pop();
+		int width;
+		if (st.empty()) width = i;
+		else width = i - st.top() - 1;
+		maxA = max(maxA, width * height);
+	}
+	st.push(i);
+	}
+	return maxA;
+}
+
+int maximalAreaOfSubMatrixOfAll1(vector<vector<int>> &mat, int n, int m){
+	int ans = 0;
+	vector<int>tmp(m,0);
+	for(int i=0;i<n;i++){
+		for(int j=0;j<m;j++){
+			if(mat[i][j]==0)tmp[j] = 0;
+			else tmp[j]++;
+		}
+		ans = max(ans, largestRectangleArea(tmp));
+	}
+	return ans;
+}
+
+//#######################################################################
+//#######-------DP 56. Count Square Submatrices with All Ones | DP on Rectangles--------########
+//Tutorial: https://takeuforward.org/data-structure/count-square-submatrices-with-all-1s-dp-on-rectangles-dp-56/
+//Problem:  https://www.naukri.com/code360/problems/count-square-submatrices-with-all-ones_3751502
+
+Steps:
+1. get the minimum from above, above left and left + 1 in the dp-th box if it is 1, else leave it as 0
+
+//---------
+//Bottom Up
+//---------
+
+int countSquares(int n, int m, vector<vector<int>> &arr) {
+    vector<vector<int>>dp(n, vector<int>(m,0));
+    //fill the 0th row and 0th column
+    for(int i=0;i<m;i++) dp[0][i] = arr[0][i] == 1;
+    for(int i=0;i<n;i++) dp[i][0] = arr[i][0] == 1;
+    
+    for(int i=1;i<n;i++){
+        for(int j=1;j<m;j++){
+            int mn = min({dp[i-1][j], dp[i-1][j-1], dp[i][j-1]}) + 1;
+            if(arr[i][j]) dp[i][j] = mn;
+            else dp[i][j] = 0;
+        }
+    }
+
+    int ans = 0;
+    for(int i=0;i<n;i++){
+        for(int j=0;j<m;j++) ans+=dp[i][j];
+    }
+
+    return ans;
+}
+
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#####################-------FINISHED--------###########################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
