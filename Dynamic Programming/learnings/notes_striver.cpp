@@ -18,11 +18,11 @@ Steps to Memoise(DP):
 - Memoization code will not give TLE if both the strings are passed by reference in the function... 
   as no copies will be generated which will limit the memory and Time
   if no passed by reference it will create a new copy everytime and will take a lot of space
+- Always send parameters in dp function by pass by reference
 - Both 2 rowr kaj at the same time thakle one 1d array te convert korte pari na
 - Make the dp of changing parameters
 - write changing parameter in opposite fashion in tabulation(when converting recursive to tabulation)
 - FOR ALL THE COUNT PROBLEMS: if the condition is satisfied return 1, else return 0
-
 
 Space optimization:
 converting:
