@@ -7,6 +7,12 @@
         "iostream": "cpp",
         "*.tcc": "cpp",
         "vector": "cpp",
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "ranges": "cpp",
+        "barrier": "cpp",
+        "latch": "cpp",
+        "limits": "cpp",
+        "semaphore": "cpp",
+        "algorithm": "cpp"
     }
 }

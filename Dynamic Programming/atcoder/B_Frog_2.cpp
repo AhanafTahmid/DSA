@@ -1,5 +1,5 @@
 //Type: 1D DP(Loop)
----------------------------------
+---------------------------------------------------------------
 //Recursive
 int f(int i,int k, vector<int>&a, vector<int>&dp){
     if(i==0) return 0;
@@ -13,7 +13,7 @@ int f(int i,int k, vector<int>&a, vector<int>&dp){
     }
     return dp[i] = a1;
 }
----------------------------------
+---------------------------------------------------------------
 //Iterative
 int n, k;cin>>n>>k;
 vector<int>a(n),dp(n,0);
