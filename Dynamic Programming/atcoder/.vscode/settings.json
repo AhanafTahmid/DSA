@@ -13,6 +13,11 @@
         "latch": "cpp",
         "limits": "cpp",
         "semaphore": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "span": "cpp",
+        "ostream": "cpp",
+        "variant": "cpp",
+        "string": "cpp",
+        "filesystem": "cpp"
     }
 }

@@ -111,6 +111,7 @@
         "stop_token": "cpp",
         "syncstream": "cpp",
         "thread": "cpp",
-        "climits": "cpp"
+        "climits": "cpp",
+        "__memory": "cpp"
     }
 }

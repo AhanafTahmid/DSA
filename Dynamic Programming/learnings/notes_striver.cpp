@@ -1,6 +1,6 @@
 - Every types first video is the most important
 - Learn to write bottom up table
-- Learn to draw solving recursively
+- Learn to draw solving recursively, ==  f(idx, val) diye
 
 How to think in recursion: 
 1. Play with indexes, find the base case(destination, or out of bound cases). Always write the out of bounds first
@@ -445,6 +445,8 @@ long long int houseRobber(vector<int>& valueInHouse)
 
 DP on Grids(2d,3d) Code: 
 //Top Down
+- for day = 0, donot write the condition extra, just write day<0 return 0
+
 int rec(int day, int last, vector<vector<int>> &points, vector<vector<int>> &dp){
     if(dp[day][last]!=-1)return dp[day][last];
     if(day==0){
@@ -466,7 +468,7 @@ int rec(int day, int last, vector<vector<int>> &points, vector<vector<int>> &dp)
     return dp[day][last] = mx;
 }
 //Bottom Up 
-int ninjaTraining(int n, vector<vector<int>> &points)
+int asTraining(int n, vector<vector<int>> &points)
 {
     vector< vector<int> > dp(n, vector<int>(4,-1));
     //for every value, removing each position see which one is maximum, compute the first
@@ -2168,7 +2170,7 @@ DP ON Strings Code:
 
 //Top Down
 #include<bits/stdc++.h>
-int f(int i, int j, string s, string t, vector<vector<int>>&dp){
+int f(int i, int j, string&s, string&t, vector<vector<int>>&dp){
     if(i<0 || j<0) return 0;
     if(dp[i][j]!=-1)return dp[i][j];
     if(s[i]==t[j]){
