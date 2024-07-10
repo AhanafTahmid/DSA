@@ -2,7 +2,7 @@
 
 using namespace std;
 
-int visited[100];
+int visited(100);
 vector <int> adj[100];
 
 void dfs(int s) {
