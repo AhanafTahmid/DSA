@@ -117,4 +117,22 @@ int main()
 } 
 
 
+
 //Clean Template
+vector<int>g[100];
+int visited(100);
+void bfs(int s){
+    queue<int> q;
+    q.push(s);
+	visited[s] = 1;
+    while(!q.empty()){
+        int u = q.front();
+        q.pop();
+        for(auto x: g[u]){            
+            if(visited[x]==0){
+                visited[gx] = 1;
+                q.push(x);
+            }
+        }        
+    }
+}

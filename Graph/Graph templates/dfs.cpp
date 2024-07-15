@@ -42,3 +42,16 @@ int main()
     dfs(s);
     return 0;
 }
+
+
+//Clean Template
+
+int visited(100);
+vector <int> adj[100];
+void dfs(int s) {
+    if (visited[s]) return;
+    visited[s] = 1;
+    for (int u: adj[s]) dfs(u);
+}
+
+---------------------------
