@@ -14,8 +14,6 @@ Input graph =
 [[1],[0,3],[3],[1,2]]
 
 2. G-18. Bipartite Graph | DFS - little confused on how dfs in working 
-
-TODO: https://leetcode.com/problems/course-schedule-ii/description/
 3. G-19. Detect cycle in a directed graph using DFS
 4. G-20. Find Eventual Safe States - DFS (draw the tree )
 
@@ -1219,20 +1217,59 @@ class Solution {
 
 - Everynode that is connected to the cycle can never be safe node 
 - everynode that is incoming to the cycle is not a safe node
+- all path has to come at a terminal node -> then it is a safe node
 
 ------------
 DFS
 ------------
+class Solution {
+public:
+    bool dfs(int i, vector<int>adj[], vector<bool>&visited, vector<bool>&pathvisited, vector<bool>&choice){
+        visited[i] = 1;
+        choice[i] = 0;
+        pathvisited[i] = 1;
+        for(int x: adj[i]){
+            if(!visited[x]){
+                if(dfs(x, adj, visited, pathvisited, choice)) return true;
+            }
+            else if(pathvisited[x]==1){
+                return true;
+            }
+        }
+        choice[i] = 1;
+        pathvisited[i] = 0;
+        return false;
+    }
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        int V = graph.size();
+        vector<int>ans;
+        vector<int>adj[V];
+        vector<bool>visited(V), pathvisited(V), choice(V);
+        for(int i=0;i<V;i++){
+            for(int j=0;j<graph[i].size();j++){
+                adj[i].push_back(graph[i][j]);
+            }
+        }
+        
+        for(int i=0;i<V;i++){
+            if(!visited[i]){
+                dfs(i, adj, visited, pathvisited, choice);
+            }
+        }
 
+        for(int i=0;i<V;i++){
+            if(choice[i]==1) ans.push_back(i);
+        }
+        return ans;
+    }
+};
 
-
-
 //#######################################################################
 //#######################################################################
 //#######################################################################
 //#######################################################################
 //#######################################################################
-//#######################################################################
+//#######################################################################nnn
 //##########-------Problems on Topo Sort--------####################
 //#######################################################################
 //#######################################################################
@@ -1240,7 +1277,10 @@ DFS
 //#######################################################################
 //#######################################################################
 //#######################################################################
-
+ 
+- Something before something, Use topological sort
+- Topological sorting only exists/valid in Directed Acyclic Graph (DAG).
+- Toplogical sort: In topological sorting, node u will always appear before node v if there is a directed edge from node u towards node v(u -> v).
 
 //#######################################################################
 //#######-------G-21. Topological Sort Algorithm | DFS--------########
@@ -1249,43 +1289,435 @@ DFS
 
 ------------
 DFS
+TC: O(V+E)+O(V), where V = no. of nodes and E = no. of edges. There can be at most V components. So, another O(V) time complexity.
+SC: O(2N) + O(N) ~ O(2N): O(2N) for the visited array and the stack carried during DFS calls and O(N) for recursive stack space, where N = no. of nodes.
 ------------
 
+class Solution
+{   
+    void dfs(int i,vector<int> adj[],vector<bool>&visited,stack<int>&st){
+        visited[i] = 1;
+        for(int x: adj[i]){
+            if(!visited[x]){
+                dfs(x, adj, visited, st);
+            }
+        }
+        st.push(i);
+    }
+	public:
+	vector<int> topoSort(int V, vector<int> adj[]) 
+	{
+	    vector<bool>visited(V);
+	    stack<int>st;
+	    vector<int>ans;
+	    for(int i=0;i<V;i++){
+	        if(!visited[i])dfs(i, adj, visited, st);
+	    }
+	    while(!st.empty()){
+	        ans.push_back(st.top());
+	        st.pop();
+	    }
+	    return ans;
+	}
+};
 
 //#######################################################################
 //#######-------G-22. Kahn's Algorithm | Topological Sort Algorithm | BFS--------########
 //Tutorial: https://takeuforward.org/data-structure/kahns-algorithm-topological-sort-algorithm-bfs-g-22/
 //Problem: https://www.geeksforgeeks.org/problems/topological-sort/1
 
-see the problem? is it correct
 
+Kahns Algorithm: Calculate indegree and from indegree find topological sorting(see striver notes for more)
+- By using kahns we can use topological sort in bfs 
+
+------------
+BFS
+Time Complexity: O(V+E), where V = no. of nodes and E = no. of edges. This is a simple BFS algorithm.
+Space Complexity: O(N) + O(N) ~ O(2N), O(N) for the indegree array, and O(N) for the queue data structure used in BFS(where N = no.of nodes).
+------------
+
+class Solution
+{   
+	public:
+	vector<int> topoSort(int V, vector<int> adj[]) 
+	{
+
+	    vector<int>ans;
+	    vector<int> indegree(V);
+	    for(int i=0;i<V;i++){
+	       for(int x: adj[i]) indegree[x]++;
+	    }
+	    
+	    queue<int>q;
+	    for(int i=0;i<V;i++){
+	        if(indegree[i]==0)q.push(i);
+	    }
+	    
+        //someone will always be in queue as it is DAG
+	    while(!q.empty()){
+	       int v = q.front();
+	       q.pop();
+	       ans.push_back(v);
+	       for(int x: adj[v]){
+	           indegree[x]--;
+	           if(indegree[x]==0){
+	               q.push(x);
+	           }
+	       }
+	    }
+	    
+	    return ans;
+	}
+};
 
 //#######################################################################
 //#######-------G-23. Detect a Cycle in Directed Graph | Topological Sort | Kahn's Algorithm | BFS--------########
-//Tutorial: 
+//Tutorial: https://takeuforward.org/data-structure/detect-a-cycle-in-directed-graph-topological-sort-kahns-algorithm-g-23/
 //Problem: https://www.geeksforgeeks.org/problems/detect-cycle-in-a-directed-graph/1
 
+------------
+BFS
+Approach: If ct == vertices, then it is a dag, hence, toposort is available, hence no cycle,else cycle ase
+Time Complexity: O(V+E), where V = no. of nodes and E = no. of edges. This is a simple BFS algorithm.
+Space Complexity: O(N) + O(N) ~ O(2N), O(N) for the in-degree array, and O(N) for the queue data structure used in BFS(where N = no.of nodes).
+------------
+
+class Solution {
+  public:
+    bool isCyclic(int V, vector<int> adj[]) {
+	    vector<int> indegree(V);
+	    for(int i=0;i<V;i++){
+	       for(int x: adj[i]) indegree[x]++;
+	    }
+	    int ct = 0;
+	    queue<int>q;
+	    for(int i=0;i<V;i++){
+	        if(indegree[i]==0)q.push(i);
+	    }
+	    while(!q.empty()){
+	        int v = q.front();
+	        q.pop();
+	        ct++;
+	        for(int x: adj[v]){
+	            indegree[x]--;
+	            if(indegree[x] == 0)q.push(x);
+	        }
+	    }
+        
+        return (ct==V?false:true);
+    }
+};
 
 //#######################################################################
 //#######-------G-24. Course Schedule I and II | Pre-requisite Tasks | Topological Sort--------########
 //Tutorial: https://takeuforward.org/data-structure/course-schedule-i-and-ii-pre-requisite-tasks-topological-sort-g-24/
-//Problem1: https://leetcode.com/problems/course-schedule/description/
-//Problem2: https://leetcode.com/problems/course-schedule-ii/description/
 
+//Problem1: https://leetcode.com/problems/course-schedule/description/
+------------
+BFS
+------------
+class Solution {
+public:
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        vector<int> adj[numCourses];
+        for(int i=0;i<prerequisites.size();i++){
+            adj[prerequisites[i][1]].push_back(prerequisites[i][0]);
+        }
+
+        vector<int>indegree(numCourses);
+        for(int i=0;i<numCourses;i++){
+            for(int x: adj[i]) indegree[x]++;
+        }
+        queue<int>q;
+        for(int i=0;i<numCourses;i++){
+            if(indegree[i]==0)q.push(i);
+        }
+
+        int ct = 0;
+        while(!q.empty()){
+            int v = q.front();
+            q.pop();
+            ct++;
+            for(int x: adj[v]){
+                indegree[x]--;
+                if(indegree[x]==0)q.push(x);
+            }
+        }
+
+        if(ct==numCourses) return true;//means there is no cycle
+        return false;
+    }
+};
+
+//Problem2: https://leetcode.com/problems/course-schedule-ii/description/
+------------
+BFS
+------------
+class Solution {
+public:
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+        vector<int> adj[numCourses];
+        for(int i=0;i<prerequisites.size();i++){
+            // {0, 1}
+            // to finish 0 you must finish 1, 0 is dependent to 1
+            adj[prerequisites[i][1]].push_back(prerequisites[i][0]);
+        }
+
+        vector<int>indegree(numCourses);
+        for(int i=0;i<numCourses;i++){
+            for(int x: adj[i]) indegree[x]++;
+        }
+        queue<int>q;
+        for(int i=0;i<numCourses;i++){
+            if(indegree[i]==0)q.push(i);
+        }
+
+        vector<int>ans;
+        while(!q.empty()){
+            int v = q.front();
+            q.pop();
+            ans.push_back(v);
+            for(int x: adj[v]){
+                indegree[x]--;
+                if(indegree[x]==0)q.push(x);
+            }
+        }
+
+        if(ans.size()!=numCourses)ans.clear();
+        return ans;
+    }
+};
 
 //#######################################################################
 //#######-------G-25. Find Eventual Safe States - BFS - Topological Sort--------########
 //Tutorial: https://takeuforward.org/data-structure/find-eventual-safe-states-bfs-topological-sort-g-25/
 //Problem: https://leetcode.com/problems/find-eventual-safe-states/description/
 
+------------
+BFS
+Approach: backtracking the answer
+Time Complexity: O(V+E)+O(N*logN), where V = no. of nodes and E = no. of edges. This is a simple BFS algorithm. Extra O(N*logN) for sorting the safeNodes array, where N is the number of safe nodes.
+Space Complexity: O(N) + O(N) + O(N) ~ O(3N), O(N) for the indegree array, O(N) for the queue data structure used in BFS(where N = no.of nodes), and extra O(N) for the adjacency list to store the graph in a reversed order.
+------------
+
+class Solution {
+public:
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        int V = graph.size();
+        vector<int>ans;
+        vector<int>indegree(V);
+        vector<int>adj2[V];
+        for(int i=0;i<V;i++){
+            for(int j=0;j<graph[i].size();j++){
+                adj2[graph[i][j]].push_back(i);
+                indegree[i]++;
+            }
+        }
+        queue<int>q;
+        for(int i=0;i<V;i++){
+            if(indegree[i]==0)q.push(i);
+        }
+        
+        while(!q.empty()){
+            int v = q.front();
+            q.pop();
+            ans.push_back(v);
+            for(auto x: adj2[v]){
+                indegree[x]--;
+                if(indegree[x]==0)q.push(x);
+            }
+        }
+        
+        sort(ans.begin(),ans.end());
+        return ans;
+    }
+};
+
 
 //#######################################################################
 //#######-------G-26. Alien Dictionary - Topological Sort--------########
 //Tutorial: https://takeuforward.org/data-structure/alien-dictionary-topological-sort-g-26/
-//Problem: 
+//Problem: https://www.geeksforgeeks.org/problems/alien-dictionary/1
+
+------------
+BFS
+Approach: convert the string to directed graph, after that, use topological to find the sequence
+Not possible, when: 1. abcd , abc 2. Cyclic dependency
+Time Complexity: O(N*len)+O(K+E), where N is the number of words in the dictionary, ‘len’ is the length up to the index where the first inequality occurs, K = no. of nodes, and E = no. of edges.
+Space Complexity: O(K) + O(K)+O(K)+O(K) ~ O(4K), O(K) for the indegree array, and O(K) for the queue data structure used in BFS(where K = no.of nodes), O(K) for the answer array and O(K) for the adjacency list used in the algorithm.
+------------
+
+class Solution{
+    public:
+    string findOrder(string dict[], int N, int K) {
+        //make directed graph
+        vector<int>adj[K];
+        for(int i=0;i<N-1;i++){
+            string s1 = dict[i];
+            string s2 = dict[i+1];
+            int l = 0;
+            while(l<s1.size()){
+                if(s1[l]!=s2[l]){
+                    adj[s1[l] - 'a'].push_back(s2[l]-'a');
+                    break;
+                }
+                l++;
+            }
+        }
+        
+        vector<int>indegree(K);
+        for(int i=0;i<K;i++){
+            for(int x: adj[i]){
+                indegree[x]++;
+            }
+        }
+        
+        queue<int>q;
+        for(int i=0;i<K;i++){
+            if( indegree[i] == 0) q.push(i);
+        }
+        
+        string s = "";
+        while(!q.empty()){
+            int v = q.front();
+            s+= (v+'a'); 
+            q.pop();
+            for(int x: adj[v]){
+                indegree[x]--;
+                if(indegree[x]==0) q.push(x);
+            }
+        }
+        
+        return s;
+    }
+};
+
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//##########-------Shortest Path Algorithms and Problems--------#########
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+
+
+//#######################################################################
+//#######-------G-27. Shortest Path in Directed Acyclic Graph - Topological Sort--------########
+//Tutorial: https://takeuforward.org/data-structure/shortest-path-in-directed-acyclic-graph-topological-sort-g-27/
+//Problem: https://www.geeksforgeeks.org/problems/shortest-path-in-undirected-graph/1
+
+------------
+BFS
+Approach: convert the string to directed graph, after that, use topological to find the sequence
+Not possible, when: 1. abcd , abc 2. Cyclic dependency
+Time Complexity: O(N*len)+O(K+E), where N is the number of words in the dictionary, ‘len’ is the length up to the index where the first inequality occurs, K = no. of nodes, and E = no. of edges.
+Space Complexity: O(K) + O(K)+O(K)+O(K) ~ O(4K), O(K) for the indegree array, and O(K) for the queue data structure used in BFS(where K = no.of nodes), O(K) for the answer array and O(K) for the adjacency list used in the algorithm.
+------------
+
+//#######################################################################
+//#######-------G-28. Shortest Path in Undirected Graph with Unit Weights--------########
+//Tutorial: https://takeuforward.org/data-structure/shortest-path-in-undirected-graph-with-unit-distance-g-28/
+//Problem: https://www.geeksforgeeks.org/problems/shortest-path-in-undirected-graph-having-unit-distance/1
+
+//#######################################################################
+//#######-------G-29. Word Ladder - I | Shortest Paths--------########
+//Tutorial: https://takeuforward.org/graph/word-ladder-i-g-29/
+//Problem: https://leetcode.com/problems/word-ladder/description/
+
+
+//#######################################################################
+//#######-------G-30. Word Ladder - 2 | Shortest Paths--------########
+//Tutorial: https://takeuforward.org/graph/g-30-word-ladder-ii/
+//Problem: https://leetcode.com/problems/word-ladder-ii/description/
+
+
+//#######################################################################
+//#######-------G-31. Word Ladder - 2 | Optimised Approach for Leetcode--------########
+//Tutorial: https://takeuforward.org/graph/word-ladder-ii-optimised-approach-g-31/
+//Problem: https://leetcode.com/problems/word-ladder-ii/description/
+
+
+//#######################################################################
+//#######-------G-32. Dijkstra's Algorithm - Using Priority Queue - C++ and Java - Part 1--------########
+//Tutorial: https://takeuforward.org/data-structure/dijkstras-algorithm-using-priority-queue-g-32/
+//Problem: https://www.geeksforgeeks.org/problems/implementing-dijkstra-set-1-adjacency-matrix/1
+//CF Problem: https://codeforces.com/problemset/problem/20/C
+
+
+//#######################################################################
+//#######-------G-33. Dijkstra's Algorithm - Using Set - Part 2--------########
+//Tutorial: https://takeuforward.org/data-structure/dijkstras-algorithm-using-set-g-33/
+//Problem: https://www.geeksforgeeks.org/problems/implementing-dijkstra-set-1-adjacency-matrix/1
+
+
+//#######################################################################
+//#######-------G-34. Dijkstra's Algorithm - Why PQ and not Q, Intuition, Time Complexity Derivation - Part 3--------########
+//Tutorial: https://takeuforward.org/data-structure/g-34-dijkstras-algorithm-intuition-and-time-complexity-derivation/
+//Problem: https://www.geeksforgeeks.org/problems/implementing-dijkstra-set-1-adjacency-matrix/1
+
+
+//#######################################################################
+//#######-------G-35. Print Shortest Path - Dijkstra's Algorithm--------########
+//Tutorial: https://takeuforward.org/data-structure/g-35-print-shortest-path-dijkstras-algorithm/
+//Problem: https://www.geeksforgeeks.org/problems/shortest-path-in-weighted-undirected-graph/1
+
+
+//#######################################################################
+//#######-------G-36. Shortest Distance in a Binary Maze--------########
+//Tutorial: https://takeuforward.org/data-structure/g-36-shortest-distance-in-a-binary-maze/
+//Problem: https://leetcode.com/problems/shortest-path-in-binary-matrix/description/
+
+
+//#######################################################################
+//#######-------G-37. Path With Minimum Effort--------########
+//Tutorial: https://takeuforward.org/data-structure/g-37-path-with-minimum-effort/
+//Problem: https://leetcode.com/problems/path-with-minimum-effort/description/
+
+
+//#######################################################################
+//#######-------G-38. Cheapest Flights Within K Stops--------########
+//Tutorial: https://takeuforward.org/data-structure/g-38-cheapest-flights-within-k-stops/
+//Problem: https://leetcode.com/problems/cheapest-flights-within-k-stops/description/
 
 
 
+//#######################################################################
+//#######-------G-39. Minimum Multiplications to Reach End--------########
+//Tutorial: https://takeuforward.org/graph/g-39-minimum-multiplications-to-reach-end/
+//Problem: https://www.geeksforgeeks.org/problems/minimum-multiplications-to-reach-end/1
+
+
+//#######################################################################
+//#######-------G-40. Number of Ways to Arrive at Destination--------########
+//Tutorial: https://takeuforward.org/data-structure/g-40-number-of-ways-to-arrive-at-destination/
+//Problem: https://leetcode.com/problems/number-of-ways-to-arrive-at-destination/description/
+
+
+//#######################################################################
+//#######-------G-41. Bellman Ford Algorithm--------########
+//Tutorial: https://takeuforward.org/data-structure/bellman-ford-algorithm-g-41/
+//Problem: https://www.geeksforgeeks.org/problems/distance-from-the-source-bellman-ford-algorithm/1
+
+
+//#######################################################################
+//#######-------G-42. Floyd Warshall Algorithm--------########
+//Tutorial: https://takeuforward.org/data-structure/floyd-warshall-algorithm-g-42/
+//Problem: https://www.geeksforgeeks.org/problems/implementing-floyd-warshall2042/1
+
+
+//#######################################################################
+//#######-------G-43. Find the City With the Smallest Number of Neighbours at a Threshold Distance--------########
+//Tutorial: https://takeuforward.org/data-structure/find-the-city-with-the-smallest-number-of-neighbours-at-a-threshold-distance-g-43/
+//Problem: https://leetcode.com/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/description/
+
+
+- read shafayet graph book
 ---=-=-===-===-= SOlve all the question above
 ???????????????????????????????????????????????????????????????????????????
 
@@ -1311,16 +1743,6 @@ see the problem? is it correct
 //Problem: https://www.naukri.com/code360/problems/maximum-sum-of-non-adjacent-elements_843261
 
 
-
-
-
-
-
-
-
-
-
-
 //#######################################################################
 //#######################################################################
 //#######################################################################
@@ -1340,49 +1762,6 @@ see the problem? is it correct
 //#######-------DP 5. Maximum Sum of Non-Adjacent Elements | 1-D | DP on Subsequences--------########
 //Tutorial: https://takeuforward.org/data-structure/maximum-sum-of-non-adjacent-elements-dp-5/
 //Problem: https://www.naukri.com/code360/problems/maximum-sum-of-non-adjacent-elements_843261
-
-
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//##########-------Singly LinkedList (Basics)--------####################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-
-
-//#######################################################################
-//#######-------DP 5. Maximum Sum of Non-Adjacent Elements | 1-D | DP on Subsequences--------########
-//Tutorial: https://takeuforward.org/data-structure/maximum-sum-of-non-adjacent-elements-dp-5/
-//Problem: https://www.naukri.com/code360/problems/maximum-sum-of-non-adjacent-elements_843261
-
-
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//##########-------Singly LinkedList (Basics)--------####################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-
-
-//#######################################################################
-//#######-------DP 5. Maximum Sum of Non-Adjacent Elements | 1-D | DP on Subsequences--------########
-//Tutorial: https://takeuforward.org/data-structure/maximum-sum-of-non-adjacent-elements-dp-5/
-//Problem: https://www.naukri.com/code360/problems/maximum-sum-of-non-adjacent-elements_843261
-
 
 
 //#######################################################################

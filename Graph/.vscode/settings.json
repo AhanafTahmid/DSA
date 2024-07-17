@@ -31,6 +31,8 @@
         "bitset": "cpp",
         "initializer_list": "cpp",
         "valarray": "cpp",
-        "format": "cpp"
+        "format": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp"
     }
 }
