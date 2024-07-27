@@ -33,6 +33,12 @@
         "valarray": "cpp",
         "format": "cpp",
         "tuple": "cpp",
-        "type_traits": "cpp"
+        "type_traits": "cpp",
+        "iterator": "cpp",
+        "functional": "cpp",
+        "*.tcc": "cpp",
+        "__tuple": "cpp",
+        "ostream": "cpp",
+        "ios": "cpp"
     }
 }

@@ -4,8 +4,11 @@ using namespace std;
 #define int long long
 
 void solve(){
-	vector<pair<int, int>>v ={ {10,11},{10,1112} };
-	cout<< v[0].first <<endl;
+	vector<tuple<int, string, string>> t = {{10,"23", "names"}, {11,"2", "names2"}};
+	for(int i=0;i<t.size();i++){
+		auto [x, y , z] = t[i];
+		cout<< x << ' ' << y << ' '  << z <<endl;
+	}
 }
 
 int32_t main(){

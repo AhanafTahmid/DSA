@@ -4,7 +4,7 @@
 - Think what is the starting point(in bfs)
 - Grid type problems, think graph
 - Always use bool type for visited array(2 bytes)
-- 
+- Result can be different in bfs topological or dfs topological sort
 
 Confusions:
 1. G-17. Bipartite Graph | BFS -> little confused on queue stack also
@@ -12,6 +12,8 @@ Wrong Answer(in my way )
 60 / 81 testcases passed
 Input graph =
 [[1],[0,3],[3],[1,2]]
+
+q.pop();//always forgets
 
 2. G-18. Bipartite Graph | DFS - little confused on how dfs in working 
 3. G-19. Detect cycle in a directed graph using DFS
@@ -1606,29 +1608,160 @@ class Solution{
 //#######################################################################
 //#######################################################################
 
+Dijkstra's algorithm is necessary for graphs that can contain cycles because they cannot be topologically sorted. In other cases, the topological sort would work fine as we start from the first node, and then move on to the others in a directed manner.
 
 //#######################################################################
 //#######-------G-27. Shortest Path in Directed Acyclic Graph - Topological Sort--------########
 //Tutorial: https://takeuforward.org/data-structure/shortest-path-in-directed-acyclic-graph-topological-sort-g-27/
 //Problem: https://www.geeksforgeeks.org/problems/shortest-path-in-undirected-graph/1
 
+(ei question ta khatai kore bujha important beshi)
+
 ------------
 BFS
-Approach: convert the string to directed graph, after that, use topological to find the sequence
-Not possible, when: 1. abcd , abc 2. Cyclic dependency
-Time Complexity: O(N*len)+O(K+E), where N is the number of words in the dictionary, ‘len’ is the length up to the index where the first inequality occurs, K = no. of nodes, and E = no. of edges.
-Space Complexity: O(K) + O(K)+O(K)+O(K) ~ O(4K), O(K) for the indegree array, and O(K) for the queue data structure used in BFS(where K = no.of nodes), O(K) for the answer array and O(K) for the adjacency list used in the algorithm.
+Approach: 1. Do toposort 2. build the distance array from the values
+Time Complexity: O(N+M) {for the topological sort} + O(N+M) {for relaxation of vertices, each node and its adjacent nodes get traversed} ~ O(N+M). Where N= number of vertices and M= number of edges.
+Space Complexity:  O( N) {for the stack storing the topological sort} + O(N) {for storing the shortest distance for each node} + O(N) {for the visited array} + O( N+2M) {for the adjacency list} ~ O(N+M) .
 ------------
+class Solution {
+  public:
+     vector<int> shortestPath(int N,int M, vector<vector<int>>& edges){
+        //1. Do toposort 2. build the distance array from the values
+        vector<pair<int, int>>  adj[N];
+        for(int i=0;i<M;i++){
+            int u = edges[i][0];
+            int v = edges[i][1];
+            int wt = edges[i][2];
+            adj[u].push_back({v,wt});
+        }
+        
+        //1. Toposort
+        vector<int>indegree(N);
+        for(int i=0;i<N;i++){
+            for(auto x: adj[i]){
+                indegree[x.first]++;
+            }
+        }
+        
+        queue<int>q;
+        for(int i=0;i<N;i++){
+            if(indegree[i]==0)q.push(i);
+        }
+        vector<int>g;
+        while(!q.empty()){
+            int v = q.front();
+            g.push_back(v);
+            q.pop();
+            for(auto x: adj[v]){
+                indegree[x.first]--;
+                if(indegree[x.first]==0)q.push(x.first);
+            }
+        }
+        
+        //2. build the distance array from the values
+        vector<int>dist(N,1e9);
+        dist[0] = 0;
+        for(int i=0;i<N;i++){
+            int v = g[i];
+            for(auto x: adj[v]){
+                int p = x.first;//to the node
+                int q = x.second;//weight
+                //neighbour weight e beshi cost lagle komai fela
+                if( dist[v] + q < dist[p] ){
+                    dist[p] = dist[v] + q;
+                }
+            }
+        }
+        
+        for(int i=0;i<N;i++){
+            if(dist[i]==1e9) dist[i] = -1;
+        }
+        
+        return dist;
+    }
+};
 
 //#######################################################################
 //#######-------G-28. Shortest Path in Undirected Graph with Unit Weights--------########
 //Tutorial: https://takeuforward.org/data-structure/shortest-path-in-undirected-graph-with-unit-distance-g-28/
 //Problem: https://www.geeksforgeeks.org/problems/shortest-path-in-undirected-graph-having-unit-distance/1
 
+------------
+BFS
+Approach: 1. Make adjacency list 2. build distance array using formula dist[v]+1<dist[x]
+Time Complexity: O(M) { for creating the adjacency list from given list edges} + O(N + 2M) { for the BFS Algorithm} + O(N) { for adding the final values of the shortest path in the resultant array} ~ O(N+2M). Where N= number of vertices and M= number of edges.
+Space Complexity:  O(N) {for the stack storing the BFS} + O(N) {for the resultant array} + O(N) {for the dist array storing updated shortest paths} + O( N+2M) {for the adjacency list} ~ O(N+M). Where N= number of vertices and M= number of edges.
+------------
+
+class Solution {
+  public:
+    vector<int> shortestPath(vector<vector<int>>& edges, int N,int M, int src){
+        vector<int> adj[N];
+		for(int i=0;i<M;i++){
+			adj[edges[i][0]].push_back(edges[i][1]);
+			adj[edges[i][1]].push_back(edges[i][0]);
+		}
+		vector<int>dist(N, 1e9);
+		dist[src] = 0;
+		queue<int> q;
+		q.push(src);
+		while(!q.empty()){
+			int v = q.front();
+			q.pop();
+			for(int x: adj[v]){
+				if(dist[v]+1<dist[x]){
+					dist[x] = dist[v] + 1;
+					q.push(x);
+				}
+			}
+		}
+
+		for(int i=0;i<N;i++) if(dist[i]==1e9) dist[i] = -1;
+		return dist;
+    }
+};
+
 //#######################################################################
 //#######-------G-29. Word Ladder - I | Shortest Paths--------########
 //Tutorial: https://takeuforward.org/graph/word-ladder-i-g-29/
 //Problem: https://leetcode.com/problems/word-ladder/description/
+
+------------
+BFS
+Approach: see striver video/notes
+Time Complexity: O(N * M * 26). Where N = size of wordList Array and M = word length of words present in the wordList..
+Note that, hashing operations in an unordered set takes O(1) time, but if you want to use set here, then the time complexity would increase by a factor of log(N) as hashing operations in a set take O(log(N)) time.
+Space Complexity:  O( N ) { for creating an unordered set and copying all values from wordList into it }
+Where N = size of wordList Array.
+------------
+
+class Solution {
+public:
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        set<string> st (wordList.begin(), wordList.end());
+        queue<pair<string, int>> q;
+        q.push({beginWord, 1});
+        while(!q.empty()){
+            string word = q.front().first;
+            int steps = q.front().second;
+            q.pop();
+            if(word==endWord){
+                return steps;
+            }
+            for(int j=0;j<word.size();j++){
+                for(char i='a';i<='z';i++){
+                    string nword = word;
+                    nword[j] = i;
+                    if( st.find(nword)!=st.end() ){
+                        st.erase(nword);
+                        q.push({nword, steps+1});
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+};
 
 
 //#######################################################################
@@ -1650,10 +1783,168 @@ Space Complexity: O(K) + O(K)+O(K)+O(K) ~ O(4K), O(K) for the indegree array, an
 //CF Problem: https://codeforces.com/problemset/problem/20/C
 
 
+------------
+BFS
+Approach: 1. build distance array using formula dist[v]+1<dist[x] [Must use priority queue]
+Time Complexity: O( E log(V) ), Where E = Number of edges and V = Number of Nodes.
+Space Complexity: O( |E| + |V| ), Where E = Number of edges and V = Number of Nodes.
+------------
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution
+{
+public:
+    vector<int> dijkstra(int V, vector<vector<int>> adj[], int S)
+    {
+		vector<pair<int, int>> adj2[V];
+		
+		for(int i=0;i<V;i++){
+			for(int j=0;j<adj[i].size();j++){
+				adj2[i].push_back({adj[i][j][0], adj[i][j][1]});
+			}
+		}
+
+		// for(int i=0;i<V;i++){
+		// 	cout<< i << endl;
+		// 	for(auto x: adj2[i]){
+		// 		cout<< x.first << ' ' << x.second << endl;
+		// 	}
+		// 	cout<<endl<<endl;
+		// }
+
+		vector<int>dist(V, 1e9);
+		priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+		pq.push({S, 0});
+		dist[S] = 0;
+		while(!pq.empty()){
+			int nd = pq.top().first;
+			int wg = pq.top().second;
+			pq.pop();
+			for(auto [x,y]: adj2[nd]){
+				if(dist[nd] + y < dist[x] ){
+					dist[x] = dist[nd] + y;
+					pq.push({x, dist[x]});
+				}
+			}
+		}
+		for(int i=0;i<V;i++) if(dist[i]==1e9) dist[i] = -1;
+
+        return dist;
+	}
+};
+
+int main()
+{
+    // Driver code.
+    int V = 3, E = 3, S = 2;
+    vector<vector<int>> adj[V];
+    vector<vector<int>> edges;
+    vector<int> v1{1, 1}, v2{2, 6}, v3{2, 3}, v4{0, 1}, v5{1, 3}, v6{0, 6};
+    int i = 0;
+    adj[0].push_back(v1);
+    adj[0].push_back(v2);
+    adj[1].push_back(v3);
+    adj[1].push_back(v4);
+    adj[2].push_back(v5);
+    adj[2].push_back(v6);
+
+    Solution obj;
+    vector<int> res = obj.dijkstra(V, adj, S);
+
+    for (int i = 0; i < V; i++)
+    {
+        cout << res[i] << " ";
+    }
+    cout << endl;
+    return 0;
+}
+
+
+
 //#######################################################################
 //#######-------G-33. Dijkstra's Algorithm - Using Set - Part 2--------########
 //Tutorial: https://takeuforward.org/data-structure/dijkstras-algorithm-using-set-g-33/
 //Problem: https://www.geeksforgeeks.org/problems/implementing-dijkstra-set-1-adjacency-matrix/1
+
+
+------------
+BFS
+Time Complexity : O( E log(V) ) Where E = Number of edges and V = Number of Nodes.
+Space Complexity : O( |E| + |V| ) Where E = Number of edges and V = Number of Nodes.
+------------
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution
+{
+public:
+    vector<int> dijkstra(int V, vector<vector<int>> adj[], int S)
+    {
+		vector<pair<int, int>> adj2[V];
+		
+		for(int i=0;i<V;i++){
+			for(int j=0;j<adj[i].size();j++){
+				adj2[i].push_back({adj[i][j][0], adj[i][j][1]});
+			}
+		}
+
+		// for(int i=0;i<V;i++){
+		// 	cout<< i << endl;
+		// 	for(auto x: adj2[i]){
+		// 		cout<< x.first << ' ' << x.second << endl;
+		// 	}
+		// 	cout<<endl<<endl;
+		// }
+
+		vector<int>dist(V, 1e9);
+		set<pair<int, int>> st;
+		st.insert({S, 0});
+		dist[S] = 0;
+		while(!st.empty()){
+			int nd = (*st.begin()).first;
+			int wg = (*st.begin()).second;
+			st.erase(*st.begin());
+			for(auto [x,y]: adj2[nd]){
+				if(dist[nd] + y < dist[x]){
+					dist[x] = dist[nd] + y;
+					st.insert({x, dist[x]});
+				}
+			}
+		}
+		for(int i=0;i<V;i++) if(dist[i]==1e9) dist[i] = -1;
+
+        return dist;
+	}
+};
+
+int main()
+{
+    // Driver code.
+    int V = 3, E = 3, S = 2;
+    vector<vector<int>> adj[V];
+    vector<vector<int>> edges;
+    vector<int> v1{1, 1}, v2{2, 6}, v3{2, 3}, v4{0, 1}, v5{1, 3}, v6{0, 6};
+    int i = 0;
+    adj[0].push_back(v1);
+    adj[0].push_back(v2);
+    adj[1].push_back(v3);
+    adj[1].push_back(v4);
+    adj[2].push_back(v5);
+    adj[2].push_back(v6);
+
+    Solution obj;
+    vector<int> res = obj.dijkstra(V, adj, S);
+
+    for (int i = 0; i < V; i++)
+    {
+        cout << res[i] << " ";
+    }
+    cout << endl;
+    return 0;
+}
 
 
 //#######################################################################
