@@ -39,6 +39,8 @@
         "*.tcc": "cpp",
         "__tuple": "cpp",
         "ostream": "cpp",
-        "ios": "cpp"
+        "ios": "cpp",
+        "__bit_reference": "cpp",
+        "bit": "cpp"
     }
 }

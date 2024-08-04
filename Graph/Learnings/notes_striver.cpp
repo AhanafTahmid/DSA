@@ -12,15 +12,21 @@ Wrong Answer(in my way )
 60 / 81 testcases passed
 Input graph =
 [[1],[0,3],[3],[1,2]]
+2. g-40. not sure about dist[node] vs dis???? - /?????????WA on leetcode
+//Problem: https://leetcode.com/problems/number-of-ways-to-arrive-at-destination/description/
+3.todo: G-42. Floyd Warshall Algorithm - solve using dijkstra as well
+4. todo: G-43. Find the City With the Smallest Number of Neighbours at a Threshold Distance - solve using dijkstra as well
 
 q.pop();//always forgets
 
 2. G-18. Bipartite Graph | DFS - little confused on how dfs in working 
 3. G-19. Detect cycle in a directed graph using DFS
 4. G-20. Find Eventual Safe States - DFS (draw the tree )
+5. not sure why queue is faster than pq in dijkstra, it will visit all the nodes even if we donot use 
+pq, it will just not change the values
 
 Good practice: donot temper data, make a copy and solve[for this type of question, just remember]
-
+- For undirected graph dijkstra use queue instead of priority queue, cause it does not make it different, level e same distance thakbe[binary maze question]
 
 ---------------------------------------------------------------------------------------------------------
 Striver Graph Playlist: https://www.youtube.com/playlist?list=PLgUwDviBIf0oE3gA41TKO2H5bHpPd7fzn
@@ -1728,7 +1734,7 @@ class Solution {
 
 ------------
 BFS
-Approach: see striver video/notes
+Approach: 1. Put all the words in a set 2. for each startword keep finding the word in wordlist by changing characters. If found push in the queue
 Time Complexity: O(N * M * 26). Where N = size of wordList Array and M = word length of words present in the wordList..
 Note that, hashing operations in an unordered set takes O(1) time, but if you want to use set here, then the time complexity would increase by a factor of log(N) as hashing operations in a set take O(log(N)) time.
 Space Complexity:  O( N ) { for creating an unordered set and copying all values from wordList into it }
@@ -1741,6 +1747,7 @@ public:
         set<string> st (wordList.begin(), wordList.end());
         queue<pair<string, int>> q;
         q.push({beginWord, 1});
+        st.erase(startWord);
         while(!q.empty()){
             string word = q.front().first;
             int steps = q.front().second;
@@ -1769,6 +1776,7 @@ public:
 //Tutorial: https://takeuforward.org/graph/g-30-word-ladder-ii/
 //Problem: https://leetcode.com/problems/word-ladder-ii/description/
 
+build array along the way
 
 //#######################################################################
 //#######-------G-31. Word Ladder - 2 | Optimised Approach for Leetcode--------########
@@ -1780,9 +1788,9 @@ public:
 //#######-------G-32. Dijkstra's Algorithm - Using Priority Queue - C++ and Java - Part 1--------########
 //Tutorial: https://takeuforward.org/data-structure/dijkstras-algorithm-using-priority-queue-g-32/
 //Problem: https://www.geeksforgeeks.org/problems/implementing-dijkstra-set-1-adjacency-matrix/1
-//CF Problem: https://codeforces.com/problemset/problem/20/C
 
-
+dijkstra does not work in negative weight and negative cycle, fall in infiinte loop
+0 -> 1 (with -2 weight not possible)
 ------------
 BFS
 Approach: 1. build distance array using formula dist[v]+1<dist[x] [Must use priority queue]
@@ -1820,7 +1828,7 @@ public:
 		dist[S] = 0;
 		while(!pq.empty()){
 			int nd = pq.top().first;
-			int wg = pq.top().second;
+			int wg = pq.top().second;//this is just for optimizing time complexity, else it is not needed
 			pq.pop();
 			for(auto [x,y]: adj2[nd]){
 				if(dist[nd] + y < dist[x] ){
@@ -1862,6 +1870,34 @@ int main()
 }
 
 
+//////////////////////////////////////////////////////////////////
+//another version gfg
+class Solution
+{
+	public:
+    vector <int> dijkstra(int V, vector<vector<int>> adj[], int S)
+    {
+        vector<int>dist(V, 1e9);
+		priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+		pq.push({0, S});
+		dist[S] = 0;
+		while(!pq.empty()){
+			int nd = pq.top().second;
+			int wg = pq.top().first;//this is just for optimizing time complexity, else it is not needed, 
+            //or can be used like this, wg + y < dist[x] 
+			pq.pop();
+			for(auto v: adj[nd]){
+			    int x = v[0];
+			    int y = v[1];
+				if(dist[nd] + y < dist[x] ){
+					dist[x] = dist[nd] + y;
+					pq.push({dist[x], x});
+				}
+			}
+		}
+        return dist;
+    }
+};
 
 //#######################################################################
 //#######-------G-33. Dijkstra's Algorithm - Using Set - Part 2--------########
@@ -1875,88 +1911,164 @@ Time Complexity : O( E log(V) ) Where E = Number of edges and V = Number of Node
 Space Complexity : O( |E| + |V| ) Where E = Number of edges and V = Number of Nodes.
 ------------
 
-#include <bits/stdc++.h>
-using namespace std;
-
 class Solution
 {
-public:
-    vector<int> dijkstra(int V, vector<vector<int>> adj[], int S)
+	public:
+    vector <int> dijkstra(int V, vector<vector<int>> adj[], int S)
     {
-		vector<pair<int, int>> adj2[V];
-		
-		for(int i=0;i<V;i++){
-			for(int j=0;j<adj[i].size();j++){
-				adj2[i].push_back({adj[i][j][0], adj[i][j][1]});
-			}
-		}
-
-		// for(int i=0;i<V;i++){
-		// 	cout<< i << endl;
-		// 	for(auto x: adj2[i]){
-		// 		cout<< x.first << ' ' << x.second << endl;
-		// 	}
-		// 	cout<<endl<<endl;
-		// }
-
-		vector<int>dist(V, 1e9);
-		set<pair<int, int>> st;
-		st.insert({S, 0});
+        vector<int>dist(V, 1e9);
+		set<int> st;
+		st.insert(S);
 		dist[S] = 0;
 		while(!st.empty()){
-			int nd = (*st.begin()).first;
-			int wg = (*st.begin()).second;
+			int nd = (*st.begin());
 			st.erase(*st.begin());
-			for(auto [x,y]: adj2[nd]){
-				if(dist[nd] + y < dist[x]){
-					dist[x] = dist[nd] + y;
-					st.insert({x, dist[x]});
+			for(auto x: adj[nd]){
+			    int adjn = x[0];
+			    int w = x[1];
+				if(dist[nd] + w < dist[adjn]){
+                    //if(dist[adjn]!=1e9)st.erase(adjn);
+					dist[adjn] = dist[nd] + w;
+					st.insert(adjn);
 				}
 			}
 		}
-		for(int i=0;i<V;i++) if(dist[i]==1e9) dist[i] = -1;
-
         return dist;
-	}
-};
-
-int main()
-{
-    // Driver code.
-    int V = 3, E = 3, S = 2;
-    vector<vector<int>> adj[V];
-    vector<vector<int>> edges;
-    vector<int> v1{1, 1}, v2{2, 6}, v3{2, 3}, v4{0, 1}, v5{1, 3}, v6{0, 6};
-    int i = 0;
-    adj[0].push_back(v1);
-    adj[0].push_back(v2);
-    adj[1].push_back(v3);
-    adj[1].push_back(v4);
-    adj[2].push_back(v5);
-    adj[2].push_back(v6);
-
-    Solution obj;
-    vector<int> res = obj.dijkstra(V, adj, S);
-
-    for (int i = 0; i < V; i++)
-    {
-        cout << res[i] << " ";
     }
-    cout << endl;
-    return 0;
-}
+};
 
 
 //#######################################################################
 //#######-------G-34. Dijkstra's Algorithm - Why PQ and not Q, Intuition, Time Complexity Derivation - Part 3--------########
 //Tutorial: https://takeuforward.org/data-structure/g-34-dijkstras-algorithm-intuition-and-time-complexity-derivation/
-//Problem: https://www.geeksforgeeks.org/problems/implementing-dijkstra-set-1-adjacency-matrix/1
 
+Theory 
 
 //#######################################################################
 //#######-------G-35. Print Shortest Path - Dijkstra's Algorithm--------########
 //Tutorial: https://takeuforward.org/data-structure/g-35-print-shortest-path-dijkstras-algorithm/
 //Problem: https://www.geeksforgeeks.org/problems/shortest-path-in-weighted-undirected-graph/1
+
+------------
+BFS
+Approach: build a parent array and backtrack the path from n to 1
+Time Complexity: O( E log(V) ) { for Dijkstra’s Algorithm } + O(V) { for backtracking in order to find the parent for each node } Where E = Number of edges and V = Number of Nodes.
+Space Complexity: O( |E| + |V| ) { for priority queue and dist array } + O( |V| ) { for storing the final path } Where E = Number of edges and V = Number of Nodes.
+------------
+class Solution {
+  public:
+    vector<int> shortestPath(int n, int m, vector<vector<int>>& edges) {
+        vector< pair<int, int> >adj[n+1];
+        // node -> {directed node, weight}
+        for(int i=0;i<m;i++){
+            adj[edges[i][0]].push_back({edges[i][1], edges[i][2]});
+            adj[edges[i][1]].push_back({edges[i][0], edges[i][2]});
+        }
+        priority_queue<pair<int, int>, vector<pair<int, int>> , greater<pair<int, int>> > pq;
+        pq.push({0, 1});//{weight, node}
+        
+        vector<int> dist(n+1, 1e9), parent(n+1, -1), path;
+        parent[1] = 1;//1 er parent 1 e
+        dist[1] = 0; //distance of source node
+        while(!pq.empty()){
+            int nd = pq.top().second;
+            pq.pop();
+            for(auto v: adj[nd]){
+                int x = v.first;
+                int y = v.second;
+                if(dist[x] > dist[nd] + y ){
+                    dist[x] = dist[nd] + y;
+                    pq.push({dist[x], x});
+                    parent[x] = nd;//new parent 
+                }
+            }
+        }
+        
+        if(dist[n]==1e9) return {-1};
+        
+        int i = n;
+        while(1){
+            path.push_back(i);
+            i = parent[i];
+            if(i==1){
+                path.push_back(i);
+                break;
+            }
+            if(i==-1)return {-1};
+        }
+        path.push_back(dist[n]);// first element is the weight of the path acc to gfg
+        reverse(path.begin(), path.end());
+        return path;
+    }
+};
+
+------------
+//CF Problem: https://codeforces.com/problemset/problem/20/C
+------------
+#include <bits/stdc++.h>
+using namespace std;
+#define endl '\n'
+#define int long long
+
+void solve(){
+	int n, m;cin>>n>>m;
+	vector<vector<int>>edges;
+	for(int i=0;i<m;i++){
+		int x, y, z;cin>> x >> y >> z;
+		edges.push_back({x,y,z});
+	}
+
+	vector< pair<int, int> >adj[n+1];
+	for(int i=0;i<m;i++){
+		adj[edges[i][0]].push_back({edges[i][1], edges[i][2]});
+		adj[edges[i][1]].push_back({edges[i][0], edges[i][2]});
+	}
+	priority_queue<pair<int, int>, vector<pair<int, int>> , greater<pair<int, int>> > pq;
+	pq.push({0, 1});
+	
+	vector<int> dist(n+1, 1e19), parent(n+1, -1), path;
+	parent[1] = 1;
+	dist[1] = 0;
+	while(!pq.empty()){
+		int nd = pq.top().second;
+		pq.pop();
+		for(auto v: adj[nd]){
+			int x = v.first;
+			int y = v.second;
+			if(dist[x] > dist[nd] + y ){
+				dist[x] = dist[nd] + y;
+				pq.push({dist[x], x});
+				parent[x] = nd;
+			}
+		}
+	}
+	
+	
+	int i = n;
+	while(1){
+		path.push_back(i);
+		i = parent[i];
+		if(i==1){
+			path.push_back(i);
+			break;
+		}
+		if(i==-1){
+			cout<< -1 <<endl;
+			return;
+		}
+	}
+	reverse(path.begin(), path.end());
+	for(auto x: path)cout << x << ' ';
+	cout<<endl;
+}
+
+int32_t main(){
+	ios::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+	int t=1;
+	//cin >> t;
+	while(t--)solve(); 
+	return 0;
+}
 
 
 //#######################################################################
@@ -1964,18 +2076,141 @@ int main()
 //Tutorial: https://takeuforward.org/data-structure/g-36-shortest-distance-in-a-binary-maze/
 //Problem: https://leetcode.com/problems/shortest-path-in-binary-matrix/description/
 
+2d grid dijkstra
+------------
+BFS
+Approach: apply bfs and use dijkstra algo for undirected graph -> dist[x][y] > dist[xx][yy] + 1
+Time Complexity: O( 8*N*M ) { N*M are the total cells, for each of which we also check 8 adjacent nodes for the shortest path length}, Where N = No. of rows of the binary maze and M = No. of columns of the binary maze.
+Space Complexity: O( N*M ), Where N = No. of rows of the binary maze and M = No. of columns of the binary maze.
+------------
+
+class Solution {
+public:
+    int shortestPathBinaryMatrix(vector<vector<int>>& grid) {
+        vector<int> dirx = {1, -1, 0, 0, 1, -1, -1,  1};
+        vector<int> diry = {0, 0, -1, 1, -1, 1,  -1, 1};
+        int n = grid.size();
+        vector<vector<int>> dist(n, vector<int>(n, 1e9));
+        
+        int sx = 0, sy = 0;
+        int dx = n-1, dy = n-1;
+        dist[sx][sy] = 1;
+
+        if(grid[sx][sy]==1) return -1;
+
+        queue<pair< int, pair<int, int> > >q;
+        q.push({0, {sx, sy}});
+        
+        while(!q.empty()){
+            int xx = q.front().second.first;
+            int yy = q.front().second.second;
+            //int wg = q.front().first;
+            q.pop();
+            for(int k=0;k<8;k++){
+                int x = xx + dirx[k];
+                int y = yy + diry[k];
+                if(x>=0 && x<n && y>=0 && y<n &&  grid[x][y] == 0 && dist[x][y] > dist[xx][yy] + 1){
+                    dist[x][y] = dist[xx][yy] + 1;
+                    q.push({dist[x][y], {x,y}});
+                }
+            }
+        }
+        
+        if(dist[dx][dy]==1e9) return -1;
+        return dist[dx][dy];
+    }
+};
 
 //#######################################################################
 //#######-------G-37. Path With Minimum Effort--------########
 //Tutorial: https://takeuforward.org/data-structure/g-37-path-with-minimum-effort/
 //Problem: https://leetcode.com/problems/path-with-minimum-effort/description/
 
+------------
+BFS
+Approach: apply little dijkstra algo and if dist[r][c]>diff keep updating
+Time Complexity: O( 4*N*M * log( N*M) ) { N*M are the total cells, for each of which we also check 4 adjacent nodes for the minimum effort and additional log(N*M) for insertion-deletion operations in a priority queue }
+Where, N = No. of rows of the binary maze and M = No. of columns of the binary maze.
+Space Complexity: O( N*M ) { Distance matrix containing N*M cells + priority queue in the worst case containing all the nodes ( N*M) }.
+------------
+
+class Solution {
+public:
+    int minimumEffortPath(vector<vector<int>>& heights) {
+        int rows = heights.size(), columns = heights[0].size();
+
+        vector<vector<int>> dist(rows, vector<int>(columns, 1e9));
+        vector<int> dx = {0, 0, 1, -1};
+        vector<int> dy = {1,-1, 0,  0};
+        priority_queue<pair<int, pair<int, int> >, vector<pair<int, pair<int, int> >>, greater<pair<int, pair<int, int> >>> pq;
+        dist[0][0] = 0;
+        pq.push({0, {0, 0}});
+        while(!pq.empty()){
+            int w = pq.top().first;
+            int rr = pq.top().second.first;
+            int cc = pq.top().second.second;
+            pq.pop();
+            for(int k=0;k<4;k++){
+                int r = rr + dx[k];
+                int c = cc + dy[k];
+                if(r>=0 && r<rows && c>=0 && c<columns){
+                    int diff = max(abs(heights[r][c] - heights[rr][cc]), w);
+                    if(dist[r][c]>diff){
+                        dist[r][c] = diff;
+                        pq.push({diff,{r,c}});
+                    }
+                }
+            }
+        }
+        
+        return dist[rows-1][columns-1]; 
+    }
+};
 
 //#######################################################################
 //#######-------G-38. Cheapest Flights Within K Stops--------########
 //Tutorial: https://takeuforward.org/data-structure/g-38-cheapest-flights-within-k-stops/
 //Problem: https://leetcode.com/problems/cheapest-flights-within-k-stops/description/
 
+First priority should be steps
+steps are increasing by +1, that is why queue can be used instead of priority queue
+------------
+BFS
+Approach: apply dijkstra
+Time Complexity: O( N ) { Additional log(N) of time eliminated here if we’re using a simple queue rather than a priority queue which is usually used in Dijkstra’s Algorithm }.
+Where N = Number of flights / Number of edges.
+Space Complexity:  O( |E| + |V| ) { for the adjacency list, priority queue, and the dist array }.
+Where E = Number of edges (flights.size()) and V = Number of Airports.
+------------
+
+class Solution {
+public:
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
+        vector<pair<int, int>> adj[n];
+
+        for(int i=0;i<flights.size();i++){
+            adj[flights[i][0]].push_back({flights[i][1], flights[i][2]});
+        }
+        vector<int> dist(n, 1e9);
+        //steps, cost, node
+        priority_queue< tuple<int, int,int> ,vector< tuple<int, int,int> >, greater<tuple<int, int,int>> > pq;
+        pq.push({0, 0, src});
+        dist[src] = 0;
+        while(!pq.empty()){
+            auto [steps, cost , node] = pq.top();
+            pq.pop();
+            for(auto x: adj[node]){
+                int nd = x.first;
+                int wg = x.second;
+                if(steps<=k && dist[nd] > cost+wg){
+                    dist[nd] = cost+wg;
+                    pq.push({steps+1, dist[nd], nd});
+                }
+            }
+        }
+        return dist[dst]==1e9?-1:dist[dst];
+    }
+};
 
 
 //#######################################################################
@@ -1983,24 +2218,193 @@ int main()
 //Tutorial: https://takeuforward.org/graph/g-39-minimum-multiplications-to-reach-end/
 //Problem: https://www.geeksforgeeks.org/problems/minimum-multiplications-to-reach-end/1
 
+First priority should be steps
+steps are increasing by +1, that is why queue can be used instead of priority queue
+------------
+BFS
+Approach: 1 to 1e5 prjnto dist array maintain kora
+Time Complexity : O(100000 * N) 
+Where 100000 are the total possible numbers generated by multiplication (hypothetical) and N = size of the array with numbers of which each node could be multiplied.
+Space Complexity :  O(100000 * N) 
+Where 100000 are the total possible numbers generated by multiplication (hypothetical) and N = size of the array with numbers of which each node could be multiplied. 100000 * N is the max possible queue size. The space complexity of the dist array is constant.
+------------
+class Solution {
+  public:
+    int minimumMultiplications(vector<int>& arr, int start, int end) {
+        //steps, node
+        queue<pair<int, int>> q;
+        q.push({0,start});
+        vector<int>dist(100000, 1e9);
+        dist[start] = 0;
+        while(!q.empty()){
+            int nd = q.front().second;
+            int steps = q.front().first;
+            if(nd==end){
+                return steps;
+            }
+            q.pop();
+            for(int x: arr){
+                int v = (x * nd)%100000;
+                if( dist[v] > dist[nd] + 1){//if smaller then enter
+                    dist[v] = dist[nd] + 1;
+                    q.push({steps+1, v});
+                }
+            }
+            
+        }
+        
+        return dist[end]==1e9?-1:dist[end];
+        
+    }
+};
 
 //#######################################################################
 //#######-------G-40. Number of Ways to Arrive at Destination--------########
 //Tutorial: https://takeuforward.org/data-structure/g-40-number-of-ways-to-arrive-at-destination/
 //Problem: https://leetcode.com/problems/number-of-ways-to-arrive-at-destination/description/
 
+if you know how many ways you have come to a node then you donot need source node 
+------------
+BFS
+Approach: keep pushing {distance, node} in priority queue and remember the total ways[number]
+Time Complexity: O( E* log(V)) { As we are using simple Dijkstra's algorithm here, the time complexity will be or the order E*log(V)} Where E = Number of edges and V = No. of vertices.
+Space Complexity :  O(N) { for dist array + ways array + approximate complexity for priority queue }Where, N = Number of nodes.
+------------
+class Solution {
+public:
+    int countPaths(int n, vector<vector<int>>& roads) {
+        vector<pair<int, int>>adj[n];
+        int md = 1e9+7;
+        for(int i=0;i<roads.size();i++){
+            adj[ roads[i][0] ].push_back({ roads[i][1],roads[i][2] });
+            adj[ roads[i][1] ].push_back({ roads[i][0],roads[i][2] });
+        }
+        //cost, destination
+        priority_queue< pair<int, int> , vector< pair<int, int> > , greater< pair<int, int> > > pq;
+        pq.push({0,0});
+        vector<long long>dist(n, LLONG_MAX), ways(n, 0);
+        dist[0] = 0;
+        ways[0] = 1;
+        while(!pq.empty()){
+            auto [dis, node] = pq.top();
+            pq.pop();
+            for(auto x: adj[node]){
+                long long nd = x.first;//destination
+                long long d = x.second;//
+                if(dist[nd] > dis + d){//not sure about dist[node] vs dis????
+                    dist[nd] = dis + d;
+                    ways[nd] = ways[node];
+                    pq.push({dist[nd], nd});
+                }
+                else if(dist[nd] == dis + d) ways[nd] = (ways[nd] + ways[node])%md;
+            }
+        }
+        return ways[n-1]%md;
+    }
+};
 
 //#######################################################################
 //#######-------G-41. Bellman Ford Algorithm--------########
 //Tutorial: https://takeuforward.org/data-structure/bellman-ford-algorithm-g-41/
 //Problem: https://www.geeksforgeeks.org/problems/distance-from-the-source-bellman-ford-algorithm/1
+- dijkstra and bellman ford is single source shortest path algorithm
+Bellman Ford Algorithm: Helps to detect negative cycles as well, only application in directed graph 
+for directed graph change it to undirected graph in bellman ford
+dijkstra + n-1 iternation
+- The Bellman-Ford algorithm is a way to find single source shortest paths in a graph with negative edge weights (but no negative cycles).
+relax all the edges n-1 times sequentially
+complete all the edges n-1 times 
+in nth time the distance will be reducing - for negative cycle
+
+------------
+BFS
+Approach: Run dijkstra N-1 times(edges order does not matter)
+Time Complexity: O(V*E), where V = no. of vertices and E = no. of Edges.
+Space Complexity: O(V) for the distance array which stores the minimized distances.
+------------
+
+class Solution {
+  public:
+    vector<int> bellman_ford(int V, vector<vector<int>>& edges, int S) {
+        int m = edges.size();
+        vector<int>dist(V,1e8);
+        dist[S] = 0;
+        int times = V-1;//all nodes - 1
+        while(times--){
+            for(int i=0;i<m;i++){
+                int n1 = edges[i][0];
+                int n2 = edges[i][1];
+                int wg = edges[i][2];
+                if( dist[n1]!= 1e8 && dist[n1] + wg < dist[n2] ){
+                    dist[n2] = dist[n1] + wg;
+                }
+            }
+        }
+        
+        for(int i=0;i<m;i++){
+                int n1 = edges[i][0];
+                int n2 = edges[i][1];
+                int wg = edges[i][2];
+                if( dist[n1]!= 1e8 && dist[n1] + wg < dist[n2] ){
+                    return {-1};
+                }
+            }
+        
+        return dist;
+    }
+};
 
 
 //#######################################################################
 //#######-------G-42. Floyd Warshall Algorithm--------########
 //Tutorial: https://takeuforward.org/data-structure/floyd-warshall-algorithm-g-42/
 //Problem: https://www.geeksforgeeks.org/problems/implementing-floyd-warshall2042/1
+//Yt1: https://youtu.be/YbY8cVwWAvw
+//Yt2: https://youtu.be/tFQAoyEu6Bk
 
+
+- Floyd Warshall is multi source shortest path algorithm
+- If there are no negative values, you can use dijkstra for all the values individually - N * Elogv (better than N^3)
+- not possible for negative cycle
+- if source to source distance is negative, then there is cycle exits
+
+------------
+Brute Force(Floyd Warshall)
+Approach: 
+1. Make all diagonal 0, put all the values 
+2. keep finding values for each nodes via other node
+Formula: matrix[i][j] = min(matrix[i][j], matrix[i][node] + matrix[node][j]); {via a matrix way, or the matrix way}
+Time Complexity: O(V3), as we have three nested loops each running for V times, where V = no. of vertices.
+Space Complexity: O(V2), where V = no. of vertices. This space complexity is due to storing the adjacency matrix of the given graph.
+------------
+
+class Solution {
+  public:
+	void shortest_distance(vector<vector<int>>&matrix){
+	    int n = matrix.size();
+	    
+	    for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                if(matrix[i][j] == -1)matrix[i][j] = 1e9;
+            }
+        }
+	    
+	    for(int node=0;node<n;node++){
+	        for(int i=0;i<n;i++){
+	            for(int j=0;j<n;j++){
+	                matrix[i][j] = min(matrix[i][j], matrix[i][node] + matrix[node][j]);
+	            }
+	        }
+	    }
+	    
+	    for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                if(matrix[i][j] == 1e9)matrix[i][j] = -1;
+            }
+        }
+	    
+	}
+};
 
 //#######################################################################
 //#######-------G-43. Find the City With the Smallest Number of Neighbours at a Threshold Distance--------########
@@ -2008,8 +2412,281 @@ int main()
 //Problem: https://leetcode.com/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/description/
 
 
+------------
+Brute Force(Floyd Warshall)
+Approach: 1. Apply floyd warshall 2. Find the max node with least cities connected in the distanceThreshold
+Time Complexity: O(V3), as we have three nested loops each running for V times, where V = no. of vertices.
+Space Complexity: O(V2), where V = no. of vertices. This space complexity is due to storing the adjacency matrix of the given graph.
+------------
+
+class Solution {
+public:
+    int findTheCity(int n, vector<vector<int>>& edges, int distanceThreshold) {
+        vector<vector<int>>mat(n, vector<int>(n,1e9));
+        for(int i=0;i<edges.size();i++){
+            mat[edges[i][0]][edges[i][1]] = edges[i][2];
+            mat[edges[i][1]][edges[i][0]] = edges[i][2];
+        }
+        for(int i=0;i<n;i++) mat[i][i] = 0;
+
+        //build the matrix array 
+        for(int node=0;node<n;node++){
+            for(int i=0;i<n;i++){
+                for(int j=0;j<n;j++){
+                    mat[i][j] = min(mat[i][j], mat[i][node] + mat[node][j]);
+                }
+            }
+        }
+
+        int mn = 1e9;
+        int node_ans = -1;
+        for(int i=0;i<n;i++){
+            int ct = 0;
+            for(int j=0;j<n;j++){
+                if(mat[i][j]<=distanceThreshold) ct++;
+            }
+            if(ct<=mn){
+                mn = ct;
+                node_ans = i;
+            }
+        }
+        return node_ans;
+    }
+};
+
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//##########-------MinimumSpanningTree/Disjoint Set--------##############
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+
+
+//#######################################################################
+//#######-------G-44. Minimum Spanning Tree - Theory--------########
+//Tutorial: https://takeuforward.org/data-structure/minimum-spanning-tree-theory-g-44/
+
+Minimum Spanning Tree - MST 
+MST: A tree which have n nodes and n-1 edges, and all nodes are reachable from each other
+everything is in a single component
+a graph can have a lot of spanning tree
+- The tree which has the minimum edges(in summation, minimum sum), is the mst
+
+MST finding algorithm:
+1. Prims algorithm 
+2. Kruskal algorithm(must know disjoint set)
+
+//#######################################################################
+//#######-------G-45. Prim's Algorithm - Minimum Spanning Tree--------########
+//Tutorial: https://takeuforward.org/data-structure/prims-algorithm-minimum-spanning-tree-c-and-java-g-45/
+//Problem: https://www.geeksforgeeks.org/problems/minimum-spanning-tree/1
+//Yt:  https://youtu.be/mJcZjjKzeqk
+//Yt2: https://youtu.be/KwYMYX0a73k
+
+Intuition: Going Greedy is the intuition
+
+Steps to find mst using prims algo: 
+From graph
+1. Loop delete 
+2. Parallel edge delete 
+3. There should be no cycle in new mst
+
+- Helps finding sum as well as the tree 
+
+------------
+Steps
+1. Mark the visited array as 0 for all the nodes
+2. Start with 0th node and push
+(0,0,-1)//weight, node, parent
+explanation:  -1 means 0 is the genesis node
+Mark 0 as visited
+3. Push all the neighbours of 0 in pq Do not mark them visited  (footnote 1)
+Since its a min heap the edge with minimum weight will be at the top
+4. Pick up the top edge , insert it in the mst , mark the picked node as visited , insert all neighbours of picked node into pq
+5. keep repeating steps 3 and 4 untill all the nodes have been picked up and thats when the algorithm ends
+
+footnote:
+1. why to not mark it visited?
+in bfs , when we push the element inside a queue we mark it as visited cause that element will be picked up later for sure (algorithm ends only when the queue is empty )
+but in msts case even if we push the edge into pq , theres no surety that the edge will be picked up . when prims algo ends there are still a few non accepted edges present in the pq hence we only mark it visited once its picked up from pq
+
+
+------------
+BFS
+Approach: 
+If not visited keep taking the weight of the destination value, keep doing it until all are visited
+Time Complexity: O(E*logE) + O(E*logE)~ O(E*logE), where E = no. of given edges.
+Space Complexity: O(E) + O(V), where E = no. of edges and V = no. of vertices. O(E) occurs due to the size of the priority queue and O(V) due to the visited array. If we wish to get the mst, we need an extra O(V-1) space to store the edges of the most.
+------------
+
+////////////////////////
+------------------------
+--Total sum of MST--
+------------------------
+////////////////////////
+class Solution
+{
+	public:
+    int spanningTree(int V, vector<vector<int>> adj[])
+    {   
+        
+        priority_queue< pair<int, int> , 
+        vector< pair<int, int> > , greater < pair<int, int> > >pq;
+        pq.push({0, 0});
+        vector<int>visited(V,0);
+        int sum = 0;
+        while(!pq.empty()){
+            int wg = pq.top().first;
+            int nd = pq.top().second;
+            pq.pop();
+            if(!visited[nd]){
+                visited[nd] = 1;
+                sum+=wg;
+                for(auto x: adj[nd]){
+                   if(!visited[x[0]])pq.push({x[1], x[0]});
+                }
+            }
+        }
+        return sum;
+    }
+};
+
+////////////////////////
+------------------------
+--Total sum + the tree(parents) of MST--
+------------------------
+////////////////////////
+
+class Solution
+{
+	public:
+    int spanningTree(int V, vector<vector<int>> adj[])
+    {   
+        
+        priority_queue<pair<int, pair<int, int>>, 
+            vector<pair<int, pair<int, int>>>, greater<pair<int, pair<int, int>>>>pq;
+        pq.push({0, {0, -1}});
+        vector<int>visited(V,0), parent(V, -1);
+        parent[0] = 0;
+        int sum = 0;
+        while(!pq.empty()){
+            int wg = pq.top().first;
+            int nd = pq.top().second.first;
+            int par = pq.top().second.second;
+            pq.pop();
+            if(!visited[nd]){
+                visited[nd] = 1;
+                sum+=wg;
+                for(auto x: adj[nd]){
+                   if(!visited[x[0]])pq.push({x[1],{x[0], nd}}),parent[x[0]] = nd;
+                }
+            }
+        }
+        
+        for(auto x: parent)cout<< x << ' ';
+        cout<<endl;
+        
+        return sum;
+    }
+};
+
+
+//#######################################################################
+//#######-------G-46. Disjoint Set | Union by Rank | Union by Size | Path Compression--------########
+//Tutorial: https://takeuforward.org/data-structure/disjoint-set-union-by-rank-union-by-size-path-compression-g-46/
+//Problem: https://www.geeksforgeeks.org/problems/disjoint-set-union-find/1
+
+
+//#######################################################################
+//#######-------G-47. Kruskal's Algorithm - Minimum Spanning Tree--------########
+//Tutorial: https://takeuforward.org/data-structure/kruskals-algorithm-minimum-spanning-tree-g-47/
+//Problem: https://www.geeksforgeeks.org/problems/minimum-spanning-tree/1
+
+//#######################################################################
+//#######-------G-48. Number of Provinces - Disjoint Set--------########
+//Tutorial: 
+//Problem: 
+
+
+//#######################################################################
+//#######-------G-49. Number of Operations to Make Network Connected - DSU--------########
+//Tutorial: https://takeuforward.org/data-structure/number-of-operations-to-make-network-connected-dsu-g-49/
+//Problem: https://leetcode.com/problems/number-of-operations-to-make-network-connected/description/
+
+
+//#######################################################################
+//#######-------G-50. Accounts Merge - DSU--------########
+//Tutorial: https://takeuforward.org/data-structure/accounts-merge-dsu-g-50/
+//Problem: https://leetcode.com/problems/accounts-merge/description/
+
+//#######################################################################
+//#######-------G-51. Number of Islands - II - Online Queries - DSU--------########
+//Tutorial: https://takeuforward.org/graph/number-of-islands-ii-online-queries-dsu-g-51/
+//Problem: https://leetcode.com/problems/number-of-islands-ii/description/
+//https://www.naukri.com/code360/problems/number-of-islands-ii_1266048
+//https://www.geeksforgeeks.org/problems/number-of-islands/1
+//jekono ekta
+
+
+//#######################################################################
+//#######-------G-52. Making a Large Island - DSU--------########
+//Tutorial: https://takeuforward.org/data-structure/making-a-large-island-dsu-g-52/
+//Problem: https://leetcode.com/problems/making-a-large-island/description/
+
+//#######################################################################
+//#######-------G-53. Most Stones Removed with Same Row or Column - DSU--------########
+//Tutorial: https://takeuforward.org/data-structure/most-stones-removed-with-same-row-or-column-dsu-g-53/
+//Problem: https://leetcode.com/problems/most-stones-removed-with-same-row-or-column/description/
+
+//#######################################################################
+//#######-------Swim in rising water--------########
+//Tutorial: 
+//Problem: https://leetcode.com/problems/swim-in-rising-water/description/
+
+
+
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//####################-------Other Algorithms--------####################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+//#######################################################################
+
+
+//#######################################################################
+//#######-------G-54. Strongly Connected Components - Kosaraju's Algorithm--------########
+//Tutorial: https://takeuforward.org/graph/strongly-connected-components-kosarajus-algorithm-g-54/
+//Problem: https://www.geeksforgeeks.org/problems/strongly-connected-components-kosarajus-algo/1
+
+//#######################################################################
+//#######-------G-55. Bridges in Graph - Using Tarjan's Algorithm of time in and low time--------########
+//Tutorial: https://takeuforward.org/graph/bridges-in-graph-using-tarjans-algorithm-of-time-in-and-low-time-g-55/
+//Problem: https://leetcode.com/problems/critical-connections-in-a-network/description/
+
+//#######################################################################
+//#######-------G-56. Articulation Point in Graph--------########
+//Tutorial: https://takeuforward.org/data-structure/articulation-point-in-graph-g-56/
+//Problem: https://www.geeksforgeeks.org/problems/articulation-point-1/1
+
+
+
 - read shafayet graph book
----=-=-===-===-= SOlve all the question above
+---=-=-===-===-= SOlve all the todo above
+---=-=-===-===-= remove confusions written
 ???????????????????????????????????????????????????????????????????????????
 
 
@@ -2019,60 +2696,12 @@ int main()
 //#######################################################################
 //#######################################################################
 //#######################################################################
-//##########-------Singly LinkedList (Basics)--------####################
+//#######################-------Finished--------#########################
 //#######################################################################
 //#######################################################################
 //#######################################################################
 //#######################################################################
 //#######################################################################
 //#######################################################################
-
-
-//#######################################################################
-//#######-------DP 5. Maximum Sum of Non-Adjacent Elements | 1-D | DP on Subsequences--------########
-//Tutorial: https://takeuforward.org/data-structure/maximum-sum-of-non-adjacent-elements-dp-5/
-//Problem: https://www.naukri.com/code360/problems/maximum-sum-of-non-adjacent-elements_843261
-
-
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//##########-------Singly LinkedList (Basics)--------####################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-
-
-//#######################################################################
-//#######-------DP 5. Maximum Sum of Non-Adjacent Elements | 1-D | DP on Subsequences--------########
-//Tutorial: https://takeuforward.org/data-structure/maximum-sum-of-non-adjacent-elements-dp-5/
-//Problem: https://www.naukri.com/code360/problems/maximum-sum-of-non-adjacent-elements_843261
-
-
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//##########-------Singly LinkedList (Basics)--------####################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-
-
-//#######################################################################
-//#######-------DP 5. Maximum Sum of Non-Adjacent Elements | 1-D | DP on Subsequences--------########
-//Tutorial: https://takeuforward.org/data-structure/maximum-sum-of-non-adjacent-elements-dp-5/
-//Problem: https://www.naukri.com/code360/problems/maximum-sum-of-non-adjacent-elements_843261
 -------------------------------------------------------------------------
 -------------------------------------------------------------------------

@@ -1,20 +1,86 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define endl '\n'
-#define int long long
 
-void solve(){
-	vector<tuple<int, string, string>> t = {{10,"23", "names"}, {11,"2", "names2"}};
-	for(int i=0;i<t.size();i++){
-		auto [x, y , z] = t[i];
-		cout<< x << ' ' << y << ' '  << z <<endl;
-	}
-}
+class Solution
+{
+public:
+    int countPaths(int n, vector<vector<int>> &roads)
+    {
+        // Creating an adjacency list for the given graph.
+        vector<pair<int, int>> adj[n];
+        for (auto it : roads)
+        {
+            adj[it[0]].push_back({it[1], it[2]});
+            adj[it[1]].push_back({it[0], it[2]});
+        }
 
-int32_t main(){
-	ios::sync_with_stdio(0);cin.tie(0);cout.tie(0);
-	int t=1;
-	//cin >> t;
-	while(t--)solve(); 
-	return 0;
+        // Defining a priority queue (min heap). 
+		
+        priority_queue<pair<int, int>,
+                       vector<pair<int, int>>, greater<pair<int, int>>> pq;
+
+        // Initializing the dist array and the ways array
+        // along with their first indices.
+        vector<int> dist(n, INT_MAX), ways(n, 0);
+        dist[0] = 0;
+        ways[0] = 1;
+        pq.push({0, 0});
+
+        // Define modulo value
+        int mod = (int)(1e9 + 7);
+
+        // Iterate through the graph with the help of priority queue
+        // just as we do in Dijkstra's Algorithm.
+        while (!pq.empty())
+        {
+            int dis = pq.top().first;
+            int node = pq.top().second;
+            pq.pop();
+
+            for (auto it : adj[node])
+            {
+                int adjNode = it.first;
+                int edW = it.second;
+
+                // This ‘if’ condition signifies that this is the first
+                // time we’re coming with this short distance, so we push
+                // in PQ and keep the no. of ways the same.
+                if (dis + edW < dist[adjNode])
+                {
+                    dist[adjNode] = dis + edW;
+                    pq.push({dis + edW, adjNode});
+                    ways[adjNode] = ways[node];
+                }
+
+                // If we again encounter a node with the same short distance
+                // as before, we simply increment the no. of ways.
+                else if (dis + edW == dist[adjNode])
+                {
+                    ways[adjNode] = (ways[adjNode] + ways[node]) % mod;
+                }
+            }
+        }
+        // Finally, we return the no. of ways to reach
+        // (n-1)th node modulo 10^9+7.
+        return ways[n - 1] % mod;
+    }
+};
+
+int main()
+{
+    // Driver Code.
+    int n = 6;
+
+    vector<vector<int>> edges = {{0, 1, 1000000000}, {0, 3, 1000000000}, {1, 3, 1000000000}, 
+	{1, 2, 1000000000}, {1, 5, 1000000000}, 
+    {3, 4, 1000000000}, {4, 5, 1000000000}, {2, 5, 1000000000}};
+
+    Solution obj;
+
+    int ans = obj.countPaths(n, edges);
+
+    cout << ans;
+    cout << endl;
+
+    return 0;
 }
