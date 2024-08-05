@@ -2492,7 +2492,7 @@ MST finding algorithm:
 
 Intuition: Going Greedy is the intuition
 
-Steps to find mst using prims algo: 
+Steps to find mst using prims algo(in khatai): 
 From graph
 1. Loop delete 
 2. Parallel edge delete 
@@ -2501,7 +2501,7 @@ From graph
 - Helps finding sum as well as the tree 
 
 ------------
-Steps
+Steps (in code)
 1. Mark the visited array as 0 for all the nodes
 2. Start with 0th node and push
 (0,0,-1)//weight, node, parent
@@ -2601,7 +2601,121 @@ class Solution
 //#######################################################################
 //#######-------G-46. Disjoint Set | Union by Rank | Union by Size | Path Compression--------########
 //Tutorial: https://takeuforward.org/data-structure/disjoint-set-union-by-rank-union-by-size-path-compression-g-46/
+
+----------------------------------
 //Problem: https://www.geeksforgeeks.org/problems/disjoint-set-union-find/1
+int find(int A[],int X)
+{
+    if(A[X]==X) return X;
+    return A[X] = find(A, A[X]);
+}
+void unionSet(int A[],int X,int Z)
+{
+	int u = find(A, X);
+	int v = find(A, Z);
+	if(u==v) return;
+	A[u] = v;
+}
+
+----------------------------------
+- We are making a datastructure here
+Disjoing Set working:(TC: O(4alpha))
+- Finding Parents
+- Finding Union(1. rank, 2. size)
+
+Disjoint set: 
+- Helps to find out if nodes in the same component in constant time(kon node kon component er)
+- Union (in broad terms this method basically adds an edge between two nodes)
+ultimate parent is the boss
+path compression -> find parent in change it with ultimate parent
+
+dynamic graphs: Graph that keeps changing
+
+
+------------
+Making Datastructure DSU
+Approach: see striver notes
+------------
+
+//Disjoint Set Union - By Rank and By Size 
+#include <bits/stdc++.h>
+using namespace std;
+class DisjointSet {
+    vector<int> rank, parent, size;
+public:
+    //initialize the values
+    DisjointSet(int n) {
+        rank.resize(n + 1, 0);
+        parent.resize(n + 1);
+        size.resize(n + 1);
+        for (int i = 0; i <= n; i++) {
+            parent[i] = i;
+            size[i] = 1;
+        }
+    }
+
+    //this will keep finding the ultimate parent of each node
+    int findUPar(int node) {
+        if (node == parent[node])
+            return node;
+        return parent[node] = findUPar(parent[node]);
+    }
+
+    //Method1
+    //keep updating the tree as nodes are gets added
+    void unionByRank(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) return;
+        if (rank[ulp_u] < rank[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+        }
+        else if (rank[ulp_v] < rank[ulp_u]) {
+            parent[ulp_v] = ulp_u;
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            rank[ulp_u]++;
+        }
+    }
+
+    //Method2
+    //keep updating the tree as nodes are gets added
+    void unionBySize(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) return;
+        if (size[ulp_u] < size[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+};
+int main() {
+    DisjointSet ds(7);
+    ds.unionBySize(1, 2);
+    ds.unionBySize(2, 3);
+    ds.unionBySize(4, 5);
+    ds.unionBySize(6, 7);
+    ds.unionBySize(5, 6);
+    // if 3 and 7 same or not
+    if (ds.findUPar(3) == ds.findUPar(7)) {
+        cout << "Same\n";
+    }
+    else cout << "Not same\n";
+
+    ds.unionBySize(3, 7);
+
+    if (ds.findUPar(3) == ds.findUPar(7)) {
+        cout << "Same\n";
+    }
+    else cout << "Not same\n";
+    return 0;
+}
 
 
 //#######################################################################
@@ -2609,10 +2723,172 @@ class Solution
 //Tutorial: https://takeuforward.org/data-structure/kruskals-algorithm-minimum-spanning-tree-g-47/
 //Problem: https://www.geeksforgeeks.org/problems/minimum-spanning-tree/1
 
+------------
+Approach: 
+1. Sort the edges by weight
+2. If u,v do not belong to the ultimate same parent, then add in the tree 
+If ultimate parent is same donot add
+------------
+
+class DisjointSet {
+    vector<int> rank, parent, size;
+public:
+    DisjointSet(int n) {
+        rank.resize(n + 1, 0);
+        parent.resize(n + 1);
+        size.resize(n + 1);
+        for (int i = 0; i <= n; i++) {
+            parent[i] = i;
+            size[i] = 1;
+        }
+    }
+
+    int findUPar(int node) {
+        if (node == parent[node])
+            return node;
+        return parent[node] = findUPar(parent[node]);
+    }
+
+    void unionByRank(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) return;
+        if (rank[ulp_u] < rank[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+        }
+        else if (rank[ulp_v] < rank[ulp_u]) {
+            parent[ulp_v] = ulp_u;
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            rank[ulp_u]++;
+        }
+    }
+
+    void unionBySize(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) return;
+        if (size[ulp_u] < size[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+};
+
+class Solution
+{
+	public:
+    int spanningTree(int V, vector<vector<int>> adj[])
+    {   
+        vector<pair<int, pair<int, int>> > edges;
+        for(int i=0;i<V;i++){
+            for(auto x: adj[i]) edges.push_back({x[1], {x[0], i}});
+        }
+        sort(edges.begin(),edges.end());
+        int n = edges.size(), sum = 0;
+        DisjointSet ds(V);
+        for(int i=0;i<n;i++){
+            int n1 = edges[i].second.first;
+            int n2 = edges[i].second.second;
+            if(ds.findUPar(n1) != ds.findUPar(n2)){
+                sum+= edges[i].first;
+                ds.unionBySize(n1, n2);
+            }
+        }
+        return sum;
+    }
+};
+
 //#######################################################################
 //#######-------G-48. Number of Provinces - Disjoint Set--------########
-//Tutorial: 
-//Problem: 
+//Tutorial: https://takeuforward.org/data-structure/number-of-provinces-disjoint-set-g-48/
+//Problem: https://www.geeksforgeeks.org/problems/number-of-provinces/1
+
+------------
+DSU
+Approach: 
+The number of ultimate parents they themselves is the answer
+Time Complexity: O(N2)+O(N* 4α) ~ O(N2)+O(N) where N = no. of nodes. 
+O(N2) for visiting the adjacency matrix and O(N) for the counting of ultimate parents. 4α is so small that this term can be ignored.
+Space Complexity: O(2N), where N = no. of nodes. O(2N) for the two arrays parent and size(or rank) of size N.
+------------
+
+class DisjointSet {
+public:
+    vector<int> rank, parent, size;
+    DisjointSet(int n) {
+        rank.resize(n + 1, 0);
+        parent.resize(n + 1);
+        size.resize(n + 1);
+        for (int i = 0; i <= n; i++) {
+            parent[i] = i;
+            size[i] = 1;
+        }
+    }
+
+    int findUPar(int node) {
+        if (node == parent[node])
+            return node;
+        return parent[node] = findUPar(parent[node]);
+    }
+
+    void unionByRank(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) return;
+        if (rank[ulp_u] < rank[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+        }
+        else if (rank[ulp_v] < rank[ulp_u]) {
+            parent[ulp_v] = ulp_u;
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            rank[ulp_u]++;
+        }
+    }
+
+    void unionBySize(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) return;
+        if (size[ulp_u] < size[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+};
+
+class Solution {
+  public:
+    int numProvinces(vector<vector<int>> adj, int V) {
+        DisjointSet ds(V);
+        for(int i=0;i<V;i++){
+            for(int j=0;j<V;j++){
+                if( adj[i][j] == 1 ){
+                    ds.unionBySize(i,j);
+                }
+            }
+        }
+        
+        int ans = 0;
+        for(int i=0;i<V;i++){
+            if(ds.parent[i]==i){//total parents is they themselves
+                ans++;
+            }
+        }
+        return ans;
+    }
+};
 
 
 //#######################################################################
@@ -2620,19 +2896,124 @@ class Solution
 //Tutorial: https://takeuforward.org/data-structure/number-of-operations-to-make-network-connected-dsu-g-49/
 //Problem: https://leetcode.com/problems/number-of-operations-to-make-network-connected/description/
 
+------------
+DSU
+Approach: 
+if ( Total connected components - 1 <= extra edges) return Total connected components -1
+else -1
+extra edges: if both the parents are same then it is an extra edge
+
+Time Complexity: O(E*4α)+O(N*4α) where E = no. of edges and N = no. of nodes. The first term is to calculate the number of extra edges and the second term is to count the number of components. 4α is for the disjoint set operation we have used and this term is so small that it can be considered constant.
+Space Complexity: O(2N) where N = no. of nodes. 2N for the two arrays(parent and size) of size N we have used inside the disjoint set.
+------------
+
+class DisjointSet {
+public:
+    vector<int> rank, parent, size;
+    DisjointSet(int n) {
+        rank.resize(n + 1, 0);
+        parent.resize(n + 1);
+        size.resize(n + 1);
+        for (int i = 0; i <= n; i++) {
+            parent[i] = i;
+            size[i] = 1;
+        }
+    }
+
+    int findUPar(int node) {
+        if (node == parent[node])
+            return node;
+        return parent[node] = findUPar(parent[node]);
+    }
+
+    void unionByRank(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) return;
+        if (rank[ulp_u] < rank[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+        }
+        else if (rank[ulp_v] < rank[ulp_u]) {
+            parent[ulp_v] = ulp_u;
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            rank[ulp_u]++;
+        }
+    }
+
+    void unionBySize(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) return;
+        if (size[ulp_u] < size[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+};
+
+class Solution {
+public:
+    int makeConnected(int n, vector<vector<int>>& edges) {
+        int extra = 0, con = 0;
+        DisjointSet ds(n);
+        for(int i=0;i<edges.size();i++){
+            if( ds.findUPar(edges[i][0]) == ds.findUPar(edges[i][1]) ) extra++;
+            else ds.unionBySize(edges[i][0], edges[i][1]);
+        }
+        for(int i=0;i<n;i++){
+            if( ds.parent[i] == i ) con++;
+        }
+        if(extra>=con-1) return con-1;
+        else return -1;
+    }
+};
 
 //#######################################################################
 //#######-------G-50. Accounts Merge - DSU--------########
 //Tutorial: https://takeuforward.org/data-structure/accounts-merge-dsu-g-50/
 //Problem: https://leetcode.com/problems/accounts-merge/description/
 
+------------
+DSU
+Approach: 
+add all edges to corresponding numbers
+1. Connect the nodes(strings) 
+2. Merge the nodes/mails if same name is found(with the same parent)
+3. Print the answer
+
+Time Complexity: O(N+E) + O(E*4ɑ) + O(N*(ElogE + E)) where N = no. of indices or nodes and E = no. of emails. The first term is for visiting all the emails. The second term is for merging the accounts. And the third term is for sorting the emails and storing them in the answer array.
+Space Complexity: O(N)+ O(N) +O(2N) ~ O(N) where N = no. of nodes/indices. The first and second space is for the ‘mergedMail’ and the ‘ans’ array. The last term is for the parent and size array used inside the Disjoint set data structure.
+
+------------
+
+
+
 //#######################################################################
 //#######-------G-51. Number of Islands - II - Online Queries - DSU--------########
 //Tutorial: https://takeuforward.org/graph/number-of-islands-ii-online-queries-dsu-g-51/
-//Problem: https://leetcode.com/problems/number-of-islands-ii/description/
+//Problem: https://www.geeksforgeeks.org/problems/number-of-islands/1
 //https://www.naukri.com/code360/problems/number-of-islands-ii_1266048
-//https://www.geeksforgeeks.org/problems/number-of-islands/1
-//jekono ekta
+
+------------
+DSU
+Approach: 
+add all edges to corresponding numbers
+1. Connect the nodes(strings) 
+2. Merge the nodes/mails if same name is found(with the same parent)
+3. Print the answer
+
+Time Complexity: O(N+E) + O(E*4ɑ) + O(N*(ElogE + E)) where N = no. of indices or nodes and E = no. of emails. The first term is for visiting all the emails. The second term is for merging the accounts. And the third term is for sorting the emails and storing them in the answer array.
+Space Complexity: O(N)+ O(N) +O(2N) ~ O(N) where N = no. of nodes/indices. The first and second space is for the ‘mergedMail’ and the ‘ans’ array. The last term is for the parent and size array used inside the Disjoint set data structure.
+
+------------
+
+
 
 
 //#######################################################################

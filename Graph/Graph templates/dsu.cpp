@@ -2,8 +2,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 class DisjointSet {
-    vector<int> rank, parent, size;
 public:
+    vector<int> rank, parent, size;
     DisjointSet(int n) {
         rank.resize(n + 1, 0);
         parent.resize(n + 1);
@@ -32,7 +32,7 @@ public:
         }
         else {
             parent[ulp_v] = ulp_u;
-            rank[ulp_u]++;//understand this line
+            rank[ulp_u]++;
         }
     }
 
@@ -42,14 +42,15 @@ public:
         if (ulp_u == ulp_v) return;
         if (size[ulp_u] < size[ulp_v]) {
             parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
         }
         else {
             parent[ulp_v] = ulp_u;
-            //size[ulp_u] += size[ulp_v];
+            size[ulp_u] += size[ulp_v];
         }
-        size[ulp_v] += size[ulp_u];
     }
 };
+
 int main() {
     DisjointSet ds(7);
     ds.unionBySize(1, 2);
