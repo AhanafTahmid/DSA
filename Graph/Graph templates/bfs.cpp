@@ -59,8 +59,44 @@ int main()
 }
 
 
+-----------------------------------------------------------------
+//2d grid bfs
+class Solution {
+public:
+    vector<int>dx{ 0,  0, 1,-1};
+    vector<int>dy{-1, +1, 0, 0};
+    int numIslands(vector<vector<char>>& grid) {
+        int n = grid.size(), m = grid[0].size(), ans = 0;
+        vector<vector<bool>>visited(n, vector<bool>(m));
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(!visited[i][j] && grid[i][j]=='1'){
+                    ans++;
+                    queue<pair<int,int>> q;
+                    q.push({i,j});
+                    visited[i][j] = 1;
+                    while(!q.empty()){
+                        int xx = q.front().first;
+                        int yy = q.front().second;
+                        q.pop();
+                        //go in 4 direction
+                        for(int k=0;k<4;k++){
+                            int x = xx + dx[k];
+                            int y = yy + dy[k];
+                            if( x>=0 && x<n && y<m && y>=0  && grid[x][y] != '0' && !visited[x][y]){
+                                visited[x][y] = 1;
+                                q.push({x,y});
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+};
 
-
+-----------------------------------------------------------------
 //Practice
 #include <bits/stdc++.h>
 using namespace std; 

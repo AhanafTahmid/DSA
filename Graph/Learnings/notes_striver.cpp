@@ -1,6 +1,6 @@
 //Graph
 
-- See notion notes 
+- See notion notes / striver notes for details
 - Think what is the starting point(in bfs)
 - Grid type problems, think graph
 - Always use bool type for visited array(2 bytes)
@@ -16,7 +16,7 @@ Input graph =
 //Problem: https://leetcode.com/problems/number-of-ways-to-arrive-at-destination/description/
 3.todo: G-42. Floyd Warshall Algorithm - solve using dijkstra as well
 4. todo: G-43. Find the City With the Smallest Number of Neighbours at a Threshold Distance - solve using dijkstra as well
-
+5. todo: G-51. Number of Islands - II - Online Queries - DSU solve using dfs, or bfs
 q.pop();//always forgets
 
 2. G-18. Bipartite Graph | DFS - little confused on how dfs in working 
@@ -24,6 +24,10 @@ q.pop();//always forgets
 4. G-20. Find Eventual Safe States - DFS (draw the tree )
 5. not sure why queue is faster than pq in dijkstra, it will visit all the nodes even if we donot use 
 pq, it will just not change the values
+6. G-52. Making a Large Island - DSU
+if(x>=0 && x<n && y>=0 && y<n && grid[x][y]==1){
+    ds.unionBySize(u,v);//a little confused
+}
 
 Good practice: donot temper data, make a copy and solve[for this type of question, just remember]
 - For undirected graph dijkstra use queue instead of priority queue, cause it does not make it different, level e same distance thakbe[binary maze question]
@@ -343,7 +347,7 @@ public:
 //Problem: https://leetcode.com/problems/number-of-islands/description/
 
 
-
+2d grid bfs
 ------------
 BFS
 Space complexity: O(N*N) + O(N*N)[for queue, all are connected, marked as 1]
@@ -386,6 +390,8 @@ public:
 ------------
 DFS:
 ------------
+2d grid dfs
+
 class Solution {
 public:
     void dfs(int i, int j, int n, int m,vector<vector<char>>& grid,vector<vector<bool>>&visited){
@@ -2212,7 +2218,6 @@ public:
     }
 };
 
-
 //#######################################################################
 //#######-------G-39. Minimum Multiplications to Reach End--------########
 //Tutorial: https://takeuforward.org/graph/g-39-minimum-multiplications-to-reach-end/
@@ -2599,8 +2604,16 @@ class Solution
 
 
 //#######################################################################
+//#######################################################################
+------------------------------DSU----------------------------------------
+//#######################################################################
+//#######################################################################
+
+//#######################################################################
 //#######-------G-46. Disjoint Set | Union by Rank | Union by Size | Path Compression--------########
 //Tutorial: https://takeuforward.org/data-structure/disjoint-set-union-by-rank-union-by-size-path-compression-g-46/
+
+- When dynamically changing graphs use DSU 
 
 ----------------------------------
 //Problem: https://www.geeksforgeeks.org/problems/disjoint-set-union-find/1
@@ -3003,28 +3016,221 @@ Space Complexity: O(N)+ O(N) +O(2N) ~ O(N) where N = no. of nodes/indices. The f
 ------------
 DSU
 Approach: 
-add all edges to corresponding numbers
-1. Connect the nodes(strings) 
-2. Merge the nodes/mails if same name is found(with the same parent)
-3. Print the answer
+Look if the grid has been used previosuly(use visited array), if so and u,v has different parent then ct--;
+vis[n][m] = kon ghortate kaj hoise oita track rakhar jnno visited array, age kaj hoile ar kaj na kora, ager answer print kora
 
-Time Complexity: O(N+E) + O(E*4ɑ) + O(N*(ElogE + E)) where N = no. of indices or nodes and E = no. of emails. The first term is for visiting all the emails. The second term is for merging the accounts. And the third term is for sorting the emails and storing them in the answer array.
-Space Complexity: O(N)+ O(N) +O(2N) ~ O(N) where N = no. of nodes/indices. The first and second space is for the ‘mergedMail’ and the ‘ans’ array. The last term is for the parent and size array used inside the Disjoint set data structure.
+Time Complexity: O(Q*4α) ~ O(Q) where Q = no. of queries. The term 4α is so small that it can be considered constant.
+Space Complexity: O(Q) + O(N*M) + O(N*M), where Q = no. of queries, N = total no. of rows, M = total no. of columns. The last two terms are for the parent and the size array used inside the Disjoint set data structure. The first term is to store the answer.
 
 ------------
 
+class DisjointSet {
+public:
+    vector<int> rank, parent, size;
+    DisjointSet(int n) {
+        rank.resize(n + 1, 0);
+        parent.resize(n + 1);
+        size.resize(n + 1);
+        for (int i = 0; i <= n; i++) {
+            parent[i] = i;
+            size[i] = 1;
+        }
+    }
+
+    int findUPar(int node) {
+        if (node == parent[node])
+            return node;
+        return parent[node] = findUPar(parent[node]);
+    }
+
+    void unionByRank(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) return;
+        if (rank[ulp_u] < rank[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+        }
+        else if (rank[ulp_v] < rank[ulp_u]) {
+            parent[ulp_v] = ulp_u;
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            rank[ulp_u]++;
+        }
+    }
+
+    void unionBySize(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) return;
+        if (size[ulp_u] < size[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+};
 
 
+class Solution {
+  public:
+    vector<int> numOfIslands(int n, int m, vector<vector<int>> &operators) {
+        DisjointSet ds(n*m);
+        vector<int>ans;
+        vector<vector<int>>vis(n, vector<int>(m));
+        int ct = 0;
+        vector<int>dx = {1,-1,0,0};
+        vector<int>dy = {0,0,1,-1};
+        for(int i=0;i<operators.size();i++){
+            int px = operators[i][0], py = operators[i][1];
+            int u = m * px + py;
+            if(vis[px][py]==1){
+                ans.push_back(ct);
+                continue;
+            }
+            ct++;
+            vis[px][py] = 1;
+            for(int k=0;k<4;k++){
+                int x = px + dx[k];
+                int y = py + dy[k];
+                int v = m*x + y;
+                if(x>=0 && x<n && y>=0 && y<m && vis[x][y]==1 && ds.findUPar(u) != ds.findUPar(v)){
+                    ds.unionBySize(u,v);
+                    ct--;
+                }
+            }
+            ans.push_back(ct);
+        }
+        return ans;
+    }
+};
 
 //#######################################################################
 //#######-------G-52. Making a Large Island - DSU--------########
 //Tutorial: https://takeuforward.org/data-structure/making-a-large-island-dsu-g-52/
 //Problem: https://leetcode.com/problems/making-a-large-island/description/
 
+------------
+DSU
+Approach: 
+1. Using DSU get the size of every component
+2. Convert 0 to 1, keep taking the distinct ultimate parents
+3. Finally, Keep taking the max answer
+
+Time Complexity: O(N2)+O(N2) ~ O(N2) where N = total number of rows of the grid. Inside those nested loops, all the operations are taking apparently constant time. So, O(N2) for the nested loop only, is the time complexity.
+Space Complexity: O(2*N2) where N = the total number of rows of the grid. This is for the two arrays i.e. parent array and size array of size N2 inside the Disjoint set.
+
+------------
+
+class DisjointSet {
+public:
+    vector<int> rank, parent, size;
+    DisjointSet(int n) {
+        rank.resize(n + 1, 0);
+        parent.resize(n + 1);
+        size.resize(n + 1);
+        for (int i = 0; i <= n; i++) {
+            parent[i] = i;
+            size[i] = 1;
+        }
+    }
+
+    int findUPar(int node) {
+        if (node == parent[node])
+            return node;
+        return parent[node] = findUPar(parent[node]);
+    }
+
+    void unionByRank(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) return;
+        if (rank[ulp_u] < rank[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+        }
+        else if (rank[ulp_v] < rank[ulp_u]) {
+            parent[ulp_v] = ulp_u;
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            rank[ulp_u]++;
+        }
+    }
+
+    void unionBySize(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) return;
+        if (size[ulp_u] < size[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+};
+
+class Solution {
+public:
+    int largestIsland(vector<vector<int>>&grid) {
+        int n = grid.size();
+        DisjointSet ds(n*n);
+        vector<int>dx = {0,0,-1,1};
+        vector<int>dy = {-1,1,0,0};
+        
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                if(grid[i][j]==1){
+                    int u = i*n + j;
+                    for(int k=0;k<4;k++){
+                        int x = i + dx[k];
+                        int y = j + dy[k];
+                        int v = x*n + y;
+                        if(x>=0 && x<n && y>=0 && y<n && grid[x][y]==1){
+                            ds.unionBySize(u,v);//a little confused
+                        }
+                    }
+                }
+            }
+        }
+        
+        int ans = 0;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                if(grid[i][j]==0){
+                    set<int>st;
+                    for(int k=0;k<4;k++){
+                        int x = i + dx[k];
+                        int y = j + dy[k];
+                        int v = x*n + y;
+                        if(x>=0 && x<n && y >=0 && y<n && grid[x][y]==1){
+                            st.insert(ds.findUPar(v));
+                        }
+                    }
+                    int ct = 1;
+                    for(int v: st) ct+= ds.size[v];
+                    ans = max(ans, ct);
+                } 
+            }
+        }
+        
+        ans = max(ans, ds.size[ds.findUPar(0)]);//all are 1
+        
+        return ans;
+    }
+};
+
 //#######################################################################
 //#######-------G-53. Most Stones Removed with Same Row or Column - DSU--------########
 //Tutorial: https://takeuforward.org/data-structure/most-stones-removed-with-same-row-or-column-dsu-g-53/
 //Problem: https://leetcode.com/problems/most-stones-removed-with-same-row-or-column/description/
+
+- In connection we use DSU, not traversal techniques
 
 //#######################################################################
 //#######-------Swim in rising water--------########
@@ -3053,10 +3259,92 @@ Space Complexity: O(N)+ O(N) +O(2N) ~ O(N) where N = no. of nodes/indices. The f
 //Tutorial: https://takeuforward.org/graph/strongly-connected-components-kosarajus-algorithm-g-54/
 //Problem: https://www.geeksforgeeks.org/problems/strongly-connected-components-kosarajus-algo/1
 
+SCC -> Strongly Connected Components(kosaraju algo)
+Questions: Figure out the number of scc, number of scc
+- Only valid for directed graph
+pair that is reachable each other == scc
+
+reverse the edges
+starting time finishing time
+thought: stopping one guy to go to other
+
+
+------------
+Kosarajus Algorithm
+Approach/Steps: 
+1. Sort all the edges according to the finishing line(by running dfs, putting in stack)
+2. Reverse the graph 
+3. Do a dfs of connected component
+
+Time Complexity: O(V+E) + O(V+E) + O(V+E) ~ O(V+E) , where V = no. of vertices, E = no. of edges. The first step is a simple DFS, so the first term is O(V+E). The second step of reversing the graph and the third step, containing DFS again, will take O(V+E) each.
+Space Complexity: O(V)+O(V)+O(V+E), where V = no. of vertices, E = no. of edges. Two O(V) for the visited array and the stack we have used. O(V+E) space for the reversed adjacent list.
+
+------------
+
+class Solution
+{   
+    void dfs1(int i,vector<bool>&visited,vector<int>adj1[],stack<int>&st){
+        visited[i] = 1;
+        for(int x: adj1[i]){
+            if(!visited[x]) dfs1(x, visited,adj1,st);
+        }
+        st.push(i);
+    }
+    void dfs2(int i,vector<bool>&visited,vector<int>adj2[]){
+        visited[i] = 1;
+        for(int x: adj2[i]){
+            if(!visited[x]) dfs2(x, visited,adj2);
+        }
+    }
+	public:
+    int kosaraju(int V, vector<vector<int>>& adj)
+    {
+        vector<int>adj1[V],adj2[V];
+        vector<bool>visited(V), visited2(V);
+        for(int i=0;i<V;i++){
+            for(int x: adj[i]) adj1[i].push_back(x);
+        }
+        //Sort all the edges according to the finishing line
+        stack<int>st;
+        for(int i=0;i<V;i++){
+            if(!visited[i]) dfs1(i, visited,adj1,st);
+        }
+        
+        //Reverse the graph 
+        for(int i=0;i<V;i++){
+            for(int x: adj[i]) adj2[x].push_back(i);
+        }
+
+        int scc = 0;
+        while(!st.empty()){
+            int i = st.top();
+            st.pop();
+            if(!visited2[i]) dfs2(i, visited2,adj2), scc++;
+        }
+        return scc;
+    }
+};
+
 //#######################################################################
 //#######-------G-55. Bridges in Graph - Using Tarjan's Algorithm of time in and low time--------########
 //Tutorial: https://takeuforward.org/graph/bridges-in-graph-using-tarjans-algorithm-of-time-in-and-low-time-g-55/
 //Problem: https://leetcode.com/problems/critical-connections-in-a-network/description/
+
+Bridge: The whole graph is a 1 component, After cutting down an edge it should not disconnect
+
+Time of insertion(When going through dfs)
+Lowest time of insertion(take the lowest child, and also not the parent itself)
+
+------------
+DFS
+Approach/Steps: 
+1. 
+
+Time Complexity: O(V+2E), where V = no. of vertices, E = no. of edges. It is because the algorithm is just a simple DFS traversal.
+Space Complexity: O(V+2E) + O(3V), where V = no. of vertices, E = no. of edges. O(V+2E) to store the graph in an adjacency list and O(3V) for the three arrays i.e. tin, low, and vis, each of size V.
+------------
+
+
 
 //#######################################################################
 //#######-------G-56. Articulation Point in Graph--------########

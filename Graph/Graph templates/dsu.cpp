@@ -51,6 +51,7 @@ public:
     }
 };
 
+
 int main() {
     DisjointSet ds(7);
     ds.unionBySize(1, 2);
