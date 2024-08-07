@@ -28,6 +28,13 @@ pq, it will just not change the values
 if(x>=0 && x<n && y>=0 && y<n && grid[x][y]==1){
     ds.unionBySize(u,v);//a little confused
 }
+7. confused on the solution: https://www.geeksforgeeks.org/problems/bridge-edge-in-graph/1
+8. G-55. Bridges in Graph - Using Tarjans Algorithm of time in and low time confused
+
+Questions: 
+1. How to get shortest path having negative cycle
+2. How to get get all the shortest path dijkstra
+
 
 Good practice: donot temper data, make a copy and solve[for this type of question, just remember]
 - For undirected graph dijkstra use queue instead of priority queue, cause it does not make it different, level e same distance thakbe[binary maze question]
@@ -3330,7 +3337,10 @@ class Solution
 //Tutorial: https://takeuforward.org/graph/bridges-in-graph-using-tarjans-algorithm-of-time-in-and-low-time-g-55/
 //Problem: https://leetcode.com/problems/critical-connections-in-a-network/description/
 
-Bridge: The whole graph is a 1 component, After cutting down an edge it should not disconnect
+find the edges jegula remove korle component 2 ta hoe jabe
+
+Bridge: the critical part of the graph, if we cut the edges it becomes more than 1 component
+The whole graph is a 1 component, After cutting down an edge it should not disconnect
 
 Time of insertion(When going through dfs)
 Lowest time of insertion(take the lowest child, and also not the parent itself)
@@ -3338,25 +3348,67 @@ Lowest time of insertion(take the lowest child, and also not the parent itself)
 ------------
 DFS
 Approach/Steps: 
-1. 
+1. If cannot reach then that is a bridge 
+
+1. Maintain (Time of insertion + Lowest Time of insertion array) and run a dfs 
+For knowing the algo: think(if not able to do see striver note and video)
 
 Time Complexity: O(V+2E), where V = no. of vertices, E = no. of edges. It is because the algorithm is just a simple DFS traversal.
 Space Complexity: O(V+2E) + O(3V), where V = no. of vertices, E = no. of edges. O(V+2E) to store the graph in an adjacency list and O(3V) for the three arrays i.e. tin, low, and vis, each of size V.
 ------------
-
-
+class Solution {
+    int timer = 0;
+    void dfs(int node, int parent, vector<int>adj[], vector<int>&visited, vector<int>&toi,
+        vector<int>&ltoi,vector<vector<int>>&bridges){
+        visited[node] = 1;
+        toi[node] = ltoi[node] = timer;
+        timer++;
+        for(auto x: adj[node]){
+            if(x==parent) continue;//confused{other than parent->node if there is other paths of reaching parent}
+            if(!visited[x]){
+                dfs(x, node, adj, visited, toi, ltoi, bridges);
+                ltoi[node] = min(ltoi[x], ltoi[node]);
+                if(ltoi[x]>toi[node]){//if this is the case, then it cannot traverse back with the paths
+                    bridges.push_back({x, node});
+                }
+            }
+            else{
+                ltoi[node] = min(ltoi[x], ltoi[node]);
+            }
+        }
+    }
+public:
+    vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections) {
+        vector<int>adj[n];
+        for(auto x: connections){
+            adj[x[0]].push_back(x[1]);
+            adj[x[1]].push_back(x[0]);
+        }
+        vector<vector<int>>bridges;
+        vector<int>visited(n,0), toi(n,0), ltoi(n,0);
+        dfs(0, -1, adj, visited, toi, ltoi, bridges);
+        return bridges;
+    }
+};
 
 //#######################################################################
 //#######-------G-56. Articulation Point in Graph--------########
 //Tutorial: https://takeuforward.org/data-structure/articulation-point-in-graph-g-56/
 //Problem: https://www.geeksforgeeks.org/problems/articulation-point-1/1
 
+bridges: edges , Articulation Points = Nodes 
 
+Articulation Points of a graph are the nodes on whose removal, the graph breaks into multiple components. 
 
-- read shafayet graph book
----=-=-===-===-= SOlve all the todo above
----=-=-===-===-= remove confusions written
-???????????????????????????????????????????????????????????????????????????
+------------
+DFS
+Approach/Steps: 
+1. 
+
+Time Complexity: O(V+2E), where V = no. of vertices, E = no. of edges. It is because the algorithm is just a simple DFS traversal.
+Space Complexity: O(3V), where V = no. of vertices. O(3V) is for the three arrays i.e. tin, low, and vis, each of size V.
+------------
+
 
 
 //#######################################################################
