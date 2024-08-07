@@ -7,7 +7,7 @@ void solve(){
     int l = 1, r = 1001, m;
     for(int i=0;i<100;i++){
         int m1 = l + (r - l) / 3;
-        int m2 = r - (r - l) / 3;
+        int m2 = l + (r - l) * 2 / 3;
         
     }
 }
