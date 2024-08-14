@@ -1,3 +1,5 @@
+- Think the transition state
+- Solve small testcase either in tabulation or recursive
 - Every types first video is the most important
 - Learn to write bottom up table
 - Learn to draw solving recursively, ==  f(idx, val) diye
