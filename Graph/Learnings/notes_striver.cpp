@@ -3397,6 +3397,8 @@ public:
 //Problem: https://www.geeksforgeeks.org/problems/articulation-point-1/1
 
 bridges: edges , Articulation Points = Nodes 
+bridges: cut edges , Articulation Points = cut Nodes 
+
 
 Articulation Points of a graph are the nodes on whose removal, the graph breaks into multiple components. 
 
