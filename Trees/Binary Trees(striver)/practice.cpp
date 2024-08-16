@@ -1,11 +1,11 @@
-                            
+                                
 #include <iostream>
-#include <vector>
-#include <stack>
+#include <algorithm>
 
 using namespace std;
 
-// Node structure for the binary tree
+// Node structure for
+// the binary tree
 struct Node {
     int data;
     Node* left;
@@ -15,77 +15,73 @@ struct Node {
     Node(int val) : data(val), left(nullptr), right(nullptr) {}
 };
 
-// Function to get the Preorder,
-// Inorder and Postorder traversal
-// Of Binary Tree in One traversal
-vector<vector<int>> preInPostTraversal(Node* root) {
-    vector<int> pre, in, post;
+class Solution {
+public:
+    // Global variable to
+    // store the diameter
+    int diameter = 0;  
 
-    
-
-    
-    vector<vector<int>> result;
-    result.push_back(pre);
-    result.push_back(in);
-    result.push_back(post);
-    return result;
-}
-
-
-
-
-// Function to print the
-// elements of a vector
-void printVector(const vector<int>& vec) {
-    // Iterate through the vector
-    // and print each element
-    for (int num : vec) {
-        cout << num << " ";
+    // Function to calculate
+    // the height of a subtree
+    void f(Node *node){
+        if(root == NULL) return;
+        f(node->left);
+        f(node->right);
     }
-    cout << endl;
-}
+    int calculateHeight(Node* node) {
+        if (node == nullptr) {
+            return 0;
+        }
+
+        // Recursively calculate the
+        // height of left and right subtrees
+        int leftHeight = calculateHeight(node->left);
+        int rightHeight = calculateHeight(node->right);
+
+        // Calculate the diameter at the current
+        // node and update the global variable
+        diameter = max(diameter, leftHeight + rightHeight);
+
+        // Return the height
+        // of the current subtree
+        return 1 + max(leftHeight, rightHeight);
+    }
+
+    // Function to find the
+    // diameter of a binary tree
+    int diameterOfBinaryTree(Node* root) {
+        // Start the recursive
+        // traversal from the root
+        calculateHeight(root);
+
+        // Return the maximum diameter
+        // found during traversal
+        return diameter;
+    }
+};
+
+
 
 // Main function
-int main()
-{
+int main() {
     // Creating a sample binary tree
     Node* root = new Node(1);
     root->left = new Node(2);
     root->right = new Node(3);
     root->left->left = new Node(4);
     root->left->right = new Node(5);
+    root->left->right->right = new Node(6);
+    root->left->right->right->right = new Node(7);
 
-    // Getting the pre-order, in-order,
-    // and post-order traversals
-    vector<int> pre, in, post;
-    vector<vector<int>> traversals = preInPostTraversal(root);
+    // Creating an instance of the Solution class
+    Solution solution;
 
-    // Extracting the traversals
-    // from the result
-    pre = traversals[0];
-    in = traversals[1];
-    post = traversals[2];
+    // Calculate the diameter of the binary tree
+    int diameter = solution.diameterOfBinaryTree(root);
 
-    // Printing the traversals
-    cout << "Preorder traversal: ";
-    for (int val : pre) {
-        cout << val << " ";
-    }
-    cout << endl;
-
-    cout << "Inorder traversal: ";
-    for (int val : in) {
-        cout << val << " ";
-    }
-    cout << endl;
-
-    cout << "Postorder traversal: ";
-    for (int val : post) {
-        cout << val << " ";
-    }
-    cout << endl;
+    cout << "The diameter of the binary tree is: " << diameter << endl;
 
     return 0;
 }
+                                
                             
-                        

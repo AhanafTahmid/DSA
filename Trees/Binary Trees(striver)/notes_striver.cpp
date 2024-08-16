@@ -5,6 +5,7 @@
 
 Confusions:
 1. L10 why Memory Limit Exceeded for this , if(node->right) node = node->right;
+2. L16. Diameter of Binary Tree - confused bruteforce approach 
 
 Questions: 
 
@@ -74,7 +75,6 @@ class Solution {
 //#######################################################################
 //#######-------L2. Binary Tree Representation in C++--------########
 //Tutorial: https://takeuforward.org/binary-tree/binary-tree-representation-in-c/
-//Problem: https://www.geeksforgeeks.org/problems/binary-tree-representation/1
 
 //Using struct create custom data type
 #include <iostream>
@@ -98,6 +98,20 @@ int main() {
     // Creating a right child node for the left child node of the root
     root->left->right = new Node(5);
 }
+
+//Problem: https://www.geeksforgeeks.org/problems/binary-tree-representation/1
+class Solution{
+public:
+    void create_tree(node* root, vector<int> &vec){
+        root->left = newNode(vec[1]);
+        root->right = newNode(vec[2]);
+        root->left->left = newNode(vec[3]);
+        root->left->right = newNode(vec[4]);
+        root->right->left = newNode(vec[5]);
+        root->right->right = newNode(vec[6]);
+    }
+};
+
 
 //#######################################################################
 //#######-------L3. Binary Tree Representation in Java--------########
@@ -336,6 +350,42 @@ public:
 //Tutorial: https://takeuforward.org/data-structure/iterative-postorder-traversal-of-binary-tree-using-1-stack
 //Problem: https://leetcode.com/problems/binary-tree-postorder-traversal/description/
 
+------------
+Using 1 Stack
+Approach: 
+1. Go to extreme left, the move right, again go to extreme left, last value jekhane pointer null thakbe sheta add kora
+Time Complexity: O(2N) 
+Space Complexity: O(N) 
+------------
+
+class Solution {
+public:
+    vector<int> postorderTraversal(TreeNode* root) {
+        vector<int>ans;
+        if(root==NULL) return ans;
+        stack<TreeNode*> st;
+        while( !st.empty() || root ){
+            while(root){
+                st.push(root);
+                root = root->left;
+            }
+            TreeNode* tmp = st.top()->right;
+            if(tmp == NULL){
+                tmp = st.top();
+                st.pop();
+                ans.push_back(tmp->val);
+                while( !st.empty() && tmp == st.top()->right ){//if this is true means left e kono value nai
+                    tmp = st.top();
+                    st.pop();
+                    ans.push_back(tmp->val);
+                }
+            }
+            else root = tmp;
+        }
+        
+        return ans;
+    }
+};
 
 
 //#######################################################################
@@ -343,6 +393,40 @@ public:
 //Tutorial: https://takeuforward.org/data-structure/preorder-inorder-postorder-traversals-in-one-traversal/
 //Problem: https://www.naukri.com/code360/problems/tree-traversals_981269
 
+------------
+Using 1 Stack
+Approach: 
+add in the list if 1 == preorder, 2==inorder, 3 == postorder
+Time Complexity: O(3N)
+Space Complexity: O(3N) 
+------------
+vector<vector<int>> getTreeTraversal(TreeNode *root){
+    vector<vector<int>> ans(3);
+    stack< pair<TreeNode *, int>> st;//node, steps
+    st.push({root, 1});
+    while(!st.empty() ){
+        TreeNode *node = st.top().first;
+        int steps = st.top().second;
+        st.pop();
+        if(steps==1){
+            //root -> left -> right
+            ans[1].push_back(node->data);
+            st.push({node, ++steps});//steps 2 kore dewa
+            if(node->left!=NULL) st.push({node->left, 1});//left e new node paile steps 1 e hobe
+        }
+        else if(steps==2){
+            //left -> root -> right
+            ans[0].push_back(node->data);
+            st.push({node, ++steps});
+            if(node->right!=NULL) st.push({node->right, 1});
+        }
+        else if(steps==3){
+            //left -> right -> root
+            ans[2].push_back(node->data);
+        }
+    }
+    return ans;
+}
 
 
 //#######################################################################
@@ -383,38 +467,171 @@ class Solution{
 //#######-------L15. Check for Balanced Binary Tree--------########
 //Tutorial: https://takeuforward.org/data-structure/check-if-the-binary-tree-is-balanced-binary-tree/
 //Problem: https://leetcode.com/problems/balanced-binary-tree/description/
-https://www.geeksforgeeks.org/problems/check-for-balanced-tree/1
+
+------------
+Approach:
+1. Find the diameter of left side and right side, if any case it is more than -1 , keep returning -1
+Time Complexity: O(N)
+------------
+
+class Solution {
+public:
+    int b(TreeNode *root){
+        if(root==NULL) return 0;
+        int l = b(root->left);
+        int r = b(root->right);
+
+        if(l==-1 || r==-1) return -1;//if l and r is -1 for anycase then keep returning -1 alltime
+        if( abs(l-r) > 1) return -1;
+
+        return max(l,r) + 1;
+    }
+    bool isBalanced(TreeNode* root) {
+        return (b(root)==-1?0:1);
+    }
+};
 
 //#######################################################################
 //#######-------L16. Diameter of Binary Tree--------########
 //Tutorial: https://takeuforward.org/data-structure/calculate-the-diameter-of-a-binary-tree/
 //Problem: https://leetcode.com/problems/diameter-of-binary-tree/description/
-https://www.geeksforgeeks.org/problems/diameter-of-binary-tree/1
-Diameter: longest distance between any two nodes of a node, and does not need to pass via root
+Diameter: longest distance between any two nodes of a node, and does not necessarily need to pass via root
 
+------------
+Approach:
+1. Find the diameter of left side and right side, keep taking the max(l+r, ans) as the answer
+Time Complexity: O(N)
+------------
+
+class Solution {
+public:
+    int ans = 0;
+    int d(TreeNode* root){
+        if(root == NULL) return 0;
+        int l = d(root->left);
+        int r = d(root->right);
+        ans = max(ans, l+r);
+        return max(l,r) + 1;
+    }
+    int diameterOfBinaryTree(TreeNode* root) {
+        d(root);
+        return ans;
+    }
+};
 
 //#######################################################################
 //#######-------L17. Maximum Path Sum in Binary Tree--------########
 //Tutorial: https://takeuforward.org/data-structure/maximum-sum-path-in-binary-tree/
 //Problem: https://leetcode.com/problems/binary-tree-maximum-path-sum/description/
-https://www.geeksforgeeks.org/problems/maximum-path-sum-from-any-node/1
+
+Prerequisite: Finding the diameter
+------------
+The curve path has the answer
+Approach:
+1. Finding the diameter different version
+Time Complexity: O(N)
+------------
+
+class Solution {
+public:
+    int ans = INT_MIN;
+    int f(TreeNode* root){
+        if(root == NULL) return 0;
+        int l = max(0, f(root->left));//do not consider negative
+        int r = max(0, f(root->right));
+        ans = max(root->val + l + r , ans);//take the curve path as the answer
+        return root->val + max(l,r);//it makes sure that it follows in one order
+    }
+    int maxPathSum(TreeNode* root) {
+        f(root);
+        return ans;
+    }
+};
 
 //#######################################################################
 //#######-------L18. Check it two trees are Identical or Not--------########
 //Tutorial: https://takeuforward.org/data-structure/check-if-two-trees-are-identical/
 //Problem: https://leetcode.com/problems/same-tree/description/
-https://www.geeksforgeeks.org/problems/determine-if-two-trees-are-identical/1
+
+------------
+Approach:
+1. Just traverse the node of both the trees simultaneously
+Time Complexity: O(N)
+------------
+
+class Solution {
+public:
+    bool check(TreeNode *r1, TreeNode *r2){
+        if(r1 == NULL && r2 == NULL) return 1;//both null then ok
+        if(r1 == NULL || r2 == NULL) return 0;//one of them null, then no
+        int l = check(r1->left, r2->left);
+        int r = check(r1->right, r2->right);
+        
+        if(l==0 || r == 0) return 0;//if any time l and r is 0, then return 0 for all nodes, return false
+        if( r1->val != r2->val ) return 0;
+        return 1;
+    }
+    bool isSameTree(TreeNode* r1, TreeNode* r2) {
+        return check(r1, r2);
+    }
+};
+
 
 //#######################################################################
 //#######-------L19. Zig-Zag or Spiral Traversal in Binary Tree--------########
 //Tutorial: https://takeuforward.org/data-structure/zig-zag-traversal-of-binary-tree/
 //Problem: https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/description/
-https://www.geeksforgeeks.org/problems/zigzag-tree-traversal/1
+
+------------
+Approach:
+1. Complete level order traversal
+2. Maintain a flag variable, to reverse the array to make it zigzag
+Time Complexity: O(N) where N is the number of nodes in the binary tree.
+Space Complexity: O(N) where N is the number of nodes in the binary tree.
+------------ 
+
+class Solution {
+public:
+    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+        vector<vector<int>> ans;
+        if(root==NULL) return ans;
+        queue< TreeNode* > q;
+        q.push(root);
+        bool ok = 0;//0==right to left 1==left to right
+        while(!q.empty()){
+            int sz = q.size();
+            vector<int>level;
+            for(int i=0;i<sz;i++){
+                TreeNode* node = q.front();
+                q.pop();
+                if(node->left!=NULL) q.push(node->left);
+                if(node->right!=NULL) q.push(node->right);
+                level.push_back(node->val);
+            }
+            if(!ok) ans.push_back(level);
+            else{
+                reverse(level.begin(),level.end());
+                ans.push_back(level);
+            }
+            ok = !ok;
+            
+        }
+        return ans;
+    }
+};
 
 //#######################################################################
 //#######-------L20. Boundary Traversal in Binary Tree--------########
 //Tutorial: https://takeuforward.org/data-structure/boundary-traversal-of-a-binary-tree/
 //Problem: https://www.geeksforgeeks.org/problems/boundary-traversal-of-binary-tree/1
+
+The boundary traversal is the process of visiting the boundary nodes of the binary tree 
+in the anticlockwise direction, starting from the root.
+
+------------
+Approach:
+1. 
+------------ 
 
 
 //#######################################################################

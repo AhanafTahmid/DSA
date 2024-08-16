@@ -27,6 +27,9 @@
         "ranges": "cpp",
         "stacktrace": "cpp",
         "iosfwd": "cpp",
-        "ios": "cpp"
+        "ios": "cpp",
+        "filesystem": "cpp",
+        "forward_list": "cpp",
+        "any": "cpp"
     }
 }
