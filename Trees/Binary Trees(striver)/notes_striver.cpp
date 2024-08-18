@@ -980,15 +980,64 @@ class Solution {
 //#######-------L27. Lowest Common Ancestor in Binary Tree | LCA--------########
 //Tutorial: https://takeuforward.org/data-structure/lowest-common-ancestor-for-two-given-nodes/
 //Problem: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/description/
-https://www.geeksforgeeks.org/problems/lowest-common-ancestor-in-a-binary-tree/1
 
+Prerequisite: L26. Print Root to Node Path in Binary Tree
+------------
+Approach1:
+1. Use take not take approach of recursion and print the path
+2. Collect both the paths in the tree 
+3. The last value to match the path is the answer(LCA)
+------------
+Approach2:
+1. Keep moving left or right, if one of them is null return right or left
+2. if both are not null we found our answer
 
+------------ 
+class Solution {
+public:
+    TreeNode* lca(TreeNode *root,TreeNode *p, TreeNode *q){
+        if(root==NULL || root==p || root == q) return root;
+        TreeNode* l = lca(root->left ,p, q);
+        TreeNode* r = lca(root->right,p, q);
+        if(l==NULL) return r;
+        if(r==NULL) return l;
+        return root;
+    }
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        return lca(root, p, q);
+    }
+};
+
+------------------------
+//https://www.geeksforgeeks.org/problems/lowest-common-ancestor-in-a-binary-tree/1
+------------------------
+class Solution
+{
+    public:
+    Node* lc(Node *root,int p,int q){
+        if(root==NULL || root->data==p || root->data == q) return root;
+        Node* l = lc(root->left ,p, q);
+        Node* r = lc(root->right,p, q);
+        if(l==NULL) return r;
+        if(r==NULL) return l;
+        return root;
+    }
+    
+    Node* lca(Node* root ,int p ,int q )
+    {
+       return lc(root, p, q);
+    }
+};
 
 //#######################################################################
 //#######-------L28. Maximum Width of Binary Tree--------########
 //Tutorial: https://takeuforward.org/data-structure/maximum-width-of-a-binary-tree/
 //Problem: https://leetcode.com/problems/maximum-width-of-binary-tree/description/
 https://www.geeksforgeeks.org/problems/maximum-width-of-tree/1
+
+
+
+
 
 //#######################################################################
 //#######-------L29. Children Sum Property in Binary Tree | O(N) Approach--------########
