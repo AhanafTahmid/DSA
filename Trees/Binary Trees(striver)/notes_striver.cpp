@@ -6,9 +6,22 @@
 Confusions:
 1. L10 why Memory Limit Exceeded for this , if(node->right) node = node->right;
 2. L16. Diameter of Binary Tree - confused bruteforce approach 
+3.
+why this is not working, not sure
+L23. Bottom View of Binary Tree
+void b(Node *root, int line, int height, map<int, int>&mp){
+        if(root==NULL) return;
+        b(root->left, line-1, height+1, mp);
+        b(root->right, line+1, height+1, mp);
+        if(height>=mp[line]) mp[line] = root->data;
+    }
+4. 
 
 Questions: 
 
+
+
+todo:
 
 ---------------------------------------------------------------------------------------------------------
 Striver Tree Playlist: https://www.youtube.com/playlist?list=PLgUwDviBIf0q8Hkd7bK2Bpryj2xVJk8Vk
@@ -628,6 +641,8 @@ public:
 The boundary traversal is the process of visiting the boundary nodes of the binary tree 
 in the anticlockwise direction, starting from the root.
 
+left -> leaf -> right traversal
+
 ------------
 Approach:
 1. 
@@ -638,34 +653,259 @@ Approach:
 //#######-------L21. Vertical Order Traversal of Binary Tree--------########
 //Tutorial: https://takeuforward.org/data-structure/vertical-order-traversal-of-binary-tree/
 //Problem: https://leetcode.com/problems/vertical-order-traversal-of-a-binary-tree/description/
-https://www.geeksforgeeks.org/problems/print-a-binary-tree-in-vertical-order/1
+
+------------
+Approach:
+map< vertical < map< level, set of values >> 
+vertical, level, node 
+
+level: this is needed to sort the same order e valuegula sort rakhar jnno
+
+Steps:
+1. left e gele vertical -1 hobe, right e gele +1 
+2. niche namle level +1, in both sides
+3. same level er seperate list er jnno multiset create korsi(for minheap)
+
+------------ 
+
+class Solution {
+public:
+    vector<vector<int>> verticalTraversal(TreeNode* root) {
+        vector<vector<int>> ans;
+        if(root==NULL) return ans;
+
+        map<int, map<int, multiset<int> > > mp;
+        //vertical, level, node
+        queue< tuple<int, int, TreeNode* > > q;
+        q.push({0, 0, root});
+        while( !q.empty() ){
+            auto [vertical, level, node] = q.front();
+            mp[vertical][level].insert(node->val);
+            q.pop();
+            if(node->left!=NULL)  q.push({vertical-1, level+1, node->left});
+            if(node->right!=NULL) q.push({vertical+1, level+1, node->right});
+        }
+
+        for(auto [x,y]: mp){
+            vector<int>lv;
+            for(auto p: y){
+                lv.insert(lv.end(), p.second.begin(), p.second.end());
+            }
+            ans.push_back(lv);
+        }
+        return ans;
+    }
+};
 
 //#######################################################################
 //#######-------L22. Top View of Binary Tree--------########
 //Tutorial: https://takeuforward.org/data-structure/top-view-of-a-binary-tree/
 //Problem: https://www.geeksforgeeks.org/problems/top-view-of-binary-tree/1
 
+Prerequisite: L21. Vertical Order Traversal of Binary Tree
+------------
+Approach:
+1. Use vertical order traversal method 
+2. Take the first value that was added in the traversal in vertical wise 
+3. put (level, node) in the queue, keep taking the values->data where level == unique for the first time
+
+------------ 
+
+
+class Solution
+{
+    public:
+    vector<int> topView(Node *root)
+    {
+        vector<int>ans;
+        map<int, int> mp;
+        queue< pair<int, Node*> > q;
+        q.push({0, root});
+        while(!q.empty()){
+            int level = q.front().first;
+            Node *node = q.front().second;
+            q.pop();
+            if(mp[level]==0) mp[level] = node->data;//taking the first value if it was not added
+            if(node->left!=NULL)  q.push({level-1, node->left});
+            if(node->right!=NULL) q.push({level+1, node->right});
+        }
+        
+        for(auto x: mp){
+            ans.push_back(x.second);
+        }
+        return ans;
+    }
+};
 
 //#######################################################################
 //#######-------L23. Bottom View of Binary Tree--------########
 //Tutorial: https://takeuforward.org/data-structure/bottom-view-of-a-binary-tree/
 //Problem: https://www.geeksforgeeks.org/problems/bottom-view-of-binary-tree/1
 
+Use the line concept
+Prerequisite: L21. Vertical Order Traversal of Binary Tree
+------------
+Approach:
+1. same as Top View of Binary Tree, just a slight difference
+
+------------ 
+
+class Solution {
+  public:
+    vector <int> bottomView(Node *root) {
+        vector<int>ans;
+        map<int, int> mp;
+        queue< pair<int, Node*> > q;
+        q.push({0, root});
+        while(!q.empty()){
+            int level = q.front().first;
+            Node *node = q.front().second;
+            q.pop();
+            mp[level] = node->data;//last node will keep updating 
+            if(node->left!=NULL)  q.push({level-1, node->left});
+            if(node->right!=NULL) q.push({level+1, node->right});
+        }
+        
+        for(auto x: mp){
+            ans.push_back(x.second);
+        }
+        return ans;
+    }
+};
+
+//Recursive
+- height beshi hoile map upate kora just
+
+class Solution {
+  public:
+    void b(Node *root, int line, int height, map<int, pair<int, int>>&mp){
+        if(root==NULL) return;
+        b(root->left, line-1, height+1, mp);
+        b(root->right, line+1, height+1, mp);
+        if(height>=mp[line].second) mp[line] = {root->data, height};
+    }
+    vector <int> bottomView(Node *root) {
+        vector<int>ans;
+        map<int, pair<int, int>>mp;
+        b(root, 0, 0, mp);
+        for(auto x: mp) ans.push_back(x.second.first);
+        return ans;
+    }
+};
 
 //#######################################################################
 //#######-------L24. Right/Left View of Binary Tree--------########
 //Tutorial: https://takeuforward.org/data-structure/right-left-view-of-binary-tree/
 //Problem: https://leetcode.com/problems/binary-tree-right-side-view/description/
-https://www.geeksforgeeks.org/problems/left-view-of-binary-tree/1
-https://www.geeksforgeeks.org/problems/right-view-of-binary-tree/1
+
+------------
+Approach:
+1. visit all left node then all right node, and keep updating the answer is map
+
+------------ 
+Right View
+
+class Solution {
+public:
+    void r(TreeNode* root, int height, map<int, int>&mp){
+        if(root == NULL) return;
+        r(root->left, height+1, mp);
+        r(root->right,height+1, mp);
+        mp[height] = root->val;
+    }
+    vector<int> rightSideView(TreeNode* root) {
+        vector<int>ans;
+        map<int, int> mp;
+        r(root, 0, mp);
+        for(auto x: mp)ans.push_back(x.second);
+        return ans;
+    }
+};
+
+--------------------
+Right View Iterative
+class Solution {
+public:
+    vector<int> rightSideView(TreeNode* root) {
+        vector<int>ans;
+        if(root==NULL) return ans;
+        //node, height
+        queue< TreeNode* > q;
+        q.push(root);
+        while(!q.empty()){
+            int sz = q.size();
+            for(int i=0;i<sz;i++){
+                TreeNode* node = q.front();
+                if(i==sz-1)ans.push_back(node->val);//take the last element in the answer
+                q.pop();
+                if(node->left!=NULL)  q.push(node->left);
+                if(node->right!=NULL) q.push(node->right);
+            }
+        }
+        return ans;
+    }
+};
+
+------------------------------------------------------------------
+------------------------------------------------------------------
+Left View
+//https://www.geeksforgeeks.org/problems/left-view-of-binary-tree/1
+void l(Node* root, int height, map<int, int>&mp){
+    if(root == NULL) return;
+    l(root->right,height+1, mp);
+    l(root->left, height+1, mp);
+    mp[height] = root->data;
+}
+vector<int> leftView(Node *root)
+{
+    vector<int>ans;
+    map<int, int> mp;
+    l(root, 0, mp);
+    for(auto x: mp)ans.push_back(x.second);
+    return ans;
+}
 
 
 //#######################################################################
 //#######-------L25. Check for Symmetrical Binary Trees--------########
 //Tutorial: https://takeuforward.org/data-structure/check-for-symmetrical-binary-tree/
 //Problem: https://leetcode.com/problems/symmetric-tree/description/
-https://www.geeksforgeeks.org/problems/symmetric-tree/1
 
+------------
+Approach:
+
+Condition:
+root1->right == root2->left
+root1->left == root2->right
+
+root1->right->data == root2->left->data 
+root1->left->data  == root2->right->data 
+
+1. Move through left and right, keep checking the root1->val==root2->val, if not matched then false for all cases
+2. otherwise move to left and right, 
+
+------------ 
+
+class Solution {
+public:
+    bool s(TreeNode* root1, TreeNode* root2){
+        if(root1 == NULL && root2 == NULL) return true;
+        if(root1 != NULL && root2 == NULL) return false;
+        if(root1 == NULL && root2 != NULL) return false;
+        
+        bool l = s(root1->left,  root2->right);
+        bool r = s(root1->right, root2->left);
+
+        if(l==false || r==false) return false;//if l, and r is left one time it is false for all cases
+        if(root1->val  == root2->val ) return true;
+        return false;
+    }
+
+    bool isSymmetric(TreeNode* root){
+        if(root==NULL) return true;
+        return s(root->left,root->right);
+    }
+};
 
 //#######################################################################
 //#######################################################################
@@ -684,14 +924,65 @@ https://www.geeksforgeeks.org/problems/symmetric-tree/1
 //#######################################################################
 //#######-------L26. Print Root to Node Path in Binary Tree--------########
 //Tutorial: https://takeuforward.org/data-structure/print-root-to-node-path-in-a-binary-tree/
+
 //Problem: https://leetcode.com/problems/binary-tree-paths/description/
-https://www.geeksforgeeks.org/problems/root-to-leaf-paths/1
+
+------------
+Approach:
+1. Use take not take approach of recursion and print the path
+
+------------ 
+
+class Solution {
+public:
+    void b(TreeNode* root, string s, vector<string>&ans){
+        if(root==NULL) return;
+        s+=to_string( root->val );
+        if(root->left==NULL && root->right==NULL){
+            ans.push_back(s);
+        }
+        s+= "->";
+        b(root->left, s, ans);
+        b(root->right, s, ans);
+        
+    }
+    vector<string> binaryTreePaths(TreeNode* root) {
+        vector<string> ans;
+        string s;
+        b(root, s, ans);
+        return ans;
+    }
+};
+
+//https://www.geeksforgeeks.org/problems/root-to-leaf-paths/1
+
+class Solution {
+  public:
+    vector<int>s;
+    void b(Node* root, vector<vector<int>>&ans){
+        if(root==NULL){
+            return;
+        }
+        s.push_back(root->data);
+        if(root->left==NULL && root->right==NULL)ans.push_back(s);
+        b(root->left, ans);
+        b(root->right, ans);
+        s.pop_back();
+    }
+    vector<vector<int>> Paths(Node* root) {
+        vector<vector<int>> ans;
+        b(root, ans);
+        return ans;
+    }
+};
 
 //#######################################################################
 //#######-------L27. Lowest Common Ancestor in Binary Tree | LCA--------########
 //Tutorial: https://takeuforward.org/data-structure/lowest-common-ancestor-for-two-given-nodes/
 //Problem: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/description/
 https://www.geeksforgeeks.org/problems/lowest-common-ancestor-in-a-binary-tree/1
+
+
 
 //#######################################################################
 //#######-------L28. Maximum Width of Binary Tree--------########
