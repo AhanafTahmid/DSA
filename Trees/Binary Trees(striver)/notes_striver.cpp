@@ -1033,39 +1033,228 @@ class Solution
 //#######-------L28. Maximum Width of Binary Tree--------########
 //Tutorial: https://takeuforward.org/data-structure/maximum-width-of-a-binary-tree/
 //Problem: https://leetcode.com/problems/maximum-width-of-binary-tree/description/
-https://www.geeksforgeeks.org/problems/maximum-width-of-tree/1
 
+Draw the tree if not understood
+------------
+Approach:
+1. answer would be the (last value position - first value position + 1) 
+2. implement level order traversal and solve the problem
 
+------------
+class Solution {
+public:
+    int widthOfBinaryTree(TreeNode* root) {
+        long long ans = 1;
+        queue< pair<TreeNode*, long long> > q;
+        q.push({root, 1});
+        while(!q.empty()){
+            int sz = q.size();
+            long long mn = q.front().second; 
+            vector<long long>ar;
+            for(int i=0;i<sz;i++){
+                TreeNode* node = q.front().first;
+                long long v = q.front().second - mn;//for avoiding overflow this is important, or the value will increase exponentially
+                q.pop();
+                if(node->left!=NULL) q.push({node->left, v*2});
+                if(node->right!=NULL) q.push({node->right, (v*2)+1 });
 
+                if(i==0 || i==sz-1) ar.push_back(v);
+            }   
+            if(ar.size()>1){
+                ans = max(ans, ar[1] - ar[0] + 1);
+            }
+        }
 
+        return ans;
+    }
+};
 
 //#######################################################################
 //#######-------L29. Children Sum Property in Binary Tree | O(N) Approach--------########
 //Tutorial: https://takeuforward.org/data-structure/check-for-children-sum-property-in-a-binary-tree/
+
 //Problem: https://www.geeksforgeeks.org/problems/children-sum-parent/1
-https://www.geeksforgeeks.org/problems/children-sum-parent/1
+------------
+Approach:
+if both children sum is less than parent, make children's value to parent's value.
+if both children values sum is greater than or equal to parent, make parent's value to children's sum.
+recursively go left and right. Traversal type: DFS.
+when coming back up the tree, take children sum and replace it in parent.
+at any point we reach null, just return (base case)
+Intuition: while going down, increase the children values so we make sure to never fall short, then all we have to do is sum both children and replace it in parent.
+------------
+
+
 
 //#######################################################################
 //#######-------L30. Print all the Nodes at a distance of K in Binary Tree--------########
 //Tutorial: https://takeuforward.org/binary-tree/print-nodes-at-distance-k-in-a-binary-tree/
 //Problem: https://leetcode.com/problems/all-nodes-distance-k-in-binary-tree/description/
-https://www.geeksforgeeks.org/problems/nodes-at-given-distance-in-binary-tree/1
+
+------------
+Approach:
+1. Mark parent in a map using bfs
+2. Move up(using parent), left, right, get out of the loop when k == steps
+3. print the left queue as answer
+------------
+
+class Solution {
+public:
+    vector<int> distanceK(TreeNode* root, TreeNode* target, int k) {
+        if(root==NULL) return {};
+        map<TreeNode*, TreeNode*>parent;
+        map<TreeNode*, int>visited;
+
+        queue< TreeNode* > q;
+        q.push(root);
+        //1. Make parent
+        while(!q.empty()){
+            TreeNode* node = q.front();
+            q.pop();
+            if( node->left != NULL) q.push(node->left), parent[node->left] = node;
+            if( node->right != NULL) q.push(node->right), parent[node->right] = node;
+        }
+
+        //2. target theke chorano
+        q.push(target);
+        visited[target] = 1;
+        int steps = 0;
+        while(!q.empty()){
+            int sz = q.size();
+            if(steps++ == k) break;
+            for(int i=0;i<sz;i++){
+                TreeNode* node = q.front();
+                q.pop();
+                if( node->left != NULL  && !visited[node->left]) q.push(node->left), visited[node->left] = 1;
+                if( node->right != NULL && !visited[node->right]) q.push(node->right), visited[node->right] = 1;
+                if( parent[node] && !visited[parent[node]] ) q.push(parent[node]), visited[ parent[node] ] = 1;
+            }
+        }
+
+        //3. take the element from the queue
+        vector<int>ans;
+        while(!q.empty()){
+            TreeNode* node = q.front();
+            ans.push_back(node->val);
+            q.pop();
+        }
+        return ans;
+    }
+};
 
 //#######################################################################
 //#######-------L31. Minimum time taken to BURN the Binary Tree from a Node--------########
-//Tutorial: 
+//Tutorial: NULL
 //Problem: https://www.geeksforgeeks.org/problems/burning-tree/1
+
+The problem focuses on level wise movement, so use bfs
+
+Prequisite: L30. Print all the Nodes at a distance of K in Binary Tree
+
+------------
+Approach:
+1.1 Find the starting node 
+1.2 Mark each node to its parent
+2. We will do a BFS traversal from our starting node.
+3. Traverse up, left, right until 1 radial level (adjacent nodes) are burned and increment our timer.
+
+------------
+
+class Solution {
+  public:
+    int minTime(Node* root, int target) 
+    {   
+        map<Node*, Node*> parent;
+        map<Node*, int> visited;
+        queue<Node*> q;
+        q.push(root);
+        Node *start;
+        while(!q.empty()){
+            Node* node = q.front();
+            q.pop();
+            //find the target node
+            if(node->data == target) start = node;
+
+            if(node->left!=NULL) q.push(node->left), parent[node->left] = node;
+            if(node->right!=NULL) q.push(node->right), parent[node->right] = node;
+
+        }
+        q.push(start);
+        visited[start] = 1;
+        int timer = 0;
+        while(!q.empty()){
+            int sz = q.size();
+            bool ok = 0;//this is to check if I am buring any single node on the traversal
+            for(int i=0;i<sz;i++){
+                Node* node = q.front();
+                q.pop();
+                if(node->left!=NULL && !visited[node->left]) q.push(node->left), visited[node->left] = 1, ok = 1;
+                if(node->right!=NULL && !visited[node->right]) q.push(node->right), visited[node->right] = 1, ok = 1;
+                if( parent[node] && !visited[parent[node]] ) q.push(parent[node]), visited[ parent[node] ] = 1, ok = 1;
+            }
+            if(ok)timer++;
+        }
+        return timer;
+    }
+};
+
 
 //#######################################################################
 //#######-------L32. Count total Nodes in a COMPLETE Binary Tree | O(Log^2 N) Approach--------########
 //Tutorial: https://takeuforward.org/binary-tree/count-number-of-nodes-in-a-binary-tree/
 //Problem: https://leetcode.com/problems/count-complete-tree-nodes/description/
-https://www.geeksforgeeks.org/problems/count-number-of-nodes-in-a-binary-tree/0
+
+------------
+Approach:
+until left side tree height == right side tree height 
+use the formula : 2^height - 1
+
+1.1  Go to the left subtree 
+1.2 Go to the right subtree 
+2. If left == right then keep returning answer as (1<<lft) - 1, 
+   else 1 + solve(left trees) + solve(right trees)
+
+------------
+
+class Solution {
+public:
+    int dfs(TreeNode* root){
+        if(root==NULL) return 0;
+        int lft = l(root);
+        int rgt = r(root);
+        if(lft==rgt) return (1<<lft) - 1;
+        return 1 + dfs(root->left) + dfs(root->right);
+    }
+    int l(TreeNode* root){
+        if(root==NULL) return 0;
+        return 1 + l(root->left);
+    }
+    int r(TreeNode* root){
+        if(root==NULL) return 0;
+        return 1 + r(root->right);
+    }
+    int countNodes(TreeNode* root) {
+        return dfs(root);
+    }
+};
 
 //#######################################################################
 //#######-------L33. Requirements needed to construct a Unique Binary Tree--------########
 //Tutorial: https://takeuforward.org/data-structure/requirements-needed-to-construct-a-unique-binary-tree-theory
 //Problem: https://www.geeksforgeeks.org/problems/unique-binary-tree-requirements/1
+bool isPossible(int a,int b)
+{
+    return (a==2 || b==2) && a!=b;
+}
+
+
+unique tree such that we find unique preorder and postorder 
+
+in order and preorder dile unique binary tree create korte pari
+- inorder+preorder/postorder constructs unique binary tree
+
+- inorder+preorder/postorder dile always unique binary tree create korte parbo
+
 
 //#######################################################################
 //#######-------L34. Construct a Binary Tree from Preorder and Inorder Traversal--------########
@@ -1073,11 +1262,14 @@ https://www.geeksforgeeks.org/problems/count-number-of-nodes-in-a-binary-tree/0
 //Problem: https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/description/
 https://www.geeksforgeeks.org/problems/construct-tree-1/1
 
+
+
 //#######################################################################
 //#######-------L35. Construct the Binary Tree from Postorder and Inorder Traversal--------########
 //Tutorial: https://takeuforward.org/data-structure/construct-binary-tree-from-inorder-and-postorder-traversal/
 //Problem: https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/description/
 https://www.geeksforgeeks.org/problems/construct-tree-1/1
+
 
 //#######################################################################
 //#######-------L36. Serialize and De-serialize Binary Tree--------########
@@ -1085,10 +1277,15 @@ https://www.geeksforgeeks.org/problems/construct-tree-1/1
 //Problem: https://leetcode.com/problems/serialize-and-deserialize-binary-tree/description/
 https://www.geeksforgeeks.org/problems/serialize-and-deserialize-a-binary-tree/1
 
+serialize - > tree banano
+deserialize - > 
+
+
 //#######################################################################
 //#######-------L37. Morris Traversal | Preorder | Inorder--------########
 //Tutorial: https://takeuforward.org/data-structure/morris-preorder-traversal-of-a-binary-tree/
 //Problem: https://leetcode.com/problems/binary-tree-inorder-traversal/description/
+
 
 //#######################################################################
 //#######-------L37.2 - Morris Inorder Traversal of a Binary Tree--------########
@@ -1121,20 +1318,99 @@ https://www.geeksforgeeks.org/problems/flatten-bst-to-sorted-list--111950/1
 //#######-------L39. Introduction to Binary Search Tree | BST--------########
 //Tutorial: https://takeuforward.org/binary-search-tree/introduction-to-binary-search-trees/
 //Problem: https://www.geeksforgeeks.org/problems/binary-search-trees/1
+class Solution {
+  public:
+    bool isBSTTraversal(vector<int>& arr) {
+        for(int i=0;i<arr.size()-1;i++){
+            if(arr[i]>=arr[i+1]) return false;
+        }
+        return true;
+    }
+};
+
+------------------------Theory----------------------------------
+- Sorted akare value rakhte hoi ekhane
+- entire left subtree should be a bst
+- entire right subtree should be a bst
+- generally height is log2(n)
+
+kind of binary search
+
+inorder traversal always sorted hoi in bst
 
 //#######################################################################
 //#######-------L40. Search in a Binary Search Tree | BST--------########
 //Tutorial: https://takeuforward.org/data-structure/search-in-a-binary-search-tree-2/
 //Problem: https://leetcode.com/problems/search-in-a-binary-search-tree/description/
-https://www.geeksforgeeks.org/problems/search-a-node-in-bst/1
-https://www.geeksforgeeks.org/problems/binary-search-trees/0
-https://www.geeksforgeeks.org/problems/check-for-bst/1
+
+------------
+Approach:
+Values will definitely be on left side or on right side, keep searching for this
+
+------------
+
+//First version - O(N)
+
+class Solution {
+public:
+    TreeNode* searchBST(TreeNode* root, int val) {
+        if(root==NULL) return NULL;
+        queue< TreeNode* > q;
+        q.push(root);
+        TreeNode* root2 = NULL;
+        while(!q.empty()){
+            TreeNode* node = q.front();
+            int nval = node->val;
+            q.pop();
+            if(nval == val) {
+                root2 = node;
+                break;
+            }
+            if(nval>val){
+                if(node->left!=NULL)q.push(node->left);
+                else return root2;
+            }
+            if(nval<val){
+                if(node->right!=NULL)q.push(node->right);
+                else return root2;
+            }
+        }
+        return root2;
+    }
+};
+
+//Second version - O(log2n)
+class Solution {
+public:
+    TreeNode* searchBST(TreeNode* root, int val) {
+        while(root!=NULL && root->val!=val){
+            if(root->val > val) root = root->left;
+            else root = root->right;
+        }
+        return root;
+    }
+};
 
 //#######################################################################
 //#######-------Find Min/Max in BST--------########
-//Tutorial: 
+//Tutorial: NULL
 //Problem: https://www.geeksforgeeks.org/problems/minimum-element-in-bst/1
 
+------------
+Approach:
+1. Leftmost value will be our answer
+------------
+
+class Solution {
+  public:
+    int minValue(Node* root) {
+        int curr = 1e9;
+        while(root->left !=NULL ){
+            root = root->left;
+        }
+        return root->data;
+    }
+};
 
 //#######################################################################
 //#######################################################################
@@ -1154,43 +1430,220 @@ https://www.geeksforgeeks.org/problems/check-for-bst/1
 //#######-------L41. Ceil in a Binary Search Tree | BST--------########
 //Tutorial: https://takeuforward.org/binary-search-tree/ceil-in-a-binary-search-tree/
 //Problem: https://www.geeksforgeeks.org/problems/implementing-ceil-in-bst/1
-https://leetcode.com/problems/closest-nodes-queries-in-a-binary-search-tree/description/
+
+------------
+Approach:
+1. Take the less difference one as your answer
+------------
+
+//First version
+
+int findCeil(Node* root, int val) {
+    if (root == NULL) return -1;
+    
+    queue< Node* > q;
+    q.push(root);
+    int ans = 0, diff = 1e9;
+    while(!q.empty()){
+        Node* node = q.front();
+        int nval = node->data;
+        q.pop();
+        if(node->left!=NULL)q.push(node->left);
+        if(node->right!=NULL)q.push(node->right);
+        if( nval>=val && (nval - val) < diff ){
+            ans = nval;
+            diff = nval - val;
+        }
+    }
+    return ans==0?-1:ans;
+}
+
+//Second version
+
+int findCeil(Node* root, int val) {
+    if (root == NULL) return -1;
+    int ceill = -1;
+    while(root){
+        if(val > root->data ){
+            root = root ->right;
+        }
+        else{
+            ceill = root->data;
+            root = root ->left;
+        }
+    }
+    return ceill;
+}
+
 
 //#######################################################################
 //#######-------L42. Floor in a Binary Search Tree | BST--------########
 //Tutorial: https://takeuforward.org/binary-search-tree/floor-in-a-binary-search-tree/
 //Problem: https://www.geeksforgeeks.org/problems/floor-in-bst/1
 
+------------
+Same logic of L41. Ceil in a Binary Search Tree | BST
+------------
+
+class Solution{
+public:
+    int floor(Node* root, int val) {
+        int fl = -1;
+        if(root==NULL) fl;
+        while(root){
+            if(val >= root->data){
+                fl = root->data;
+                root = root->right;
+            }
+            else{
+                root = root->left;
+            }
+        }
+        return fl;
+    }
+};
 
 //#######################################################################
 //#######-------L43. Insert a given Node in Binary Search Tree | BST--------########
 //Tutorial: https://takeuforward.org/binary-search-tree/insert-a-given-node-in-binary-search-tree/
 //Problem: https://leetcode.com/problems/insert-into-a-binary-search-tree/description/
-https://www.geeksforgeeks.org/problems/insert-a-node-in-a-bst/1
+
+------------
+Approach: 
+1. Just traverse the tree and connect the new node
+Time Complexity: O(log2 N) 
+------------
+
+class Solution {
+public:
+    TreeNode* insertIntoBST(TreeNode* root, int val) {
+        TreeNode *root2 = root;
+        TreeNode *neww = new TreeNode(val);
+        if(root == NULL) return neww;
+        while(root2){
+            if(root2->val < val){
+                if(root2->right)root2 = root2->right;
+                else {
+                    root2->right = neww;
+                    break;
+                }
+            }
+            else{
+                if(root2->left)root2 = root2->left;
+                else{
+                    root2->left = neww;
+                    break;
+                }
+            }
+        }
+        return root;
+    }
+};
 
 //#######################################################################
 //#######-------L44. Delete a Node in Binary Search Tree | BST--------########
-//Tutorial: 
+//Tutorial: https://takeuforward.org/binary-search-tree/delete-a-node-in-binary-search-tree/
 //Problem: https://leetcode.com/problems/delete-node-in-a-bst/description/
 https://www.geeksforgeeks.org/problems/delete-a-node-from-bst/1
+
+------------
+Approach: 
+1. left and right e traverse korbo, value paile update kore dibo 
+
+------------
 
 //#######################################################################
 //#######-------L45. K-th Smallest/Largest Element in BST--------########
 //Tutorial: https://takeuforward.org/data-structure/kth-largest-smallest-element-in-binary-search-tree/
 //Problem: https://leetcode.com/problems/kth-smallest-element-in-a-bst/description/
-https://www.geeksforgeeks.org/problems/find-k-th-smallest-element-in-bst/1
+
+------------
+Approach: 
+inorder traversal of bst gives sorted list 
+Just run an inorder traversal
+
+------------
+
+//First Version
+class Solution {
+public:
+    int ans = 0;
+    void in(TreeNode* root, int &k){
+        if(root == NULL) return;
+        in(root->left, k);
+        if(--k == 0){
+            ans = root->val;
+            return;
+        }
+        in(root->right, k);
+    }
+    int kthSmallest(TreeNode* root, int k) {
+        in(root, k);
+        return ans;
+    }
+};
+
+//2nd Version
+class Solution {
+public:
+    int ans = 0;
+    int in(TreeNode* root, int &k){
+        if(root == NULL) return 0;
+        int l = in(root->left, k);
+        if(l!=0) return ans;
+        if(--k == 0) return ans = root->val;
+        return in(root->right, k);
+    }
+    int kthSmallest(TreeNode* root, int k) {
+        return in(root, k);
+    }
+};
 
 //#######################################################################
 //#######-------L46. Check if a tree is a BST or BT | Validate a BST--------########
 //Tutorial: https://takeuforward.org/binary-search-tree/check-if-a-tree-is-a-binary-search-tree-or-binary-tree/
 //Problem: https://leetcode.com/problems/validate-binary-search-tree/description/
-https://www.geeksforgeeks.org/problems/check-for-bst/1
+
+class Solution {
+public:
+    bool valid(TreeNode *root, long long mn, long long mx){
+        if(root==NULL) return true;
+        bool l = valid(root->left, mn, root->val);
+        bool r = valid(root->right, root->val, mx);
+
+        if(!l || !r) return false;//if l and r is false anytime keep returning false
+        if(mn < root->val && root->val < mx) return true;//if this hold it is true
+        return false;//if this holds for a single time, then this is false
+    }
+    bool isValidBST(TreeNode* root) {
+        return valid(root, LLONG_MIN, LLONG_MAX);
+    }
+};
 
 //#######################################################################
 //#######-------L47. LCA in Binary Search Tree--------########
 //Tutorial: https://takeuforward.org/binary-search-tree/lca-in-binary-search-tree/
 //Problem: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/
-https://www.geeksforgeeks.org/problems/lowest-common-ancestor-in-a-bst/1
+
+first intersection point from the bottom
+------------
+Approach: 
+- Hoy duita node left side e thakbe or right side e thakbe
+- jodi duita side ei thake return the root return kora
+
+------------
+class Solution {
+public:
+    TreeNode* lca(TreeNode* root, TreeNode* p, TreeNode* q){
+        if(root==NULL) return NULL;
+        if(root->val > p->val && root->val > q->val) return lca(root->left, p, q);
+        if(root->val < p->val && root->val < q->val) return lca(root->right, p, q);
+        return root;
+    }
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        return lca(root, p, q);
+    }
+};
 
 //#######################################################################
 //#######-------L48. Construct a BST from a preorder traversal | 3 Methods--------########
@@ -1198,27 +1651,223 @@ https://www.geeksforgeeks.org/problems/lowest-common-ancestor-in-a-bst/1
 //Problem: https://leetcode.com/problems/construct-binary-search-tree-from-preorder-traversal/description/
 https://www.geeksforgeeks.org/problems/preorder-traversal-and-bst4006/1
 
+
+
 //#######################################################################
 //#######-------L49. Inorder Successor/Predecessor in BST | 3 Methods--------########
 //Tutorial: https://takeuforward.org/data-structure/inorder-successor-predecessor-in-bst
 //Problem: https://www.geeksforgeeks.org/problems/inorder-successor-in-bst/1
+
+------------
+Approach: 
+- requirement: get the next node of the given node
+- always left e jaite thakbo that will be our answer
+
+------------
+
+class Solution{
+  public:
+    Node * inOrderSuccessor(Node *root, Node *x)
+    {   
+        Node *ans = NULL;
+        while(root){
+            if(root->data <= x->data){
+                root = root->right;
+            }
+            else{
+                ans = root;
+                root = root->left;
+            }
+        }
+        return ans;
+    }
+};
+
+------------------------------------------------------------
+// Successor and Predecessor
+
+class Solution
+{
+    public:
+    void findPreSuc(Node* root, Node*& pre, Node*& suc, int k)
+    {   
+        //Successor
+        Node *root2 = root;
+        while(root){
+            if(root->key <= k){
+                root = root->right;
+            }
+            else{
+                suc = root;
+                root = root->left;
+            }
+        }
+        //Predecessor
+        while(root2){
+            if(root2->key < k){
+                pre = root2;//jokhn right e jawar try korbe that's where I find you
+                root2 = root2->right;
+            }
+            else{
+                root2 = root2->left;
+            }
+        }
+    }
+};
 
 //#######################################################################
 //#######-------L50. Binary Search Tree Iterator | BST | O(H) Space--------########
 //Tutorial: https://takeuforward.org/data-structure/binary-search-tree-iterator
 //Problem: https://leetcode.com/problems/binary-search-tree-iterator/description/
 
+------------
+Requirement: Building a datastructure
+Approach: 
+1. Take a stack, go to the extreme left and put all in the stack
+2. If the stack is not empty then has_next is true , else false 
+3. for next() print the st.top() and move right, if left e value thake put in stack
+
+------------
+
+class BSTIterator {
+public:
+    stack<TreeNode*>st;
+    BSTIterator(TreeNode* root) {
+        pushh(root);
+    }
+    void pushh(TreeNode* root){
+        while(root){
+            st.push(root);
+            root = root->left;
+        }
+    }
+    int next() {
+        TreeNode *tmp = st.top();
+        st.pop();
+        pushh(tmp->right);
+        return tmp->val;
+    }
+    
+    bool hasNext() {
+        return !st.empty();
+    }
+};
+
 //#######################################################################
 //#######-------L51. Two Sum In BST | Check if there exists a pair with Sum K--------########
 //Tutorial: https://takeuforward.org/data-structure/two-sum-in-bst-check-if-there-exists-a-pair-with-sum-k
 //Problem: https://leetcode.com/problems/two-sum-iv-input-is-a-bst/description/
-https://www.geeksforgeeks.org/problems/find-a-pair-with-given-target-in-bst/1
 
+------------------------
+two pointer
+------------------------
+class Solution{
+  public:
+    vector<int>a;
+    void t(Node *root){
+        if(root==NULL) return;
+        t(root->left);
+        a.push_back( root->data);
+        t(root->right);
+    }
+    int isPairPresent(struct Node *root, int target)
+    {   
+        t(root);
+        int l = 0, r = a.size() - 1;
+        while(l<r){
+            if(a[l]+a[r] == target){
+                return true;
+            }
+            else if(a[l]+a[r] > target)r--;
+            else l++;
+        }
+        return false;
+    }
+};
+------------------------
+hashmap
+------------------------
+this one is tle for https://www.geeksforgeeks.org/problems/find-a-pair-with-given-target-in-bst/1
+but acc for leetcode 
+
+class Solution {
+public:
+    map<int, int> mp;
+    bool t(TreeNode *root, int target){
+        if(root==NULL) return false;
+        
+        bool l = t(root->left,target);
+        bool r = t(root->right,target);
+        
+        if( l || r) return true;
+        if(mp[target - root->val] == 1 ) return true;
+        mp[root->val] = 1;
+        
+        return false;
+    }
+
+    bool findTarget(TreeNode* root, int k) {
+        return t(root, k);
+    }
+};
+
+------------------------
+optimized space complexity 
+------------------------
+beshi hole left 
+kom hole right 
+
+??????????????????????????????????????
+??????????????????????????????????????
 //#######################################################################
 //#######-------L52. Recover BST | Correct BST with two nodes swapped--------########
 //Tutorial: https://takeuforward.org/data-structure/recover-bst-correct-bst-with-two-nodes-swapped
 //Problem: https://leetcode.com/problems/recover-binary-search-tree/description/
-https://www.geeksforgeeks.org/problems/fixed-two-nodes-of-a-bst/1
+
+------------
+Approach: 
+1. Taking 3 variable start, middle, end 
+2. set a previous value, and a current value and keep checking the violating, there can be at max 2 violation 
+3. swap the violation accordingly, if 1 violation, that means you swap the adjacent two value 
+                                   if 2 violation, that means you swap start and ending nodes
+Time Complexity: O(N)
+------------
+
+class Solution {
+public:
+    void r(TreeNode* root,TreeNode* &st, TreeNode* &mid, TreeNode* &end, TreeNode *&prev){
+        if(root == NULL ) return;
+        r(root->left,st,mid, end, prev);
+        if( prev && root->val < prev->val ) {//if there is previous check for the violation
+            if(st == NULL){
+                st = prev;
+                mid = root;
+            }
+            else if(st){
+                end = root;
+            }
+        }
+        prev = root;
+        r(root->right,st,mid,end, prev);
+    }
+    void recoverTree(TreeNode* root) {
+        if(root==NULL) return;
+        TreeNode* st = NULL, *mid = NULL, *end = NULL, *prev = NULL;
+        r(root,st,mid,end, prev);
+        if(st && end) swap(st->val,end->val);
+        else swap(st->val,mid->val);
+    }
+};
+
+//#######################################################################
+//#######-------L53. Largest BST in Binary Tree--------########
+//Tutorial: NULL
+//Problem: https://www.geeksforgeeks.org/problems/largest-bst/1
+
+------------
+Approach: 
+1. 
+------------
 
 //#######################################################################
 //#######################################################################

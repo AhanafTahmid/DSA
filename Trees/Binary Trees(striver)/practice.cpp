@@ -4,8 +4,9 @@ using namespace std;
 #define int long long
 
 void solve(){
-    cout<< 6 <<endl;
-    cout<< to_string(-6) <<endl;
+    int k = 12;
+    int j = --k;
+    cout<< k <<endl;
 }
 
 int32_t main(){
