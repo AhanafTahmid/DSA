@@ -15,13 +15,8 @@ void b(Node *root, int line, int height, map<int, int>&mp){
         b(root->right, line+1, height+1, mp);
         if(height>=mp[line]) mp[line] = root->data;
     }
-4. 
+4. L38. Flatten a Binary Tree to Linked List - Approach 3 - Using Morris Traversal
 
-Questions: 
-
-
-
-todo:
 
 ---------------------------------------------------------------------------------------------------------
 Striver Tree Playlist: https://www.youtube.com/playlist?list=PLgUwDviBIf0q8Hkd7bK2Bpryj2xVJk8Vk
@@ -1247,7 +1242,6 @@ bool isPossible(int a,int b)
     return (a==2 || b==2) && a!=b;
 }
 
-
 unique tree such that we find unique preorder and postorder 
 
 in order and preorder dile unique binary tree create korte pari
@@ -1255,21 +1249,74 @@ in order and preorder dile unique binary tree create korte pari
 
 - inorder+preorder/postorder dile always unique binary tree create korte parbo
 
-
 //#######################################################################
 //#######-------L34. Construct a Binary Tree from Preorder and Inorder Traversal--------########
 //Tutorial: https://takeuforward.org/data-structure/construct-a-binary-tree-from-inorder-and-preorder-traversal/
 //Problem: https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/description/
-https://www.geeksforgeeks.org/problems/construct-tree-1/1
 
+------------
+Approach:
+1. solve the left subtree, solve the right subtree by solving smaller problem 
+For more: read tuf website tutorial
 
+------------
+class Solution {
+public:
+    TreeNode* c(vector<int>&pre, int pre_st, int pre_end, vector<int>&in, 
+    int in_st, int in_end, map<int, int>&mp){//when using map, always pass map by reference, or will get MLE
+        if(pre_st>pre_end || in_st>in_end) return NULL;
+        int val = pre[ pre_st ];//current value
+        int sz = mp[ val ];//inorder position
+        TreeNode* root = new TreeNode(val);
+        int left_size = sz - in_st;
+        
+        root->left  = c(pre, pre_st+1, pre_st+left_size, in, in_st, sz-1, mp );
+        root->right = c(pre, pre_st+left_size+1, pre_end, in, sz+1, in_end, mp );
+        return root;
+    }
+    TreeNode* buildTree(vector<int>& pre, vector<int>& in) {
+        map<int, int>mp;
+        int n = in.size();
+        for(int i=0;i<n;i++) mp[ in[i] ] = i;
+        return c(pre, 0, n-1, in, 0, n-1, mp);
+    }
+};
 
 //#######################################################################
 //#######-------L35. Construct the Binary Tree from Postorder and Inorder Traversal--------########
 //Tutorial: https://takeuforward.org/data-structure/construct-binary-tree-from-inorder-and-postorder-traversal/
 //Problem: https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/description/
-https://www.geeksforgeeks.org/problems/construct-tree-1/1
 
+- same as L34. Construct a Binary Tree from Preorder and Inorder Traversal
+
+------------
+Approach:
+Inorder   : Left -> Root  -> Right
+Postorder : Left -> Right -> Root 
+
+------------
+
+class Solution {
+public:
+    TreeNode* c(vector<int>&post, int post_st, int post_end, vector<int>&in, 
+    int in_st, int in_end, map<int, int>&mp){
+        if(post_st>post_end || in_st>in_end) return NULL;
+        int val = post[ post_end ];
+        int sz = mp[ val ];
+        TreeNode* root = new TreeNode(val);
+        int left_size = sz - in_st;
+        
+        root->left  = c(post, post_st, post_st+left_size-1, in, in_st, sz-1, mp );
+        root->right = c(post, post_st + left_size,  post_end-1, in, sz+1, in_end, mp );
+        return root;
+    }
+    TreeNode* buildTree(vector<int>& in, vector<int>& post) {
+        map<int, int>mp;
+        int n = in.size();
+        for(int i=0;i<n;i++) mp[ in[i] ] = i;
+        return c(post, 0, n-1, in, 0, n-1, mp);
+    }
+};
 
 //#######################################################################
 //#######-------L36. Serialize and De-serialize Binary Tree--------########
@@ -1280,24 +1327,159 @@ https://www.geeksforgeeks.org/problems/serialize-and-deserialize-a-binary-tree/1
 serialize - > tree banano
 deserialize - > 
 
-
 //#######################################################################
-//#######-------L37. Morris Traversal | Preorder | Inorder--------########
-//Tutorial: https://takeuforward.org/data-structure/morris-preorder-traversal-of-a-binary-tree/
-//Problem: https://leetcode.com/problems/binary-tree-inorder-traversal/description/
-
-
-//#######################################################################
-//#######-------L37.2 - Morris Inorder Traversal of a Binary Tree--------########
+//#######-------L37 - Morris Inorder Traversal of a Binary Tree--------########
 //Tutorial: https://takeuforward.org/data-structure/morris-inorder-traversal-of-a-binary-tree/
 //Problem: https://leetcode.com/problems/binary-tree-inorder-traversal/description/
+
+- Uses Threaded Binary Tree
+- reduces the stack space of recursion
+
+------------
+Approach:
+3 cases: 
+1st case: if left is null, print current node and go right
+2nd case: before going left, make right most node on left subtree connected to current node, then go left
+3rd case: if thread is already pointed to current node, then remove the thread
+
+link create kora thakle ar left part e jabo na 
+------------
+
+class Solution {
+public:
+    vector<int> inorderTraversal(TreeNode* root) {
+        vector<int>in;
+        while(root){
+            if(root->left == NULL){
+                in.push_back(root->val);
+                root = root->right;
+            }
+            else{
+                TreeNode *prev = root->left;
+                while( prev->right && prev->right != root){
+                    prev = prev->right;
+                }
+
+                if(prev->right==NULL){
+                    prev->right = root;
+                    root = root->left;
+                }
+                else{
+                    //already link ase, don't visit again
+                    prev->right = NULL;
+                    in.push_back(root->val);
+                    root = root->right;
+                }
+            }
+        }
+        return in;
+    }
+};
+
+//#######################################################################
+//#######-------L37.2 Morris Traversal | Preorder | Inorder--------########
+//Tutorial: https://takeuforward.org/data-structure/morris-preorder-traversal-of-a-binary-tree/
+//Problem: https://leetcode.com/problems/binary-tree-preorder-traversal/description/
+
+class Solution {
+public:
+    vector<int> preorderTraversal(TreeNode* root) {
+        vector<int>pre;
+        while(root){
+            if(root->left == NULL){
+                pre.push_back(root->val);
+                root = root->right;
+            }
+            else{
+                TreeNode *prev = root->left;
+                while( prev->right && prev->right != root){
+                    prev = prev->right;
+                }
+
+                if(prev->right==NULL){
+                    prev->right = root;
+                    pre.push_back(root->val);//only one line change
+                    root = root->left;
+                }
+                else{
+                    prev->right = NULL;
+                    root = root->right;
+                }
+            }
+        }
+        return pre;
+    }
+};
 
 //#######################################################################
 //#######-------L38. Flatten a Binary Tree to Linked List | 3 Approaches--------########
 //Tutorial: https://takeuforward.org/data-structure/flatten-binary-tree-to-linked-list/
 //Problem: https://leetcode.com/problems/flatten-binary-tree-to-linked-list/description/
-https://www.geeksforgeeks.org/problems/flatten-bst-to-sorted-list--111950/1
 
+//Approach 1 - Using Recursion
+Flatten: Right -> Left -> Root
+Time Complexity: O(N)
+Space Complexity : O(log2N)
+
+class Solution {
+public:
+    
+    TreeNode *prev = NULL;
+    void f(TreeNode *root){
+        if(root==NULL) return;
+        f(root->right);
+        f(root->left);
+        root->right = prev;
+        root->left = NULL;
+        prev = root;
+    }
+    void flatten(TreeNode* root) {
+        f(root);
+    }
+};
+
+//Approach 2 - Using Stack(extended version of the Approach 1)
+
+class Solution {
+public:    
+    void flatten(TreeNode* root) {
+        if(root==NULL) return;
+        stack< TreeNode* > st;
+        st.push(root);
+        while(!st.empty()){
+            TreeNode* node = st.top();
+            st.pop();
+            if(node->right) st.push(node->right);
+            if(node->left) st.push(node->left);
+
+            if(!st.empty()){
+                node->right = st.top();
+            }
+            node->left = NULL;
+        }
+    }
+};
+
+//Approach 3 - Using Morris Traversal
+
+class Solution {
+public:    
+    void flatten(TreeNode* root) {
+        TreeNode* curr = root;
+        while (curr) {
+            if (curr->left) {
+                TreeNode* pre = curr->left;
+                while (pre->right) {
+                    pre = pre->right;
+                }
+                pre->right = curr->right;
+                curr->right = curr->left;
+                curr->left = NULL;
+            }
+            curr = curr->right;
+        }
+    }
+};
 
 //#######################################################################
 //#######################################################################
