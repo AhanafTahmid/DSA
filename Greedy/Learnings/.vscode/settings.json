@@ -1,0 +1,17 @@
+{
+    "files.associations": {
+        "__string": "cpp",
+        "deque": "cpp",
+        "filesystem": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp",
+        "regex": "cpp",
+        "string": "cpp",
+        "system_error": "cpp",
+        "vector": "cpp",
+        "array": "cpp",
+        "__bit_reference": "cpp",
+        "future": "cpp",
+        "ios": "cpp"
+    }
+}
