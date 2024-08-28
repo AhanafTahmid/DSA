@@ -2,6 +2,7 @@
 
 - Binary search always applicable in sorted area
 - In searching kind of things, think of using binary search
+- minimum and maximum integer do binary search
 
 Confusions:
 1. 
@@ -181,6 +182,7 @@ public:
 ------------
 Approach:
 1. use lowerbound and upperbound
+Time Complexity: O(2 * log n)
 ------------
 
 class Solution {
@@ -223,11 +225,23 @@ public:
 //Problem: https://leetcode.com/problems/search-in-rotated-sorted-array/description/
 https://www.geeksforgeeks.org/problems/search-in-a-rotated-array4618/1
 
+------------
+Approach:
+1. 
+------------
+
+
 
 //#######################################################################
 //#######-------BS-5. Search Element in Rotated Sorted Array II--------########
 //Tutorial: https://takeuforward.org/arrays/search-element-in-rotated-sorted-array-ii/
 //Problem: https://leetcode.com/problems/search-in-rotated-sorted-array-ii/description/
+
+------------
+Approach:
+1. 
+------------
+
 
 //#######################################################################
 //#######-------BS-6. Minimum in Rotated Sorted Array--------########
@@ -235,10 +249,22 @@ https://www.geeksforgeeks.org/problems/search-in-a-rotated-array4618/1
 //Problem: https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/description/
 https://www.geeksforgeeks.org/problems/minimum-element-in-a-sorted-and-rotated-array3611/1
 
+------------
+Approach:
+1. 
+------------
+
+
 //#######################################################################
 //#######-------BS-7. Find out how many times array has been rotated--------########
 //Tutorial: https://takeuforward.org/arrays/find-out-how-many-times-the-array-has-been-rotated/
 //Problem: https://www.geeksforgeeks.org/problems/rotation4723/1
+
+------------
+Approach:
+1. 
+------------
+
 
 //#######################################################################
 //#######-------BS-8. Single Element in Sorted Array--------########
@@ -246,11 +272,21 @@ https://www.geeksforgeeks.org/problems/minimum-element-in-a-sorted-and-rotated-a
 //Problem: https://leetcode.com/problems/single-element-in-a-sorted-array/description/
 https://www.geeksforgeeks.org/problems/find-the-element-that-appears-once-in-sorted-array0624/1
 
+------------
+Approach:
+1. 
+------------
+
 //#######################################################################
 //#######-------BS-9. Find Peak Element--------########
 //Tutorial: https://takeuforward.org/data-structure/peak-element-in-array/
 //Problem: https://leetcode.com/problems/find-peak-element/description/
 https://www.geeksforgeeks.org/problems/peak-element/1
+
+------------
+Approach:
+1. 
+------------
 
 //#######################################################################
 //#######################################################################
@@ -270,39 +306,195 @@ https://www.geeksforgeeks.org/problems/peak-element/1
 //#######-------BS-10. Finding Sqrt of a number using Binary Search--------########
 //Tutorial: https://takeuforward.org/binary-search/finding-sqrt-of-a-number-using-binary-search/
 //Problem: https://leetcode.com/problems/sqrtx/description/
-https://www.geeksforgeeks.org/problems/square-root/0
+
+Monotony works here 
+Invariant of sqrt: 1111100000
+
+------------
+Approach:
+1. if(m*m<=n) move left = m, else move right = m;
+------------
+class Solution {
+public:
+    int mySqrt(int n) {
+        long long l = 0, r = n, m;
+        r++;
+        while(l+1<r){
+            m = (l+r)>>1;
+            if(m*m<=n) l = m;
+            else r = m;
+        }
+        return l;
+    }
+};
 
 //#######################################################################
 //#######-------BS-11. Find the Nth root of an Integer--------########
 //Tutorial: https://takeuforward.org/data-structure/nth-root-of-a-number-using-binary-search/
-//Problem: 
-https://leetcode.com/problems/powx-n/description/
-https://www.geeksforgeeks.org/problems/find-nth-root-of-m5843/1
+//Problem: https://www.geeksforgeeks.org/problems/find-nth-root-of-m5843/1
 
+------------
+Approach:
+1. if pow(mid, n) == m then mid is our answer
+2. if pow(mid, n) < m move left to mid 
+3. else move right to mid
+------------
+
+class Solution{
+	public:
+	int NthRoot(int n, int m)
+	{
+	    long long l = 0, r = 1e9, mid;
+	    while(l+1<r){
+	        mid = (l+r)>>1;
+	        if(pow(mid, n) == m) return mid;
+	        if( pow(mid, n) <= m ) l = mid;
+	        else r = mid;
+	    }
+	    return -1;
+	}  
+};
 
 //#######################################################################
 //#######-------BS-12. Koko Eating Bananas--------########
 //Tutorial: https://takeuforward.org/binary-search/koko-eating-bananas/
 //Problem: https://leetcode.com/problems/koko-eating-bananas/description/
-https://www.geeksforgeeks.org/problems/koko-eating-bananas/1
+
+Q: Find the minimum banana to eat in every hour to complete in h hours
+
+Invariant: 0000011111
+------------
+Approach:
+1. traverse the array in binary search 
+2. if( v <= h ) return r = m, else l = m 
+
+------------
+class Solution {
+public:
+    int minEatingSpeed(vector<int>& piles, int h) {
+        int l = 0, r = 1e9, m;
+        int n = piles.size();
+        while(l+1<r){
+            m = l + (r-l)/2;
+            long long v = 0;
+            for(int i=0;i<n;i++){
+                v += ((piles[i] + m - 1 ) / m);
+            }
+            if( v <= h ) r = m;
+            else l = m;//l boro kora mane aro beshi khabe
+        }
+        return r;
+    }
+};
 
 //#######################################################################
 //#######-------BS-13. Minimum days to make M bouquets--------########
 //Tutorial: https://takeuforward.org/arrays/minimum-days-to-make-m-bouquets/
 //Problem: https://leetcode.com/problems/minimum-number-of-days-to-make-m-bouquets/description/
-https://www.geeksforgeeks.org/problems/minimum-days-to-make-m-bouquets/1
+
+Q: Minimum days to make m bouquets with k adjacent flower
+
+Invariant: 0000011111
+------------
+Approach:
+1. if bloom(i) <= mid then ct++, else ct = 0
+    if( ct == k) increase v++, ct=0;
+    if(v>=m) then it is true, else false
+2. only for if( n < m*k ) return -1;, else it is always possible
+------------
+
+class Solution {
+public:
+    int minDays(vector<int>& bloomDay, int m, int k) {
+        long long l = 0, r = LONG_MAX , mid;
+        int n = bloomDay.size();
+        if( n/k < m ) return -1;//for overflow don't use n < m*k
+
+        while(l+1<r){
+            mid = l+(r-l)/2;
+            int ct = 0, v = 0;
+            for(int i=0;i<n;i++){
+                if( bloomDay[i]<=mid) ct++;
+                else ct = 0;
+                if(ct==k)v++, ct = 0;
+            }
+            if( v>=m ) r = mid;
+            else l = mid;
+        }
+        return r;
+    }   
+};
 
 //#######################################################################
 //#######-------BS-14. Find the Smallest Divisor Given a Threshold--------########
 //Tutorial: https://takeuforward.org/arrays/find-the-smallest-divisor-given-a-threshold/
 //Problem: https://leetcode.com/problems/find-the-smallest-divisor-given-a-threshold/description/
-https://www.geeksforgeeks.org/problems/smallest-divisor/1
+
+Q: after dividing every value, calculate the ceil of the division, Get the smallest divisors that satisfies <=k 
+Invariant: 0000011111
+
+------------
+Approach:
+1. if(v<=k) r = m; else l = m;
+Time complexity: O(Log2(1e9) * n)
+------------
+
+class Solution {
+public:
+    int smallestDivisor(vector<int>& nums, int k) {
+        int l = 0, r = 1e9, m, n = nums.size();
+        while(l+1<r){
+            m = (l+r)>>1;
+            int v = 0;
+            for(int i=0;i<n;i++){
+                v+= ( nums[i] + m - 1)/m;//using this to get the ceil value
+            }
+            if(v<=k) r = m;
+            else l = m;
+        }
+        return r;
+    }
+};
 
 //#######################################################################
 //#######-------BS-15. Capacity to Ship Packages within D Days--------########
 //Tutorial: https://takeuforward.org/arrays/capacity-to-ship-packages-within-d-days/
 //Problem: https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/description/
-https://www.geeksforgeeks.org/problems/capacity-to-ship-packages-within-d-days/1
+
+Invariant: 0000011111
+Q: Least amount of product to ship within D days 
+
+------------
+Approach:
+1. if( min_days<=days && ok) r = m; else l = m;
+
+answer should be in: [MAX ELEMENT, SUMMATION OF THE ARRAY]
+------------
+class Solution {
+public:
+    int shipWithinDays(vector<int>& weights, int days) {
+        int l = 0, r = 1e9, m, n = weights.size();
+        while(l+1<r){
+            m = (l+r)>>1;
+            int s = 0, min_days = 1;
+            bool ok = true;
+            for(int i=0;i<n;i++){
+                if( s + weights[i] > m){
+                    min_days++;
+                    s = weights[i];
+                    if(s>m){
+                        ok = false;//starting max element theke korle eta korte hobe na
+                        break;
+                    }
+                }
+                else s+=weights[i];
+            }
+            if( min_days<=days && ok) r = m;
+            else l = m;
+        }
+        return r;
+    }
+};
 
 //#######################################################################
 //#######-------BS-16. Kth Missing Positive Number | Maths + Binary Search--------########
@@ -310,46 +502,207 @@ https://www.geeksforgeeks.org/problems/capacity-to-ship-packages-within-d-days/1
 //Problem: https://leetcode.com/problems/kth-missing-positive-number/description/
 https://www.geeksforgeeks.org/problems/find-k-th-missing-element2556/0
 
+------------
+Approach:
+1. 
+------------
+
 //#######################################################################
 //#######-------BS-17. Aggressive Cows--------########
 //Tutorial: https://takeuforward.org/data-structure/aggressive-cows-detailed-solution/
 //Problem: https://www.geeksforgeeks.org/problems/aggressive-cows/1
-https://leetcode.com/problems/magnetic-force-between-two-balls/description/
+//Problem2: https://leetcode.com/problems/magnetic-force-between-two-balls/
+
+striver approach: while(l<=r), changing polarity, r would be answer there
+
+Invariant: 1111100000
+Q: place all k cow in a maximum distance 
+
+minimum of maximum
+
+------------
+Approach:
+1. now distance - last distance, ct++
+2. if ct>=k that is more than what we need, l = m, else r = m;
+
+------------
+class Solution {
+public:
+    int solve(int n, int k, vector<int> &stalls) {
+        sort(stalls.begin(),stalls.end());
+        int l = 0, r = 1e9+1, m;
+        while(l+1<r){
+            m = (l+r)/2;
+            int ct = 1;//already placed 1 cow in stall 0
+            int la = stalls[0];
+            for(int i=1;i<n;i++){
+                if( (stalls[i] - la) >=m )ct++, la = stalls[i];
+            }
+            if(ct>=k) l = m;
+            else r = m;
+        }
+        return l;
+    }
+};
 
 //#######################################################################
 //#######-------BS-18. Allocate Books or Book Allocation--------########
 //Tutorial: https://takeuforward.org/data-structure/allocate-minimum-number-of-pages/
 //Problem: https://www.geeksforgeeks.org/problems/allocate-minimum-number-of-pages0937/1
-https://www.naukri.com/code360/problems/allocate-books_1090540
+
+Invariant: 0000011111
+Q: allot all m student in a minimum number of page page book
+
+------------
+Approach:
+1. similar to aggrocow
+------------
+class Solution {
+  public:
+    long long findPages(int n, int arr[], int k) {
+        if(n<k) return -1;
+        int l = *max_element(arr,arr+n)-1, r = 1e9, m;//answer always right side e rakhbo, that is why l = -1, not possible state theke
+        while(l+1<r){
+            m = (l+r)>>1;
+            int student = 1, s = 0;
+            for(int i=0;i<n;i++){
+                if( s + arr[i] > m){
+                    student++;
+                    s = arr[i];
+                }
+                else s+=arr[i];
+            }
+            if(student<=k) r = m;
+            else l = m;
+        }
+        return r;
+    }
+};
 
 //#######################################################################
-//#######-------BS 19. Painter's Partition and Split Array - Largest Sum--------########
+//#######-------BS 19. Painter's Partition--------########
 //Tutorial: https://takeuforward.org/arrays/painters-partition-problem/
 //Problem: https://www.geeksforgeeks.org/problems/the-painters-partition-problem1535/1
 (Painters Partition)
 
+Invariant: 000000111111
+Q: split in k partition with such where maximum sum of the the partition is minimum
+
+------------
+Approach:
+1. similar to BS-18. Allocate Books
+------------
+
+class Solution
+{
+  public:
+    long long minTime(int arr[], int n, int k)
+    {
+        int l = *max_element(arr,arr+n)-1, r = 1e9, m;
+        while(l+1<r){
+            m = (l+r)>>1;
+            int v = 1, s = 0;
+            for(int i=0;i<n;i++){
+                if( s + arr[i] > m){
+                    v++;
+                    s = arr[i];
+                }
+                else s+=arr[i];
+            }
+            if( v <= k ) r = m;
+            else l = m;
+        }
+        return r;
+    }
+};
+
 //#######################################################################
-//#######-------BS 19.2 Painter's Partition and Split Array - Largest Sum--------########
+//#######-------BS 19.2 Split Array - Largest Sum--------########
 //Tutorial: https://takeuforward.org/arrays/split-array-largest-sum/
 //Problem: https://leetcode.com/problems/split-array-largest-sum/description/
-https://www.geeksforgeeks.org/problems/split-array-largest-sum--141634/0
-https://www.geeksforgeeks.org/problems/split-the-array0238/1
+
 (Split Array - Largest Sum)
+
+Invariant: 000000111111
+Q: split in k segment with such maximum value is minimum
+
+------------
+(Maximum of minimum)
+Approach:
+1. similar to BS-18. Allocate Books
+------------
+class Solution {
+public:
+    int splitArray(vector<int>& arr, int k) {
+        int l = *max_element(arr.begin(),arr.end())-1, r = 1e9, m;//max - 1, cause mx can be our answer, it is in right
+        int n = arr.size();
+        while(l+1<r){
+            m = (l+r)>>1;
+            int v = 1, s = 0;
+            for(int i=0;i<n;i++){
+                if( s + arr[i] > m){
+                    v++;
+                    s = arr[i];
+                }
+                else s+=arr[i];
+            }
+            if( v <= k ) r = m;
+            else l = m;
+        }
+        return r;
+    }
+};
 
 //#######################################################################
 //#######-------BS-20. Minimise Maximum Distance between Gas Stations | 3 Approaches | Heap | Binary Search--------########
 //Tutorial: https://takeuforward.org/arrays/minimise-maximum-distance-between-gas-stations/
 //Problem: https://www.geeksforgeeks.org/problems/minimize-max-distance-to-gas-station/1
 
+Invariant: 
+Q: setting up gas stations such that maximum distance between any two station is minimum
+Thought of priority queue 
+
+------------
+Approach:
+1. 
+------------
+
 //#######################################################################
 //#######-------BS 21: Median of two Sorted Arrays of Different Sizes--------########
 //Tutorial: https://takeuforward.org/data-structure/median-of-two-sorted-arrays-of-different-sizes/
 //Problem: https://leetcode.com/problems/median-of-two-sorted-arrays/description/
 
+------------
+Bruteforce Approach(AC in leetcode):
+1. if odd print the mid 
+2. else both mid / 2
+------------
+
+class Solution {
+public:
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        nums1.insert(nums1.end(), nums2.begin(), nums2.end());
+        sort(nums1.begin(), nums1.end());
+        int n = nums1.size();
+        if(n & 1) return nums1[n/2];
+        return (nums1[n/2] + nums1[n/2 - 1]) / 2.00 ;
+    }
+};
+
+
+
 //#######################################################################
 //#######-------BS-21.2 Median of two Sorted Arrays of Different Sizes--------########
 //Tutorial: https://takeuforward.org/data-structure/median-of-two-sorted-arrays-of-different-sizes/
 //Problem: https://www.geeksforgeeks.org/problems/median-of-2-sorted-arrays-of-different-sizes/1
+
+//Binary search approach
+Symmetry
+
+------------
+Approach:
+1. 
+------------
 
 //#######################################################################
 //#######-------Bs-22. K-th element of two sorted arrays--------########
@@ -357,6 +710,11 @@ https://www.geeksforgeeks.org/problems/split-the-array0238/1
 //Problem: 
 https://www.geeksforgeeks.org/problems/k-th-element-of-two-sorted-array1317/1
 https://leetcode.com/problems/kth-smallest-product-of-two-sorted-arrays/description/
+
+------------
+Approach:
+1. 
+------------
 
 //#######################################################################
 //#######################################################################
@@ -376,28 +734,168 @@ https://leetcode.com/problems/kth-smallest-product-of-two-sorted-arrays/descript
 //#######################################################################
 //#######-------BS 23. Row with maximum number of 1s | Binary Search on 2D Arrays--------########
 //Tutorial: https://takeuforward.org/arrays/find-the-row-with-maximum-number-of-1s/
-//Problem: https://leetcode.com/problems/row-with-maximum-ones/description/
-https://www.geeksforgeeks.org/problems/row-with-max-1s0023/1
+//Problem: https://www.geeksforgeeks.org/problems/row-with-max-1s0023/1
+
+------------
+Approach:
+1. go through every rows(this cannot be optimized)
+2. optimize going to each column to O(logm) using lowerbound or binary searching
+------------
+
+//lowerbound
+class Solution {
+  public:
+    int rowWithMax1s(vector<vector<int> > &arr) {
+        int n = arr.size(), m = arr[0].size(), mx = 0, index = -1;
+        for(int i=0;i<n;i++){
+            int lw = lower_bound(arr[i].begin(),arr[i].end(), 1) - arr[i].begin();
+            if(mx < m - lw){
+                index = i;
+                mx = m - lw;
+            }
+        }
+        return index;
+    }   
+};
+
+//custom binary search
+class Solution {
+  public:
+    int rowWithMax1s(vector<vector<int> > &arr) {
+        int n = arr.size(), m = arr[0].size(), mx = 0, index = -1;
+        for(int i=0;i<n;i++){
+            int l = -1, r = m, mid;
+            while(l+1<r){
+                mid = (l+r)>>1;
+                if(arr[i][mid]==0) l = mid;
+                else r = mid;
+            }
+            if(mx < m - r){
+                index = i;
+                mx = m - r;
+            }
+        }
+        return index;
+    }   
+};
 
 //#######################################################################
 //#######-------BS-24. Search in a 2D Matrix - I | Binary Search of 2D--------########
 //Tutorial: https://takeuforward.org/data-structure/search-in-a-sorted-2d-matrix/
 //Problem: https://leetcode.com/problems/search-a-2d-matrix/description/
 
+//Approach
+------------
+Approach:
+1. search using lowerbound 
+2. if lw == m or matrix[i][lw] != target then false, else true;
+Time Complexity: O(N + logM)//logM ekbar hobe shejnno
+------------
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        int n = matrix.size(), m = matrix[0].size();
+        for(int i=0;i<n;i++){
+            if(matrix[i][m-1]<target)continue;//i greater move to next index
+            int lw = lower_bound(matrix[i].begin(),matrix[i].end(), target) - matrix[i].begin();
+            if(lw==m || matrix[i][lw]!=target) return false;
+            else return true;
+        }
+        return false;
+    }
+};
+
+//Another Approach
+------------
+Approach2:
+1. Hypotheically, change the 2d array to 1D array
+Time Complexity: O(logN*M)
+------------
+
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        int n = matrix.size(), m = matrix[0].size();
+        int l = -1, r = (n*m) - 1, mid = 0;
+        while(l+1<r){
+            mid = (l+r)>>1;
+            int row = mid/m, col = mid%m;
+            if( matrix[row][col]<target) l = mid;
+            else r = mid;
+        }
+        return matrix[r/m][r%m]==target?true:false;
+    }
+};
+
+
 //#######################################################################
 //#######-------BS-25. Search in a 2D Matrix - II | Binary Search on 2D--------########
 //Tutorial: https://takeuforward.org/arrays/search-in-a-row-and-column-wise-sorted-matrix/
 //Problem: https://leetcode.com/problems/search-a-2d-matrix-ii/description/
+
+//Approach
+------------
+Approach:
+1. if inside a matrix[i] then do lowerbound in that index
+Time Complexity: O(N*logM)//*logM cause onekbar lowerbound khujte pare
+------------
+
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        int n = matrix.size(), m = matrix[0].size();
+        for(int i=0;i<n;i++){
+            if(matrix[i][0]<=target && target<=matrix[i][m-1]){
+                int lw = lower_bound(matrix[i].begin(), matrix[i].end(), target) - matrix[i].begin();
+                if( lw!=m && matrix[i][lw]==target) return true;
+            }
+        }
+        return false;
+    }
+};
+
+//Another Approach
+------------
+Approach2:
+1. mat[i][m-1] theke niche or side e jawa 
+Time Complexity: O(N+M)
+------------
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        int n = matrix.size(), m = matrix[0].size();
+        int r = 0, c = m-1;
+        while(r < n  && c>=0){
+            if( matrix[r][c] == target) return true;
+
+            if(matrix[r][c] < target ) r++;//matrix[r][c] kom hole niche namo
+            else c--;// matrix[r][c] beshi hoi gele pashe jao
+        }
+        return false;
+    }
+};
 
 //#######################################################################
 //#######-------BS-26. Find Peak Element-II--------########
 //Tutorial: https://takeuforward.org/binary-search/find-peak-element-ii
 //Problem: https://leetcode.com/problems/find-a-peak-element-ii/description/
 
+skipping element using binary search 
+
+------------
+Approach:
+1. 
+------------
+
 //#######################################################################
 //#######-------BS-27. Median in a Row Wise Sorted Matrix--------########
 //Tutorial: https://takeuforward.org/data-structure/median-of-row-wise-sorted-matrix/
 //Problem: https://www.geeksforgeeks.org/problems/median-in-a-row-wise-sorted-matrix1527/1
+
+------------
+Approach:
+1. Get the least value where (n*m)/2 < value  
+------------
 
 //#######################################################################
 //#######################################################################

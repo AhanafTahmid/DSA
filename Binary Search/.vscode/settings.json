@@ -4,6 +4,17 @@
         "vector": "cpp",
         "iosfwd": "cpp",
         "random": "cpp",
-        "compare": "cpp"
+        "compare": "cpp",
+        "__tree": "cpp",
+        "map": "cpp",
+        "set": "cpp",
+        "complex": "cpp",
+        "valarray": "cpp",
+        "cmath": "cpp",
+        "__locale": "cpp",
+        "ios": "cpp",
+        "chrono": "cpp",
+        "bitset": "cpp",
+        "ranges": "cpp"
     }
 }
