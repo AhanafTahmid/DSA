@@ -5,11 +5,6 @@
 - minimum and maximum integer do binary search
 - search and sorting, use binary search
 
-Confusions:
-1. 
-
-Questions: 
-
 
 ---------------------------------------------------------------------------------------------------------
 Striver Binary Search Playlist: https://www.youtube.com/playlist?list=PLgUwDviBIf0pMFMWuuvDNMAkoQFi-h0ZF

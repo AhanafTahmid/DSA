@@ -1,4 +1,4 @@
-//Tree
+//Sliding Window
 
 - See notion notes / striver notes for details
 - 
