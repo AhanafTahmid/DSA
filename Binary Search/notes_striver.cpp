@@ -3,6 +3,7 @@
 - Binary search always applicable in sorted area
 - In searching kind of things, think of using binary search
 - minimum and maximum integer do binary search
+- search and sorting, use binary search
 
 Confusions:
 1. 
@@ -223,70 +224,224 @@ public:
 //#######-------BS-4. Search Element in Rotated Sorted Array - I--------########
 //Tutorial: https://takeuforward.org/data-structure/search-element-in-a-rotated-sorted-array/
 //Problem: https://leetcode.com/problems/search-in-rotated-sorted-array/description/
-https://www.geeksforgeeks.org/problems/search-in-a-rotated-array4618/1
 
 ------------
 Approach:
-1. 
+Either one part is always sorted(right half)
+left and right pashapashi ante chaile while(l<=r) use kora
+
+There are 4 cases 
+1. arr[m]<=arr[r] sorted and key is in the range (l=m+1)
+2. arr[m]<=arr[r] sorted and key is not in the range (r=m-1)
+3. arr[l]<=arr[m] sorted and key is in the range (r=m-1)
+4. arr[l]<=arr[m] sorted and key is not in the range (l=m+1)
+
+Time Complexity: O(logN)
 ------------
 
-
+class Solution {
+public:
+    int search(vector<int>& arr, int key) {
+        int n = arr.size();
+        int l = 0, r = n-1, m;
+        while(l<=r){//left and right pashapashi ante chaile
+            m = (l+r)>>1;
+            if(arr[m]==key) return m;
+            if(arr[m]<=arr[r]){//this part is sorted
+                if( arr[m]<=key && arr[r]>=key){//check if key lies in this part if so elimiate left half
+                    l = m+1;
+                }
+                else r = m-1;//else eliminate right half
+            }
+            else{//from arr[l] to arr[m] is sorted here
+                if( arr[l]<=key && arr[m]>=key) r = m-1;
+                else l = m+1;
+            }
+        }
+        return -1;
+    }
+};
 
 //#######################################################################
 //#######-------BS-5. Search Element in Rotated Sorted Array II--------########
 //Tutorial: https://takeuforward.org/arrays/search-element-in-rotated-sorted-array-ii/
 //Problem: https://leetcode.com/problems/search-in-rotated-sorted-array-ii/description/
 
+jehetu duplicate ase we cannot say explicitly one part is sorted(so l++, r--)
 ------------
 Approach:
-1. 
-------------
+1. Prequisite: BS-4. Search Element in Rotated Sorted Array - I
+2. and just add this new line if(arr[l]==arr[m] && arr[m]==arr[r]) l++, r--;
 
+Time Complexity: O(logN) for the best and average case. O(N/2) for the worst case. Here, N = size of the given array.
+------------
+class Solution {
+public:
+    bool search(vector<int>& arr, int key) {
+        int n = arr.size();
+        int l = 0, r = n - 1, m;
+        while(l<=r){
+            m = (l+r)>>1;
+            if(arr[m] == key) return true;
+            if(arr[l]==arr[m] && arr[m]==arr[r]) l++, r--;
+            
+            else if(arr[m]<=arr[r]){
+                if( arr[m]<=key  && key<=arr[r]) l = m + 1;
+                else r = m - 1;
+            }
+            else{
+                if( arr[l]<=key  && key<=arr[m]) r = m - 1;
+                else l = m + 1;
+            }
+        }
+        return false;
+    }
+};
 
 //#######################################################################
 //#######-------BS-6. Minimum in Rotated Sorted Array--------########
 //Tutorial: https://takeuforward.org/data-structure/minimum-in-rotated-sorted-array/
 //Problem: https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/description/
-https://www.geeksforgeeks.org/problems/minimum-element-in-a-sorted-and-rotated-array3611/1
 
+identify the sorted half
 ------------
 Approach:
-1. 
+There are 2 cases 
+1. arr[l]<=arr[m] sorted minimum is arr[l] and update l = m+1
+2. arr[m]<=arr[r] sorted minimum is arr[m] and update r = m-1
 ------------
-
+class Solution {
+public:
+    int findMin(vector<int>& arr) {
+        int n = arr.size();
+        int l = 0, r = n-1, m, ans = INT_MAX;
+        while(l<=r){
+            m = (l+r)>>1;
+            if( arr[l]<= arr[m]) {
+                ans = min(ans, arr[l]);//update the minimum and move forward
+                l = m + 1;
+            }
+            else if( arr[m] <= arr[r]){
+                ans = min(ans, arr[m]);
+                r = m - 1;
+            }
+        }
+        return ans;
+    }
+};
 
 //#######################################################################
 //#######-------BS-7. Find out how many times array has been rotated--------########
 //Tutorial: https://takeuforward.org/arrays/find-out-how-many-times-the-array-has-been-rotated/
 //Problem: https://www.geeksforgeeks.org/problems/rotation4723/1
 
+Prequisite: BS-6. Minimum in Rotated Sorted Array
 ------------
 Approach:
-1. 
+1. Find the index of the minimum element, that is our answer
 ------------
-
+class Solution {
+  public:
+    int findKRotation(vector<int> &arr) {
+        int n = arr.size();
+        int l = 0, r = n - 1, m, mini = INT_MAX, index = 0;
+        while(l<=r){
+            m = (l+r)>>1;
+            if(arr[l]<=arr[m]){
+                if(mini>=arr[l]) 
+                    index = l, mini = arr[l];
+                l = m + 1;
+            }
+            else{
+                if(mini>=arr[m])
+                    index = m, mini = arr[m];
+                r = m - 1;
+            }
+        }
+        return index;
+    }
+};
 
 //#######################################################################
 //#######-------BS-8. Single Element in Sorted Array--------########
 //Tutorial: https://takeuforward.org/data-structure/search-single-element-in-a-sorted-array/
 //Problem: https://leetcode.com/problems/single-element-in-a-sorted-array/description/
-https://www.geeksforgeeks.org/problems/find-the-element-that-appears-once-in-sorted-array0624/1
 
 ------------
 Approach:
-1. 
+Think in terms of index(odd even change hoe jawa index e)
+
+There are 2 cases 
+1.1 mid is even and next element is same, then answer lies in right, so l = m
+1.2 Same way, mid is odd and previous element is same, then answer lies in right, so l = m
+
+2. Else answer always lies in left, so r = m;
+
 ------------
+class Solution {
+public:
+    int singleNonDuplicate(vector<int>& arr) {
+        int n = arr.size();
+        int l = 0, r = n - 1, m;
+        while(l<=r){
+            m = (l+r)>>1;
+            if( ( !(m&1) && m+1<n && arr[m]==arr[m+1]) || ( m&1 && m-1>=0 && arr[m-1]==arr[m]) ) l = m + 1;
+            else r = m - 1;
+        }
+        return arr[l];
+    }
+};
+
+//Another one (l+1<r)
+Invariant: 1111100000 - > first 0 is the answer
+
+class Solution {
+public:
+    int singleNonDuplicate(vector<int>& arr) {
+        int n = arr.size();
+        int l = -1, r = n - 1, m;
+        while(l+1<r){
+            m = (l+r)>>1;
+            if( ( !(m&1) && m+1<n && arr[m]==arr[m+1]) || ( m&1 && m-1>=0 && arr[m-1]==arr[m]) ) l = m;
+            else r = m;
+        }
+        return arr[r];
+    }
+};
 
 //#######################################################################
 //#######-------BS-9. Find Peak Element--------########
 //Tutorial: https://takeuforward.org/data-structure/peak-element-in-array/
 //Problem: https://leetcode.com/problems/find-peak-element/description/
-https://www.geeksforgeeks.org/problems/peak-element/1
 
+assuming 1 2 2 1 erokom nai
+There will always be a peak according to question
 ------------
 Approach:
-1. 
+Think in slope graph
+1. if mid-1 < mid > mid+1 then return mid 
+2. if mid-1 < mid answer will be in left (l=m+1)
+3. else answer will be in right ( r = m - 1)
 ------------
+class Solution {
+public:
+    int findPeakElement(vector<int>& arr) {
+        int n = arr.size();
+        int l = 1, r = n - 2, m;
+        if(n==1) return 0;
+        if(arr[0]>arr[1]) return 0;
+        if(arr[n-1]>arr[n-2]) return n - 1;
+        while(l<=r){
+            m = (l+r)>>1;
+            if( arr[m] > arr[m-1] && arr[m] > arr[m+1] ){
+                return m;
+            }
+            else if( arr[m] > arr[m-1] ) l = m + 1;
+            else r = m - 1;
+        }
+        return -1;
+    }
+};
 
 //#######################################################################
 //#######################################################################
@@ -500,12 +655,46 @@ public:
 //#######-------BS-16. Kth Missing Positive Number | Maths + Binary Search--------########
 //Tutorial: https://takeuforward.org/arrays/kth-missing-positive-number/
 //Problem: https://leetcode.com/problems/kth-missing-positive-number/description/
-https://www.geeksforgeeks.org/problems/find-k-th-missing-element2556/0
 
 ------------
 Approach:
-1. 
+1. if(arr[i]<=k) k++;else break, k is the answer
 ------------
+//brute
+class Solution {
+public:
+    int findKthPositive(vector<int>& arr, int k) {
+        int n = arr.size();
+        for(int i=0;i<n;i++){
+            if(arr[i]<=k) k++;
+            else break;
+        }
+        return k;
+    }
+};
+
+//binary search
+------------
+Approach:
+" Think number of missing numbers "
+
+1. if k is lesser than in the range of number of missing then l = m, else r = m
+
+missing = arr[m] - (m+1)
+------------
+class Solution {
+public:
+    int findKthPositive(vector<int>& arr, int k) {
+        int n = arr.size();
+        int l = -1, r = n, m;
+        while(l+1<r){
+            m = (l+r)>>1;
+            if(arr[m] - (m+1) < k ) l = m;
+            else r = m;
+        }
+        return k+l+1;
+    }
+};
 
 //#######################################################################
 //#######-------BS-17. Aggressive Cows--------########
@@ -676,6 +865,8 @@ Approach:
 Bruteforce Approach(AC in leetcode):
 1. if odd print the mid 
 2. else both mid / 2
+
+Time complexity: O(n+m) + (n+m)log(n+m)
 ------------
 
 class Solution {
@@ -688,8 +879,6 @@ public:
         return (nums1[n/2] + nums1[n/2 - 1]) / 2.00 ;
     }
 };
-
-
 
 //#######################################################################
 //#######-------BS-21.2 Median of two Sorted Arrays of Different Sizes--------########
@@ -707,14 +896,76 @@ Approach:
 //#######################################################################
 //#######-------Bs-22. K-th element of two sorted arrays--------########
 //Tutorial: https://takeuforward.org/data-structure/k-th-element-of-two-sorted-arrays/
-//Problem: 
-https://www.geeksforgeeks.org/problems/k-th-element-of-two-sorted-array1317/1
-https://leetcode.com/problems/kth-smallest-product-of-two-sorted-arrays/description/
+//Problem: https://www.geeksforgeeks.org/problems/k-th-element-of-two-sorted-array1317/1
+
+Q: Finding kth element of two sorted arrays
 
 ------------
 Approach:
 1. 
 ------------
+//Brute Force
+Time Complexity: O(m+n) + O(nlogn)
+Space Complexity: O(n+m)
+class Solution {
+  public:
+    int kthElement(int k, vector<int>& arr1, vector<int>& arr2) {
+        for(int i=0;i<arr2.size();i++)arr1.push_back(arr2[i]);
+        sort(arr1.begin(),arr1.end());
+        return arr1[k-1];
+    }
+};
+
+//Better
+Time Complexity: O(m+n)
+Space Complexity: O(1)
+class Solution {
+  public:
+    int kthElement(int k, vector<int>& arr1, vector<int>& arr2) {
+        int n = arr1.size(), m = arr2.size();
+        int ct = 0, ans = 0;
+        int i,j;
+        for(i=0, j = 0;i<n && j<m;){
+            if(arr1[i]>=arr2[j]){
+                ct++;
+                if(ct==k){
+                    ans = arr2[j];
+                    break;
+                }
+                j++;
+            }
+            else{
+                ct++;
+                if(ct==k){
+                    ans = arr1[i];
+                    break;
+                }
+                i++;
+            }
+        }
+        while(i<n){
+            ct++;
+            if(ct==k){
+                ans = arr1[i];
+                break;
+            }
+            i++;
+        }
+        
+        while(j<m){
+            ct++;
+            if(ct==k){
+                ans = arr2[j];
+                break;
+            }
+            j++;
+        }
+        return ans;
+    }
+};
+
+//Optimal
+
 
 //#######################################################################
 //#######################################################################
