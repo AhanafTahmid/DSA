@@ -133,10 +133,10 @@ int longestSubstrDistinctChars (string s)
 
 //#######################################################################
 //#######-------L4. Max Consecutive Ones III--------########
-//Tutorial: https://takeuforward.org/data-structure/count-maximum-consecutive-ones-in-the-array/
+//Tutorial: 
 //Problem: https://leetcode.com/problems/max-consecutive-ones-iii/description/
 
-longest subarray at most k 0's
+Q: longest subarray at most k 0's
 ------------
 Approach:
 1. if arr[i] == 0 increase count 
@@ -144,6 +144,10 @@ Approach:
 3. at the end calculate answer using left and right pointer
 ------------
 
+//Approach 1
+//Better
+Time complexity : O(2N)
+Space complexity: O(1)
 class Solution {
 public:
     int longestOnes(vector<int>& arr, int k) {
@@ -162,16 +166,96 @@ public:
     }
 };
 
+
+//Approach 2
+//Optimal - Removing the inside while loop
+Time complexity : O(N)
+Space complexity: O(1)
+
+class Solution {
+public:
+    int longestOnes(vector<int>& arr, int k) {
+        int l = 0, r = 0, mxcons = 0, ct = 0, n = arr.size();
+        while(r<n){
+            if(arr[r]==0)ct++;
+    
+            if(ct>k){
+                if(arr[l]==0) ct--;
+                l++;
+            }
+            
+            if(ct<=k){
+                mxcons = max(mxcons, r - l + 1);
+            }
+            r++;
+        }
+        return mxcons;
+    }
+};
+
 //#######################################################################
 //#######-------L5. Fruit Into Baskets--------########
 //Tutorial: 
 //Problem: https://leetcode.com/problems/fruit-into-baskets/description/
 https://www.geeksforgeeks.org/problems/fruit-into-baskets-1663137462/1
 
+Q: max length subarray at most 2 type of fruits 
+
 ------------
 Approach:
-1. 
+1. take map, 
+1.1 while mp.size() == 3 keep decreasing the leftmost element 
+1.2 If leftmost element frequency is 0, then delete it 
+
+2. Keep doing the step 1, and keep updating the answer
 ------------
+
+//Approach 1
+Time complexity: O(2N) - 3 3 3 3 1 2 [ei case e 2N jabe]
+Space complexity: O(3)
+
+class Solution {
+public:
+    int totalFruit(vector<int>& arr) {
+        int n = arr.size(), l = 0, r = 0, mxfruits = 0;
+        map<int, int>mp;
+        while(r<n){
+            mp[arr[r]]++;
+            while( mp.size() == 3 ){
+                mp[arr[l]]--;
+                if(mp[arr[l]]==0)mp.erase(arr[l]);
+                l++;
+            }
+            mxfruits = max(mxfruits, r - l + 1);
+            r++;
+        }
+        return mxfruits;
+    }
+};
+
+//Approach 2
+Time complexity: O(N)
+
+class Solution {
+public:
+    int totalFruit(vector<int>& arr) {
+        int n = arr.size(), l = 0, r = 0, mxfruits = 0;
+        map<int, int>mp;
+        while(r<n){
+            mp[arr[r]]++;
+            if( mp.size() >= 3 ){
+                mp[arr[l]]--;
+                if(mp[arr[l]]==0)mp.erase(arr[l]);
+                l++;
+            }
+            if(mp.size()<=2){
+                mxfruits = max(mxfruits, r - l + 1);
+            }
+            r++;
+        }
+        return mxfruits;
+    }
+};
 
 //#######################################################################
 //#######-------L6. Longest Substring With At Most K Distinct Characters--------########
