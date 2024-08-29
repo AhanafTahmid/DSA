@@ -1,7 +1,7 @@
 //Sliding Window + Two Pointer
 
-- See notion notes / striver notes for details
-- 
+- This is not an algorithm, more of an contructive algo thing
+- Hashing + two pointer + sliding_window all work simultaneously in most of the time
 
 ---------------------------------------------------------------------------------------------------------
 Striver Tree Playlist: https://www.youtube.com/playlist?list=PLgUwDviBIf0q7vrFA_HEWcqRqMpCXzYAL
@@ -25,54 +25,142 @@ Resource: https://takeuforward.org/blogs/sliding-window
 
 //#######################################################################
 //#######-------L1. Introduction to Sliding Window and 2 Pointers--------########
-//Tutorial: https://takeuforward.org/sliding-window/minimum-subarray-whose-sum-is-greater-or-equal-to-k
-//Tutorial2: https://takeuforward.org/sliding-window/constant-window
-//Problem: 
-
+//Tutorial: 
 
 ------------------------Theory----------------------------------
-//
 
-//
+4 types of sliding window problem: 
+1. Constant window
+2. Longest subarray/substring(most frequent in this type)
+3. Number of subarrays where some conditions(can be solved using pattern 2)
+4. shortest/minimum window with some conditions
 
-------------
-Approach:
-1. 
-------------
+
+
+//Template for most of the problem
+int sliding_window(vector<int>& arr, int k) {
+    int count = 0, sum = 0;
+    int n = arr.size();
+    int l = 0, r = 0, mxlength = 0;
+    while (r < n) {
+        sum += arr[r];
+        
+        while (sum > k) {
+            sum -= arr[l++];
+        }
+        if(sum<=k) mxlength = max(mxlength, r-l+1);
+        r++;
+    }
+    return count;
+}
+
 
 //#######################################################################
 //#######-------L2. Maximum Points You Can Obtain from Cards--------########
 //Tutorial: https://takeuforward.org/sliding-window/maximum-points-you-can-obtain-from-cards
 //Problem: https://leetcode.com/problems/maximum-points-you-can-obtain-from-cards/description/
-https://www.geeksforgeeks.org/problems/maximum-point-you-can-obtain-from-cards/1
 
+- This problem can be solved using prefix sum too
 ------------
 Approach:
-1. 
+1. Make first window 
+2. go one step back from left and one step back from right, and keep updating mxanswer 
+
 ------------
 
+class Solution {
+  public:
+    int maxScore(vector<int>& card, int k) {
+        int n = card.size(), score = 0, mxscore = 0;
+        for(int i=0;i<k;i++){
+            score+=card[i];
+        }
+        mxscore = score;
+        for(int i=k-1,j=n-1;i>=0;i--,j--){
+            score = score - card[i] + card[j];
+            mxscore = max( mxscore, score);
+        }
+        return mxscore;
+    }
+};
 
 //#######################################################################
 //#######-------L3. Longest Substring Without Repeating Characters--------########
 //Tutorial: https://takeuforward.org/sliding-window/longest-substring-without-repeating-characters-sliding-window
 //Problem: https://leetcode.com/problems/longest-substring-without-repeating-characters/description/
-https://www.geeksforgeeks.org/problems/longest-distinct-characters-in-string5848/1
 
 ------------
 Approach:
-1. 
+1. Keep moving from r to n 
+2. If element appears again keep increasing l until previous element is removed
+3. update the max length everytime
 ------------
+//Approach 1 - O(n)
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        int n = s.size();
+        bool visited[256]={};//extended ascii can go upto 256 characters
+        int l = 0, r = 0, ans = 0;
+        while(r<n){
+            while(visited[s[r]]){
+                visited[s[l]] = 0;
+                l++;
+            }
+            ans = max(ans, r - l + 1),visited[s[r]]=1,r++;
+        }
+        return ans;
+    }
+};
+
+//Approach 2 - O(n+log(n)) (using set - extra logn complexity)
+int longestSubstrDistinctChars (string s)
+{
+    int n = s.size(), l = 0, r = 0, mxlength = 0;
+    set<char>st;
+    while(l<n && r<n){
+        while(st.count(s[r])){
+            st.erase(s[l++]);
+        }
+        st.insert(s[r]);
+        mxlength = max(mxlength, r - l + 1);
+        r++;
+        
+    }
+    return mxlength;
+}
+
 
 //#######################################################################
 //#######-------L4. Max Consecutive Ones III--------########
 //Tutorial: https://takeuforward.org/data-structure/count-maximum-consecutive-ones-in-the-array/
 //Problem: https://leetcode.com/problems/max-consecutive-ones-iii/description/
-https://www.geeksforgeeks.org/problems/maximize-number-of-1s0905/1
 
+longest subarray at most k 0's
 ------------
 Approach:
-1. 
+1. if arr[i] == 0 increase count 
+2. while(ct>k) move left pointer
+3. at the end calculate answer using left and right pointer
 ------------
+
+class Solution {
+public:
+    int longestOnes(vector<int>& arr, int k) {
+        int l = 0, r = 0, mxcons = 0, ct = 0, n = arr.size();
+        while(r<n){
+            if(arr[r]==0)ct++;
+            
+            while(ct>k){
+                if(arr[l]==0) ct--;
+                l++;
+            }
+            mxcons = max(mxcons, r - l + 1);
+            r++;
+        }
+        return mxcons;
+    }
+};
 
 //#######################################################################
 //#######-------L5. Fruit Into Baskets--------########

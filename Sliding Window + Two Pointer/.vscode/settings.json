@@ -22,6 +22,10 @@
         "unordered_set": "cpp",
         "*.tcc": "cpp",
         "vector": "cpp",
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "regex": "cpp",
+        "deque": "cpp",
+        "functional": "cpp",
+        "list": "cpp"
     }
 }
