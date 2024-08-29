@@ -1,17 +1,11 @@
-//Sliding Window
+//Sliding Window + Two Pointer
 
 - See notion notes / striver notes for details
 - 
 
-Confusions:
-1. 
-
-Questions: 
-
-
 ---------------------------------------------------------------------------------------------------------
-Striver Tree Playlist: https://www.youtube.com/playlist?list=PLgUwDviBIf0q8Hkd7bK2Bpryj2xVJk8Vk
-Resource: https://takeuforward.org/graph/striver-graph-series-top-graph-interview-questions/
+Striver Tree Playlist: https://www.youtube.com/playlist?list=PLgUwDviBIf0q7vrFA_HEWcqRqMpCXzYAL
+Resource: https://takeuforward.org/blogs/sliding-window
 ---------------------------------------------------------------------------------------------------------
 
 //#######################################################################
