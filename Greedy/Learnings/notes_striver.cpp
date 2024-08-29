@@ -160,7 +160,7 @@ public:
 
 //#######################################################################
 //#######-------5. Valid Paranthesis Checker--------########
-//Tutorial: NULL
+//Tutorial: 
 //Problem: https://leetcode.com/problems/valid-parenthesis-string/description/
 https://www.geeksforgeeks.org/problems/parenthesis-checker2744/1
 
@@ -249,7 +249,7 @@ public:
 
 //#######################################################################
 //#######-------8. Jump Game 2--------########
-//Tutorial: NULL
+//Tutorial: 
 //Problem: https://leetcode.com/problems/jump-game-ii/description/
 
 ------------
@@ -542,7 +542,7 @@ Approach:
 
 //#######################################################################
 //#######-------16. Non-overlapping Intervals--------########
-//Tutorial: NULL
+//Tutorial: 
 //Problem: https://leetcode.com/problems/non-overlapping-intervals/description/
 
 Prerequisite: 6. N meetings in one room
