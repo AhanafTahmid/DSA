@@ -26,6 +26,21 @@
         "regex": "cpp",
         "deque": "cpp",
         "functional": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "filesystem": "cpp",
+        "__split_buffer": "cpp",
+        "array": "cpp",
+        "iterator": "cpp",
+        "forward_list": "cpp",
+        "scoped_allocator": "cpp",
+        "span": "cpp",
+        "memory_resource": "cpp",
+        "stacktrace": "cpp",
+        "bitset": "cpp",
+        "initializer_list": "cpp",
+        "queue": "cpp",
+        "stack": "cpp",
+        "ranges": "cpp",
+        "future": "cpp"
     }
 }

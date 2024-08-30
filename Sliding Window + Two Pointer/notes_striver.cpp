@@ -2,6 +2,9 @@
 
 - This is not an algorithm, more of an contructive algo thing
 - Hashing + two pointer + sliding_window all work simultaneously in most of the time
+- Subarray and substring, think sliding window or two pointer
+- When you are not sure about shrinking and expanding use the below formula 
+    Formula: Atmost(k) - atmost (k-1) = exactly k
 
 ---------------------------------------------------------------------------------------------------------
 Striver Tree Playlist: https://www.youtube.com/playlist?list=PLgUwDviBIf0q7vrFA_HEWcqRqMpCXzYAL
@@ -199,7 +202,7 @@ public:
 //Problem: https://leetcode.com/problems/fruit-into-baskets/description/
 https://www.geeksforgeeks.org/problems/fruit-into-baskets-1663137462/1
 
-Q: max length subarray at most 2 type of fruits 
+Q: max length subarray having at most 2 type of fruits 
 
 ------------
 Approach:
@@ -259,57 +262,265 @@ public:
 
 //#######################################################################
 //#######-------L6. Longest Substring With At Most K Distinct Characters--------########
-//Tutorial: https://www.geeksforgeeks.org/find-the-longest-substring-with-k-unique-characters-in-a-given-string/
-//Problem: https://www.geeksforgeeks.org/problems/longest-k-unique-characters-substring0853/1
+//Tutorial: 
+//Problem: https://www.naukri.com/code360/problems/distinct-characters_2221410
 
 ------------
 Approach:
-1. 
+1. take map, 
+1.1 while mp.size() > 3 keep decreasing the leftmost element 
+1.2 If leftmost element frequency is 0, then delete it 
+
+2. Keep doing the step 1, and keep updating the answer when mp.size()<=k [cause it said atmost]
 ------------
+
+
+//Approach 1
+Time complexity: O(2N) + O(log256)
+Space complexity: O(256)
+
+#include<bits/stdc++.h>
+int kDistinctChars(int k, string &s)
+{
+    int n = s.size(), l = 0, r = 0, longest_unique = -1;
+    map<char, int>mp;
+    while(r<n){
+        mp[s[r]]++;
+        while(mp.size()>k){
+            mp[s[l]]--;
+            if(mp[s[l]]==0) mp.erase(s[l]);
+            l++;
+        }
+        if(mp.size()<=k) 
+        longest_unique = max(longest_unique, r - l + 1);
+        r++;
+    }
+    return longest_unique;
+}
+
+//Approach 2
+Time complexity: O(N) + O(log256)
+Space complexity: O(256)
+
+#include<bits/stdc++.h>
+int kDistinctChars(int k, string &s)
+{
+    int n = s.size(), l = 0, r = 0, longest_unique = -1;
+    map<char, int>mp;
+    while(r<n){
+        mp[s[r]]++;
+        if(mp.size()>k){//only this thing has been changed
+            mp[s[l]]--;
+            if(mp[s[l]]==0) mp.erase(s[l]);
+            l++;
+        }
+        if(mp.size()<=k) 
+        longest_unique = max(longest_unique, r - l + 1);
+        r++;
+    }
+    return longest_unique;
+}
 
 //#######################################################################
 //#######-------L7. Number of Substrings Containing All Three Characters--------########
 //Tutorial: 
 //Problem: https://leetcode.com/problems/number-of-substrings-containing-all-three-characters/description/
-https://www.geeksforgeeks.org/problems/count-substring/1
 
 ------------
 Approach:
-1. 
+1. Get the last place of occurance and count the subarray [ min(a,b,c)]
+
+Time Complexity : O(N)
+Space Complexity: O(3)
 ------------
+class Solution {
+  public:
+    int countSubstring(string s) {
+        int n = s.size(), l = 0, substrings = 0;
+        map<int, int>mp;
+        while(l<n){
+            mp[s[l]] = l + 1;//convert to 1 base indexing
+            if(mp.size() == 3){
+                substrings+= 1 + min({mp['a'],mp['b'],mp['c']});
+            }
+            l++;
+        }
+        return substrings;
+    }
+};
 
 //#######################################################################
 //#######-------L8. Longest Repeating Character Replacement--------########
 //Tutorial: 
 //Problem: https://leetcode.com/problems/longest-repeating-character-replacement/description/
-https://www.geeksforgeeks.org/problems/longest-repeating-character-replacement/1
 
 ------------
 Approach:
-1. 
+1. Maintain (length - maxfrequency <= k)
 ------------
+
+//Approach 1
+Time Complexity: O(2N * 26)
+Space Complexity: O(26)
+
+class Solution {
+public:
+    int characterReplacement(string s, int k) {
+        int n = s.size(), l = 0, r = 0, longest_rep = 0, mxf = 0;
+        map<char, int>mp;
+        while(r<n){
+            mp[s[r]]++;
+            int length = r - l + 1;
+            mxf = max(mxf, mp[s[r]]);
+            while( length - mxf > k ){
+                mp[ s[l] ]--;
+                if(mp[s[l]] == 0) mp.erase(s[l]);
+                mxf = 0;
+                for(auto [x,y]: mp) mxf = max(mxf, y);
+                l++;
+                length = r - l + 1;
+            }
+            longest_rep = max(longest_rep, length);
+            r++;
+        }
+        return longest_rep;
+    }
+};
+
+//Approach 2
+Time Complexity: O(N * 26)
+Space Complexity: O(26)
+
+class Solution {
+public:
+    int characterReplacement(string s, int k) {
+        int n = s.size(), l = 0, r = 0, longest_rep = 0, mxf = 0;
+        map<char, int>mp;
+        while(r<n){
+            mp[s[r]]++;
+            int length = r - l + 1;
+            mxf = max(mxf, mp[s[r]]);
+            if( length - mxf > k ){
+                mp[ s[l] ]--;
+                if(mp[s[l]] == 0) mp.erase(s[l]);
+                mxf = 0;
+                for(auto [x,y]: mp) mxf = max(mxf, y);
+                l++;
+                length = r - l + 1;
+            }
+
+            if(length - mxf <= k)
+            longest_rep = max(longest_rep, length);
+            r++;
+        }
+        return longest_rep;
+    }
+};
+
 
 //#######################################################################
 //#######-------L9. Binary Subarrays With Sum--------########
 //Tutorial: https://www.geeksforgeeks.org/count-of-subarrays-with-sum-equals-k-in-given-binary-array/
 //Problem: https://leetcode.com/problems/binary-subarrays-with-sum/description/
-https://www.geeksforgeeks.org/problems/binary-subarray-with-sum/1
 
 ------------
-Approach:
-1. 
+Approach 1:
+1. if mp[sum - target] != 0 then add ans += mp[sum-target]
 ------------
+
+//Approach 1
+Time Complexity: O(N) [Most times cause using unordered map]
+Space Complexity: O(N) [For the map]
+
+class Solution {
+public:
+    int numSubarraysWithSum(vector<int>& arr, int target) {
+        int n = arr.size(), l = 0, sum = 0, total_sub = 0;
+        unordered_map<int, int>mp;
+        mp[0] = 1;
+        while(l<n){
+            sum+=arr[l];
+            if(mp[sum - target]) total_sub += mp[sum - target];
+            mp[sum]++;
+            l++;
+        }
+        return total_sub;
+    }
+};
+
+//Approach 2
+------------
+Approach 2:
+1. Find number of subarray with = atmost(k) - atmost(k-1)
+------------
+
+Formula: Atmost(k) - atmost (k-1) = exactly k
+
+Time Complexity: O(2N)
+Space Complexity: O(1)
+
+class Solution {
+public:
+    int atmost(vector<int>&arr, int target){
+        int n = arr.size(), l = 0, r = 0, sum = 0, length = 0, total_sub = 0;
+        while(r<n){
+            sum+=arr[r];
+            while(sum>target){
+                sum-=arr[l];
+                l++;
+            }
+            length = r - l + 1;
+            total_sub += length;
+            r++;
+        }
+        return total_sub;
+    }
+    int numSubarraysWithSum(vector<int>& arr, int target) {
+        if(target==0) return atmost(arr, target);
+        return atmost(arr, target) - atmost(arr, target-1);
+    }
+};
 
 //#######################################################################
 //#######-------L10. Count number of Nice subarrays--------########
 //Tutorial: 
 //Problem: https://leetcode.com/problems/count-number-of-nice-subarrays/description/
-https://www.geeksforgeeks.org/problems/count-subarray-with-k-odds/1
+
+- When you are not sure about shrinking and expanding use the below formula 
+Formula: Atmost(k) - atmost (k-1) = exactly k
+
+Prerequisite: L9. Binary Subarrays With Sum
 
 ------------
 Approach:
-1. 
+1. Convert the problem with Number of subarrays having sum exactly equal to k
+1. Or Convert the problem with Binary Subarrays With Sum
+
+After that the approach is same
 ------------
+Time Complexity: O(2N)
+Space Complexity: O(1)
+
+class Solution {
+public:
+    int atmost(vector<int>&arr, int target){
+        int n = arr.size(), l = 0, r = 0, sum = 0, length = 0, total_sub = 0;
+        while(r<n){
+            sum+=(arr[r]&1);
+            while(sum>target){
+                sum-=(arr[l]&1);
+                l++;
+            }
+            length = r - l + 1;
+            total_sub += length;
+            r++;
+        }
+        return total_sub;
+    }
+    int numberOfSubarrays(vector<int>& arr, int target) {
+        return atmost(arr, target) - atmost(arr, target-1);
+    }
+};
 
 //#######################################################################
 //#######-------L11. Subarray with k different integers--------########
@@ -317,21 +528,92 @@ Approach:
 //Problem: https://leetcode.com/problems/subarrays-with-k-different-integers/description/
 https://www.geeksforgeeks.org/problems/subarrays-with-k-different-integers/1
 
+Formula: Atmost(k) - atmost (k-1) = exactly k
+
 ------------
 Approach:
-1. 
+1. Convert the problem with Number of subarrays having sum exactly equal to k
+1. Or Convert the problem with Binary Subarrays With Sum
+
+After that the approach is same
 ------------
+
+Time Complexity: O(2N*1) [ unordered_map == O(1)]
+Space Complexity: O(N) [taking all elements in array in the map]
+
+class Solution {
+public:
+    int atmost(vector<int>&arr, int target){
+        int n = arr.size(), l = 0, r = 0, sum = 0, length = 0, total_sub = 0;
+        unordered_map<int, int>mp;
+        while(r<n){
+            mp[arr[r]]++;
+            while(mp.size() > target){
+                mp[arr[l]]--;
+                if( mp[arr[l]] == 0 ) mp.erase(arr[l]);
+                l++;
+            }
+            length = r - l + 1;
+            total_sub += length;
+            r++;
+        }
+        return total_sub;
+    }
+
+    int subarraysWithKDistinct(vector<int>& nums, int target) {
+        return atmost(nums, target) - atmost(nums, target-1); 
+    }
+};
 
 //#######################################################################
 //#######-------L12. Minimum Window Substring--------########
 //Tutorial: https://takeuforward.org/data-structure/minimum-window-substring
 //Problem: https://leetcode.com/problems/minimum-window-substring/description/
-https://www.geeksforgeeks.org/problems/smallest-window-in-a-string-containing-all-the-characters-of-another-string-1587115621/1
+//Problem(gfg): https://www.geeksforgeeks.org/problems/smallest-window-in-a-string-containing-all-the-characters-of-another-string-1587115621/1
+
+- Using map in this problem will give tle in some sites(like gfg) because of extra logn 
 
 ------------
 Approach:
-1. 
+1. make frequency of all the characters that are present in the array
+2. if frequency > 0 then ct++
+3.1 if (ct == pz) then our answer is found
+3,2 while(ct==pz)then move the start pointer until it becomes false, keep the start and end windoww
+4. answer would be string from start(j) to end(i-j+1)
 ------------
+Time Complexity: O(2N + pz)
+Space Complexity: O(256) [extended ascii is of 256 length]
+
+class Solution {
+public:
+    string minWindow(string s, string p) {
+        int sz = s.size(), pz = p.size(), ct = 0, l = 0, r = 0, start = -1, end = -1, length = INT_MAX;
+        if(sz<pz) return "";
+        vector<int> v(256);
+        for(char ch: p)v[ch]++;
+        while(r<sz){
+            if(v[ s[r] ]>0) ct++;
+            v[ s[r] ] --;
+            while(ct==pz){
+                //ct == pz means string paisi
+                int now_length = r - l + 1;
+                if( length > now_length && ct==pz){
+                    length = now_length;
+                    start = l;
+                    end = length;
+                }
+                v[ s[l] ]++;
+                //age pre-inserted chilo bole positive hobei
+                if(v[ s[l] ]>0) ct--;
+                l++;
+            }
+            r++;
+        }
+        
+        if(length==INT_MAX) return "";
+        return s.substr(start, end);
+    }
+};
 
 //#######################################################################
 //#######-------L13. Minimum Window Subsequence--------########
@@ -340,8 +622,38 @@ Approach:
 
 ------------
 Approach:
-1. 
+1. keep on first forward, then if found all, keep on finding backward and each time update the min length size
+Keep doing step 1 until i is exhausted
 ------------
+class Solution {
+  public:
+    string minWindow(string str1, string str2) {
+        int n = str1.size();
+        int pn = str2.size();
+        int i = 0, j = 0, mn = INT_MAX;
+        string ans = "";
+        while(i<n){
+            if(str1[i]==str2[j])j++;
+            if(j==pn){
+                j--;
+                int end = i + 1;
+                while(j>=0){
+                    if(str1[i]==str2[j]) j--;
+                    i--;
+                }
+                j++;
+                i++;
+                if(mn>(end-i)){
+                    mn = end-i;
+                    ans = str1.substr(i,mn);
+                }
+            }
+            i++;
+        }
+        return ans;
+        
+    }
+};
 
 //#######################################################################
 //#######################################################################
