@@ -7,7 +7,7 @@
     Formula: Atmost(k) - atmost (k-1) = exactly k
 
 ---------------------------------------------------------------------------------------------------------
-Striver Tree Playlist: https://www.youtube.com/playlist?list=PLgUwDviBIf0q7vrFA_HEWcqRqMpCXzYAL
+Striver Sliding Window + Two Pointer Playlist: https://www.youtube.com/playlist?list=PLgUwDviBIf0q7vrFA_HEWcqRqMpCXzYAL
 Resource: https://takeuforward.org/blogs/sliding-window
 ---------------------------------------------------------------------------------------------------------
 
