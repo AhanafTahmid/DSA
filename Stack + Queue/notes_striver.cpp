@@ -30,12 +30,8 @@ Resource: https://takeuforward.org/blogs/queue
 
 //#######################################################################
 //#######-------1. Introduction to Stack and Queue | Implementation using Data Structures--------########
-//Tutorial: 
-//Problem: 
 
 ------------------------Theory----------------------------------
-//
-
 
 Stack follows LIFO
 Functions: push(), pop(), top(), size()
@@ -95,7 +91,33 @@ https://www.geeksforgeeks.org/problems/queue-using-stack/1
 //#######-------2. Check for Balanced Parentheses | Stack and Queue--------########
 //Tutorial: https://takeuforward.org/data-structure/check-for-balanced-parentheses/
 //Problem: https://leetcode.com/problems/valid-parentheses/description/
-https://www.geeksforgeeks.org/problems/parenthesis-checker2744/1
+
+should have same corresponding in the same order
+------------
+Approach:
+1. Last opening bracket er opposite bracket na ashle no, else yes 
+------------
+Time Complexity: O(n)
+Space Complexity: O(n) - when all are opening brackets
+
+class Solution {
+public:
+    bool isValid(string s) {
+        stack<char>st;
+        for(char ch: s){
+            if( ch=='(' || ch=='[' || ch=='{' ) st.push(ch);
+            else {
+                if(st.empty()) return false;
+                if(st.top()=='(' && ch!=')' ) return false;
+                if(st.top()=='[' && ch!=']' ) return false;
+                if(st.top()=='{' && ch!='}' ) return false;
+                st.pop();
+            }
+        }
+        if(!st.empty()) return false;
+        return true;
+    }
+};
 
 //#######################################################################
 //#######-------3. Implement Min Stack--------########
@@ -103,6 +125,7 @@ https://www.geeksforgeeks.org/problems/parenthesis-checker2744/1
 //Problem: https://leetcode.com/problems/min-stack/description/
 https://www.geeksforgeeks.org/problems/get-minimum-element-from-stack/1
 
+formula: 2 x val - prev_min = new_minimum - this is modified minimum
 
 //#######################################################################
 //#######################################################################
@@ -120,13 +143,24 @@ https://www.geeksforgeeks.org/problems/get-minimum-element-from-stack/1
 
 //#######################################################################
 //#######-------4. Prefix, Infix, and Postfix Conversion--------########
-//Tutorial: 
-//Problem: 
+
+Infix - bracket er vitor operator gula, (+)
+prefix - operators before the operand, + pq - used in lisp
+prefix - operators after the operand, pq + 
 
 //#######################################################################
 //#######-------4.1 Infix to Postfix Conversion using Stack--------########
 //Tutorial: https://takeuforward.org/data-structure/infix-to-postfix/
 //Problem: https://www.geeksforgeeks.org/problems/infix-to-postfix-1587115620/1
+
+- operand answer e add kora 
+- operator stack e add kora 
+
+Steps:
+https://www.youtube.com/watch?v=92TmPsNRjwk
+1. Two operators of the same priority cannot stay together
+2. lowest priority ashle highest priority operator shob jabe ga, ulta hole push hobe stack e
+3. parenthese close hoile all operand e add kora
 
 //#######################################################################
 //#######-------4.2 Prefix to Infix Conversion--------########
@@ -168,46 +202,204 @@ https://www.geeksforgeeks.org/problems/get-minimum-element-from-stack/1
 //#######################################################################
 //#######################################################################
 
+monotonic stack: Putting element in specific order
+                 Boro theke choto or choto theke boro akare stack sajano according to question
+
 //#######################################################################
 //#######-------5. Next Greater Element--------########
-//Tutorial: https://takeuforward.org/data-structure/next-greater-element-using-stack/
-//Problem: https://leetcode.com/problems/next-greater-element-i/description/
-https://www.geeksforgeeks.org/problems/next-larger-element-1587115620/1
+//Tutorial: 
+//Problem: https://www.geeksforgeeks.org/problems/next-larger-element-1587115620/1
+
+- Here we are putting value in increasing order
+- boro kono value ashle order distort hoe jabe, and stack empty kre dibo
 
 ------------
 Approach:
-1. 
+1. Move from the back and keep adding values in the stack 
+2. condition to add element in the stack: st.top() > arr[i], else keep popping
 ------------
+
+
+----------------------------------------------------------------------
+Time Complexity: O(2N)
+Space Complexity: O(2N)
+class Solution
+{
+    public:
+    vector<long long> nextLargerElement(vector<long long> arr, int n){
+        stack<long long>st;
+        vector<long long>ans(n);
+        for(int i=n-1;i>=0;i--){
+            while(!st.empty() && st.top()<=arr[i] ) st.pop();
+            ans[i] = st.empty() ? -1: st.top();
+            st.push(arr[i]);
+        }
+        return ans;
+    }
+};
+
+
+----------------------------------------------------------------------
+Another way 
+class Solution
+{
+    public:
+    vector<long long> nextLargerElement(vector<long long> arr, int n){
+        stack<long long>st;
+        st.push(arr[n-1]);
+        vector<long long>ans(n, -1);
+        for(int i=n-2;i>=0;i--){
+            while(!st.empty()){
+                if( st.top() > arr[i] ){
+                    ans[i] = st.top();
+                    break;
+                }
+                st.pop();
+            } 
+            st.push(arr[i]);
+        }
+        return ans;
+    }
+};
+
+----------------------------------------------------------------------
+//Problem: https://leetcode.com/problems/next-greater-element-i/description/
+
+Same concept, a little different problem
+Q: next greater element subset akare thakbe
+
+------------
+Approach:
+1. Same approach as Next Greater Element
+2. Just maintain a hashing to keep the track of the changed element
+------------
+
+class Solution {
+public:
+    vector<int> nextGreaterElement(vector<int>& nums1, vector<int>& arr) {
+        stack<int>st;
+        int n = arr.size();
+        st.push(arr[n-1]);
+        map<int, int> mp;
+        vector<int>ans(nums1.size());
+        for(int i=n-1;i>=0;i--){
+            while(!st.empty() && st.top()<=arr[i]) st.pop();
+            if(st.empty()) mp[arr[i]] = -1;
+            else mp[arr[i]] = st.top();
+            st.push(arr[i]);
+        }
+
+        for(int i=0;i<nums1.size();i++){
+            if(mp[nums1[i]]) ans[i] = mp[nums1[i]];
+        }
+        return ans;
+    }
+};
 
 //#######################################################################
 //#######-------6. Next Greater Element - II--------########
-//Tutorial: 
+//Tutorial: https://takeuforward.org/data-structure/next-greater-element-using-stack/
 //Problem: https://leetcode.com/problems/next-greater-element-ii/description/
+
+prerequisite: 5. Next Greater Element
 
 ------------
 Approach:
-1. 
+- Hypothetically add another array with the existing array
+
+1. solve 5. Next Greater Element [2 times]
 ------------
+Time Complexity: O(4N)
+Space Complexity: O(3N) [stack size = 2N, ans = N]
+
+
+class Solution {
+public:
+    vector<int> nextGreaterElements(vector<int>& arr) {
+        stack<int>st;
+        int n = arr.size();
+        st.push(arr[n-1]);
+        vector<int>ans(n, -1);
+        for(int i=n-2;i>=0;i--){
+            while(!st.empty()){
+                if( st.top() > arr[i] ){
+                    break;
+                }
+                st.pop();
+            } 
+            st.push(arr[i]);
+        }
+
+        for(int i=n-1;i>=0;i--){
+            while(!st.empty()){
+                if( st.top() > arr[i] ){
+                    ans[i] = st.top();
+                    break;
+                }
+                st.pop();
+            } 
+            st.push(arr[i]);
+        }
+
+        return ans;
+
+    }
+};
 
 //#######################################################################
-//#######-------7. Next Smaller Element--------########
+//#######-------7. Previous Smaller Element--------########
 //Tutorial: 
 //Problem: https://www.interviewbit.com/problems/nearest-smaller-element/
 
+prerequisite: 5. Next Greater Element
+
 ------------
 Approach:
-1. 
+1. Top e small rakhbo, increasing order e stack building
+2. if st.top()>=arr[i] keep destroying stack until this condition holds
+
 ------------
+Time Complexity: O(2N)
+Space Complexity: O(2N)
+
+vector<int> Solution::prevSmaller(vector<int> &arr) {
+    int n = arr.size();
+    stack<int> st;
+    vector<int>ans(n);
+    for(int i=0;i<n;i++){
+        while(!st.empty() && st.top()>=arr[i])st.pop();
+        ans[i] = st.empty() ? -1: st.top();
+        st.push(arr[i]);
+    }
+    return ans;
+}
 
 //#######################################################################
-//#######-------8. Previous Smaller Element--------########
+//#######-------8. Next Smaller Element--------########
 //Tutorial: 
-//Problem: 
+//Problem: https://www.naukri.com/code360/problems/next-smaller-element_1112581
+
+prerequisite: 5. Next Greater Element
 
 ------------
 Approach:
-1. 
+1. just maintain this, st.top()>=arr[i]
 ------------
+Time Complexity: O(2N)
+Space Complexity: O(2N)
+
+#include<bits/stdc++.h>
+vector<int> nextSmallerElement(vector<int> &arr, int n)
+{
+    stack<int> st;
+    vector<int>ans(n);
+    for(int i=n-1;i>=0;i--){
+        while(!st.empty() && st.top()>=arr[i])st.pop();
+        ans[i] = st.empty() ? -1: st.top();
+        st.push(arr[i]);
+    }
+    return ans;
+}
 
 //#######################################################################
 //#######-------9. Number of NGEs to the right--------########
@@ -236,10 +428,17 @@ Approach:
 //Problem: https://leetcode.com/problems/sum-of-subarray-minimums/description/
 https://www.geeksforgeeks.org/problems/sum-of-subarray-minimum/1
 
+get previous greater element
+get next greater element
+
+(number of previous greater element * number of next greater element) * that number
 ------------
 Approach:
 1. 
 ------------
+Time Complexity: O(2N) + O(2N) + O(N)
+Space Complexity: O(2N) + O(2N) + O(N)
+
 
 //#######################################################################
 //#######-------12. Sum of subarray ranges--------########

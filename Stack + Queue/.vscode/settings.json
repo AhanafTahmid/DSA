@@ -30,6 +30,26 @@
         "__bit_reference": "cpp",
         "filesystem": "cpp",
         "forward_list": "cpp",
-        "ios": "cpp"
+        "ios": "cpp",
+        "iosfwd": "cpp",
+        "__node_handle": "cpp",
+        "atomic": "cpp",
+        "chrono": "cpp",
+        "cstddef": "cpp",
+        "__memory": "cpp",
+        "limits": "cpp",
+        "locale": "cpp",
+        "optional": "cpp",
+        "ratio": "cpp",
+        "scoped_allocator": "cpp",
+        "system_error": "cpp",
+        "tuple": "cpp",
+        "*.tcc": "cpp",
+        "expected": "cpp",
+        "functional": "cpp",
+        "utility": "cpp",
+        "variant": "cpp",
+        "any": "cpp",
+        "compare": "cpp"
     }
 }
