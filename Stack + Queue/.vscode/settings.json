@@ -50,6 +50,10 @@
         "utility": "cpp",
         "variant": "cpp",
         "any": "cpp",
-        "compare": "cpp"
+        "compare": "cpp",
+        "future": "cpp",
+        "istream": "cpp",
+        "memory": "cpp",
+        "__locale": "cpp"
     }
 }

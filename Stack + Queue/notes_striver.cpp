@@ -3,9 +3,7 @@
 - 
 
 Confusions:
-1. 
-
-Questions: 
+1. why below next and previous greater and smaller template is same ???
 
 
 ---------------------------------------------------------------------------------------------------------
@@ -51,9 +49,62 @@ Implementing queue using array [variables: start, end, current_size]
 
 ------------
 Approach:
-1. 
+1. move the top++ when pushing and top-- when popping
+2. printing value = arr[top];
 ------------
+Time Complexity: O(1) for every operation
+Space Complexity: O(N) - for defining a particular array size 
 
+#include <bits/stdc++.h>
+
+using namespace std;
+class Stack
+{
+    int size;
+    int *arr;
+    int top;
+
+public:
+    Stack()
+    {
+        top = -1;
+        size = 1000;
+        arr = new int[size];
+    }
+    void push(int x)
+    {
+        top++;
+        arr[top] = x;
+    }
+    int pop()
+    {
+        int x = arr[top];
+        top--;
+        return x;
+    }
+    int Top()
+    {
+        return arr[top];
+    }
+    int Size()
+    {
+        return top + 1;
+    }
+};
+int main()
+{
+
+    Stack s;
+    s.push(6);
+    s.push(3);
+    s.push(7);
+    cout << "Top of stack is before deleting any element " << s.Top() << endl;
+    cout << "Size of stack before deleting any element " << s.Size() << endl;
+    cout << "The element deleted is " << s.pop() << endl;
+    cout << "Size of stack after deleting an element " << s.Size() << endl;
+    cout << "Top of stack after deleting an element " << s.Top() << endl;
+    return 0;
+}
 
 //#######################################################################
 //#######-------1.2 Implement Queue using Arrays--------########
@@ -62,8 +113,10 @@ Approach:
 
 ------------
 Approach:
-1. 
+1. move the end++ when pushing and start++ when popping
+2. 
 ------------
+
 
 //#######################################################################
 //#######-------1.3 Implement Stack using Queue--------########
@@ -204,6 +257,49 @@ https://www.youtube.com/watch?v=92TmPsNRjwk
 
 monotonic stack: Putting element in specific order
                  Boro theke choto or choto theke boro akare stack sajano according to question
+
+
+//Template for next and previous greater
+int n = arr.size();
+stack<int>st;
+//next greater
+vector<int>left(n);
+for(int i=n-1;i>=0;i--){
+    while(!st.empty() && arr[st.top()]>=arr[i])st.pop();
+    left[i] = st.empty() ? n: st.top();
+    st.push(i);
+}
+while(!st.empty())st.pop();
+
+//previous greater
+vector<int>right(n);
+for(int i=0;i<n;i++){
+    while(!st.empty() && arr[st.top()]>arr[i])st.pop();
+    right[i] = st.empty() ? -1: st.top();
+    st.push(i);
+}
+
+
+------------------------------------------------------------------------
+//Template for next and previous smaller
+int n = arr.size();
+stack<int>st;
+//next smaller
+vector<int>left(n);
+for(int i=n-1;i>=0;i--){
+    while(!st.empty() && arr[st.top()]>=arr[i])st.pop();
+    left[i] = st.empty() ? n: st.top();
+    st.push(i);
+}
+while(!st.empty())st.pop();
+
+//previous smaller
+vector<int>right(n);
+for(int i=0;i<n;i++){
+    while(!st.empty() && arr[st.top()]>=arr[i])st.pop();
+    right[i] = st.empty() ? -1: st.top();
+    st.push(i);
+}
 
 //#######################################################################
 //#######-------5. Next Greater Element--------########
@@ -424,76 +520,390 @@ Approach:
 
 //#######################################################################
 //#######-------11. Sum of Subarray Minimum--------########
-//Tutorial: 
+//Tutorial: https://www.geeksforgeeks.org/sum-of-minimum-elements-of-all-subarrays/
 //Problem: https://leetcode.com/problems/sum-of-subarray-minimums/description/
-https://www.geeksforgeeks.org/problems/sum-of-subarray-minimum/1
 
-get previous greater element
-get next greater element
-
-(number of previous greater element * number of next greater element) * that number
+Gfg approach is simpler than striver
 ------------
+Formula: (number of previous greater element * number of next greater element) * that number
 Approach:
-1. 
+1. get previous greater element
+2. get next greater element
+3. Apply the formula and solve
 ------------
 Time Complexity: O(2N) + O(2N) + O(N)
-Space Complexity: O(2N) + O(2N) + O(N)
+Space Complexity: O(2N) + O(2N)
 
+class Solution {
+public:
+    int sumSubarrayMins(vector<int>& arr) {
+        int n = arr.size();
+        stack<int>st;
+        int mod = 1e9 + 7;
+
+        //next greater
+        vector<int>left(n);
+        for(int i=n-1;i>=0;i--){
+            while(!st.empty() && arr[st.top()]>=arr[i])st.pop();
+            left[i] = st.empty() ? n: st.top();
+            st.push(i);
+        }
+        while(!st.empty())st.pop();
+
+        //previous greater
+        vector<int>right(n);
+        for(int i=0;i<n;i++){
+            while(!st.empty() && arr[st.top()]>arr[i])st.pop();
+            right[i] = st.empty() ? -1: st.top();
+            st.push(i);
+        }
+
+        int sum = 0;
+        for(int i=0;i<n;i++){
+            int lft = left[i] - i;
+            int rght = i - right[i];
+            sum= (sum + (lft * rght * 1LL * arr[i])%mod)%mod ;
+        }
+        return sum;
+    }
+};
 
 //#######################################################################
 //#######-------12. Sum of subarray ranges--------########
 //Tutorial: 
 //Problem: https://leetcode.com/problems/sum-of-subarray-ranges/description/
-https://www.geeksforgeeks.org/problems/sum-of-subarray-ranges/1
+
+Prerequisite: 11. Sum of Subarray Minimum
 
 ------------
 Approach:
-1. 
+Formula: Sum of subarray maximum - Sum of subarray minimum
+1. Just apply the formula
 ------------
+Time Complexity: O(5N) + O(5N) = O(10N) [better than N*N]
+Space Complexity: O(4N) + O(4N) = O(8N)
+
+class Solution {
+public:
+    long long sumSubarrayMins(vector<int>& arr) {
+        int n = arr.size();
+        stack<int>st;
+        int mod = 1e9 + 7;
+
+        //next greater
+        vector<int>left(n);
+        for(int i=n-1;i>=0;i--){
+            while(!st.empty() && arr[st.top()]>=arr[i])st.pop();
+            left[i] = st.empty() ? n: st.top();
+            st.push(i);
+        }
+        while(!st.empty())st.pop();
+
+        //previous greater
+        vector<int>right(n);
+        for(int i=0;i<n;i++){
+            while(!st.empty() && arr[st.top()]>arr[i])st.pop();
+            right[i] = st.empty() ? -1: st.top();
+            st.push(i);
+        }
+
+        long long sum = 0;
+        for(int i=0;i<n;i++){
+            int lft = left[i] - i;
+            int rght = i - right[i];
+            sum= sum + (lft * rght * 1LL * arr[i]) ;
+        }
+        return sum;
+    }
+
+    long long sumSubarrayMax(vector<int>& arr) {
+        int n = arr.size();
+        stack<int>st;
+        int mod = 1e9 + 7;
+
+        //next greater
+        vector<int>left(n);
+        for(int i=n-1;i>=0;i--){
+            while(!st.empty() && arr[st.top()]<=arr[i])st.pop();
+            left[i] = st.empty() ? n: st.top();
+            st.push(i);
+        }
+        while(!st.empty())st.pop();
+
+        //previous greater
+        vector<int>right(n);
+        for(int i=0;i<n;i++){
+            while(!st.empty() && arr[st.top()]<arr[i])st.pop();
+            right[i] = st.empty() ? -1: st.top();
+            st.push(i);
+        }
+
+        long long sum = 0;
+        for(int i=0;i<n;i++){
+            int lft = left[i] - i;
+            int rght = i - right[i];
+            sum= sum + (lft * rght * 1LL * arr[i]) ;
+        }
+        return sum;
+    }
+
+    long long subArrayRanges(vector<int>& nums) {
+        return sumSubarrayMax(nums) - sumSubarrayMins(nums);
+    }
+};
 
 //#######################################################################
 //#######-------13. Aestroid Collisions--------########
 //Tutorial: 
 //Problem: https://leetcode.com/problems/asteroid-collision/description/
-https://www.geeksforgeeks.org/problems/asteroid-collision/1
 
 ------------
 Approach:
-1. 
+positive er jnno jhamela nai, negative er jnno jhamela 
+
+1. if positive put in stack 
+2. if negative maintain the colliding condition 
+       2.1 st.top()>0 to popping up elements 
+       2.2 if stack is not empty and st.top == last element st.pop 
+       2.3 else if stack is empty and st.top()<0 put in stack
 ------------
+Time Complexity: O(2N) + O(N) + O(N) [for reverse]
+Space Complexity: O(N) + O(N) [stack and ans array]
+
+class Solution {
+public:
+    vector<int> asteroidCollision(vector<int>& asteroids) {
+        int n = asteroids.size();
+        stack<int>st;
+        for(int i=0;i<n;i++){
+            // all negatives
+            if(asteroids[i]<0){
+                while(!st.empty() && st.top()>0 && st.top()< abs(asteroids[i]) ){
+                    st.pop();
+                }
+                if(!st.empty() && st.top() == abs(asteroids[i]))st.pop();
+                else if ( st.empty() || st.top()<0 ) st.push(asteroids[i]);
+            }
+            else {
+                //all positives
+                st.push(asteroids[i]);
+            }
+        }
+        vector<int>ans;
+        while(!st.empty()){
+            ans.push_back(st.top());
+            st.pop();
+        }
+        reverse(ans.begin(), ans.end());
+        return ans;
+    }
+};
 
 //#######################################################################
 //#######-------14. Remove K Digits--------########
 //Tutorial: 
 //Problem: https://leetcode.com/problems/remove-k-digits/description/
-https://www.geeksforgeeks.org/problems/remove-k-digits/1
 
 ------------
 Approach:
-1. 
+1. Maintain increasing order in stack
+
+3 edge cases 
+1. k>=N, return "0"
+2. number becomes 00001000, return "1000"
+3. after performing stack - k remains, so remove the top elements , n = 123456, k = 3 return "123"
 ------------
+Time Complexity: O(4N) + O(K)
+Space Complexity: O(N) + O(N) [stack and ans array]
+
+class Solution {
+public:
+    string removeKdigits(string s, int k) {
+        int n = s.size(), ind = n;
+        string ans = "";
+        stack<char>st;
+        for(int i=0;i<n;i++){
+            while(!st.empty() && st.top()>s[i] && k>0){
+                k--;
+                st.pop();
+            }
+            st.push(s[i]);
+        }
+        
+        //edge case 3
+        while(!st.empty() && k-->0){
+            st.pop();
+        }
+        
+        while(!st.empty()){
+            ans+= st.top();
+            st.pop();
+        }
+        
+        //edge case 2
+        while(ans.size()>0 && ans[ans.size()-1]=='0') ans.pop_back();
+        
+        reverse(ans.begin(), ans.end());
+        
+        if(ans.empty()) return "0";
+        return ans;
+    }
+};
 
 //#######################################################################
 //#######-------15. Largest Rectangle in Histogram--------########
 //Tutorial: https://takeuforward.org/data-structure/area-of-largest-rectangle-in-histogram/
 //Problem: https://leetcode.com/problems/largest-rectangle-in-histogram/description/
-https://www.geeksforgeeks.org/problems/maximum-rectangular-area-in-a-histogram-1587115620/1
+
+get the 'index' of both pse and nse
+------------
+Formula: area = arr[i] * (nse - pse - 1)
+
+Approach:
+1. Get the nse and pse
+2. apply the formula and solve it 
+
+note:
+previous smaller index na thakle set -1
+next smaller na thakle set n
+------------
+Time Complexity: O(5N) 
+Space Complexity: O(4N)
+
+class Solution {
+public:
+    int largestRectangleArea(vector<int>& arr) {
+        int n = arr.size();
+        stack<int>st;
+        //next smaller
+        vector<int>left(n);
+        for(int i=n-1;i>=0;i--){
+            while(!st.empty() && arr[st.top()]>=arr[i])st.pop();
+            left[i] = st.empty() ? n: st.top();
+            st.push(i);
+        }
+        while(!st.empty())st.pop();
+
+        //previous smaller
+        vector<int>right(n);
+        for(int i=0;i<n;i++){
+            while(!st.empty() && arr[st.top()]>=arr[i])st.pop();
+            right[i] = st.empty() ? -1: st.top();
+            st.push(i);
+        }
+        
+        int mx = 0;
+        for(int i=0;i<n;i++){
+            mx = max(mx, (left[i]-right[i]-1) * arr[i] );
+        }
+        return mx;
+    }
+};
+
+//Another Approach
+Time Complexity: O(2N) 
+Space Complexity: O(4N)
 
 ------------
+Formula: area = arr[i] * (nse - pse - 1)
+
 Approach:
-1. 
+1. Keep maintain increasing 'index' order in stack 
+2. if arr[st.top()]>arr[i], then nse = i, pse = st.top()
+
+3. Get the nse and pse
+4. apply the formula and solve it 
+
+note:
+previous smaller index na thakle set -1
+next smaller na thakle set n
 ------------
+class Solution {
+public:
+    int largestRectangleArea(vector<int>& arr) {
+        int n = arr.size();
+        stack<int>st;
+        int mx = 0, pse, nse;
+        for(int i=0;i<n;i++){
+            while(!st.empty() && arr[st.top()]>arr[i]){
+                int ind = st.top();
+                st.pop();
+                pse = (st.empty()?-1:st.top());
+                nse = i;
+                mx = max(mx, (nse - pse - 1) * arr[ind]);
+            }
+            st.push(i);
+        }
+        //if still elements left, for increasing order array te erokom hobe -> 2 4 6 
+        while(!st.empty()){
+            int ind = st.top();
+            st.pop();
+            nse = n;
+            pse = (st.empty()?-1:st.top());
+            mx = max(mx, (nse - pse - 1) * arr[ind]);
+        }
+        return mx;
+    }
+};
 
 //#######################################################################
 //#######-------16. Maximal Rectangle--------########
 //Tutorial: https://www.geeksforgeeks.org/maximum-size-rectangle-binary-sub-matrix-1s/
 //Problem:https://leetcode.com/problems/maximal-rectangle/description/
-https://www.geeksforgeeks.org/problems/max-rectangle/1
+
+Prerequisite: 15. Largest Rectangle in Histogram
 
 ------------
 Approach:
-1. 
+1. apply prefix sum in the matrix 
+2. Use 15. Largest Rectangle in Histogram concept to solve every prefix[row] 
 ------------
+Time Complexity: O(MxN) + O(Nx2M) 
+Space Complexity: O(MxN) + O(M)
+
+class Solution {
+public:
+    int largestRectangleArea(vector<int>& arr) {
+        int n = arr.size();
+        stack<int>st;
+        int mx = 0, pse, nse;
+        for(int i=0;i<n;i++){
+            while(!st.empty() && arr[st.top()]>arr[i]){
+                int ind = st.top();
+                st.pop();
+                pse = (st.empty()?-1:st.top());
+                nse = i;
+                mx = max(mx, (nse - pse - 1) * arr[ind]);
+            }
+            st.push(i);
+        }
+        while(!st.empty()){
+            int ind = st.top();
+            st.pop();
+            nse = n;
+            pse = (st.empty()?-1:st.top());
+            mx = max(mx, (nse - pse - 1) * arr[ind]);
+        }
+        return mx;
+    }
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        int n = matrix.size(), m = matrix[0].size();
+        vector<vector<int>> prefix(n+1, vector<int>(m));
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(matrix[i][j]=='0') prefix[i+1][j] = 0;
+                else prefix[i+1][j] = prefix[i][j] + 1;
+
+            }
+        }
+
+        int mx = 0;
+        for(int i=0;i<n;i++){
+            mx = max(mx, largestRectangleArea(prefix[i+1]));
+        }
+        return mx;
+    }
+};
 
 //#######################################################################
 //#######################################################################
@@ -513,23 +923,89 @@ Approach:
 //#######-------17. Sliding Window Maximum--------########
 //Tutorial: https://takeuforward.org/data-structure/sliding-window-maximum/
 //Problem: https://leetcode.com/problems/sliding-window-maximum/description/
-https://www.geeksforgeeks.org/problems/maximum-of-all-subarrays-of-size-k3101/1
 
 ------------
 Approach:
-1. 
+1. Create a deque to store first K elements. Add the greatest element index in deque(add in decreasing order)
+2. Run loop for rest of the window
+   a. Remove out of all window indices from deque
+   b. pop_back the dq elements that is not maintaining increasing order with the current value nums[i]
+   c. Add the current val indices in the dequeue(add in decreasing order)
+   d. nums[dq.front()] will be maximum element
 ------------
+Time Complexity: O(2N) 
+Space Complexity: O(K) + O(N-K)
+
+class Solution {
+public:
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        if(nums.size()<k)return {0};
+        vector<int> ans;
+        deque<int> dq;
+
+        for(int i=0;i<k;i++){
+            while(!dq.empty() && nums[dq.back()]<=nums[i]){
+                dq.pop_back();
+            }
+            dq.push_back(i);
+        }
+        //max will always be in front
+        ans.push_back(nums[dq.front()]);
+        for(int i=k;i<nums.size();i++){
+            if(!dq.empty() && dq.front()==i-k)dq.pop_front();
+            while(!dq.empty() && nums[dq.back()]<=nums[i]){
+                dq.pop_back();
+            }
+            dq.push_back(i);
+            ans.push_back(nums[dq.front()]);
+        }
+
+        return ans;
+
+    }
+};
 
 //#######################################################################
 //#######-------18. Stock Span Problem--------########
 //Tutorial: https://www.geeksforgeeks.org/the-stock-span-problem/
-//Problem: https://leetcode.com/problems/online-stock-span/description/
-https://www.geeksforgeeks.org/problems/stock-span-problem-1587115621/1
+//Problem: https://www.geeksforgeeks.org/problems/stock-span-problem-1587115621/1
 
 ------------
 Approach:
-1. 
+1. maintain the stack < value, index > st;
+2. and just apply the formula: ans[i] = that index - last greater element index 
+
+note: 
+last greater element index na thakle -1 diye subtraction
 ------------
+Time Complexity: O(2N) 
+Space Complexity: O(2N) 
+
+class Solution
+{
+    public:
+    vector <int> calculateSpan(int price[], int n)
+    {
+        vector<int>ans(n);
+        
+        //{val, index}
+        stack< pair<int, int> > st;
+        
+        for(int i=0;i<n;i++){
+            while(!st.empty() && st.top().first<=price[i]){
+                st.pop();
+            }
+            int span = i;
+            if(st.empty()) span -= -1;
+            else span-= st.top().second;
+            
+            st.push({price[i], i});
+            
+            ans[i] = span;
+        }
+        return ans;
+    }
+};
 
 //#######################################################################
 //#######-------19. The Celebrity Problem--------########
