@@ -54,6 +54,7 @@
         "future": "cpp",
         "istream": "cpp",
         "memory": "cpp",
-        "__locale": "cpp"
+        "__locale": "cpp",
+        "__string": "cpp"
     }
 }

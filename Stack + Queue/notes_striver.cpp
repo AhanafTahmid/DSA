@@ -1,10 +1,10 @@
 //Stack + Queue
 
-- 
-
 Confusions:
 1. why below next and previous greater and smaller template is same ???
-
+2. 9. Number of NGEs to the right -  Not sure how stack works here???
+3. 10. Trapping Rainwater using stack 
+4. https://www.geeksforgeeks.org/problems/stack-using-two-queues/1 confused
 
 ---------------------------------------------------------------------------------------------------------
 Striver Stack + Queue Playlist: https://www.youtube.com/playlist?list=PLgUwDviBIf0pOd5zvVVSzgpo6BaCpHT9c
@@ -109,36 +109,372 @@ int main()
 //#######################################################################
 //#######-------1.2 Implement Queue using Arrays--------########
 //Tutorial: https://takeuforward.org/data-structure/implement-queue-using-array/
-//Problem: https://www.geeksforgeeks.org/problems/implement-queue-using-array/1
 
 ------------
 Approach:
 1. move the end++ when pushing and start++ when popping
-2. 
 ------------
+Time Complexity: O(1) - for every operation
+Space Complexity: O(N) - for defining a particular array size 
 
+#include <bits/stdc++.h>
+using namespace std;
+class Queue
+{
+    int *arr;
+    int start, end, currSize, maxSize;
+
+public:
+    Queue()
+    {
+        arr = new int[16];
+        start = -1;
+        end = -1;
+        currSize = 0;
+    }
+
+    Queue(int maxSize)
+    {
+        (*this).maxSize = maxSize;
+        arr = new int[maxSize];
+        start = -1;
+        end = -1;
+        currSize = 0;
+    }
+    void push(int newElement)
+    {
+        if (currSize == maxSize)
+        {
+            cout << "Queue is full\nExiting..." << endl;
+            exit(1);
+        }
+        if (end == -1)
+        {
+            start = 0;
+            end = 0;
+        }
+        else
+            end = (end + 1) % maxSize;
+        arr[end] = newElement;
+        cout << "The element pushed is " << newElement << endl;
+        currSize++;
+    }
+    int pop()
+    {
+        if (start == -1)
+        {
+            cout << "Queue Empty\nExiting..." << endl;
+        }
+        int popped = arr[start];
+        if (currSize == 1)
+        {
+            start = -1;
+            end = -1;
+        }
+        else
+            start = (start + 1) % maxSize;
+        currSize--;
+        return popped;
+    }
+    int top()
+    {
+        if (start == -1)
+        {
+            cout << "Queue is Empty" << endl;
+            exit(1);
+        }
+        return arr[start];
+    }
+    int size()
+    {
+        return currSize;
+    }
+};
+
+int main()
+{
+    Queue q(6);
+    q.push(4);
+    q.push(14);
+    q.push(24);
+    q.push(34);
+    cout << "The peek of the queue before deleting any element " << q.top() << endl;
+    cout << "The size of the queue before deletion " << q.size() << endl;
+    cout << "The first element to be deleted " << q.pop() << endl;
+    cout << "The peek of the queue after deleting an element " << q.top() << endl;
+    cout << "The size of the queue after deleting an element " << q.size() << endl;
+
+    return 0;
+}
 
 //#######################################################################
 //#######-------1.3 Implement Stack using Queue--------########
 //Tutorial: https://takeuforward.org/data-structure/implement-stack-using-single-queue/
-//Problem: https://leetcode.com/problems/implement-stack-using-queues/description/
-https://www.geeksforgeeks.org/problems/stack-using-two-queues/1
+//Problem:  https://leetcode.com/problems/implement-stack-using-queues/description/
+//Problem2: https://www.geeksforgeeks.org/problems/stack-using-two-queues/1
+
+------------
+Approach:
+1. For approach see the blog 
+------------
+//Single Queue
+
+class MyStack {
+public:
+    queue<int>q;
+    MyStack() {
+        
+    }
+    
+    void push(int x) {
+        q.push(x);
+        for(int i=0;i<q.size()-1;i++){
+            q.push(q.front());
+            q.pop();
+        }
+    }
+    
+    int pop() {
+        int val = q.front();
+        q.pop();
+        return val;
+    }
+    
+    int top() {
+        return q.front();
+    }
+    
+    bool empty() {
+        return q.size()?false:true;
+    }
+};
+
+//Double Queue
+
 
 //#######################################################################
 //#######-------1.4 Implement Queue using Stack--------########
 //Tutorial: https://takeuforward.org/data-structure/implement-queue-using-stack/
-//Problem: https://leetcode.com/problems/implement-queue-using-stacks/description/
-https://www.geeksforgeeks.org/problems/queue-using-stack/1
+//Problem:  https://leetcode.com/problems/implement-queue-using-stacks/description/
+//Problem2: https://www.geeksforgeeks.org/problems/queue-using-stack/1
+
+------------
+Approach:
+1. For approach see the blog 
+------------
+//Double stack
+class Queue {
+    stack<int> input, output;
+public:
+
+    void enqueue(int x) {
+        while(!output.empty()){
+            input.push(output.top());
+            output.pop();
+        }
+        output.push(x);
+        while(!input.empty()){
+            output.push(input.top());
+            input.pop();
+        }
+    }
+
+    int dequeue() {
+        int val = output.top();
+        output.pop();
+        return val;
+    }
+};
 
 //#######################################################################
 //#######-------1.5 Implement stack using Linkedlist--------########
 //Tutorial: https://takeuforward.org/data-structure/implement-stack-using-linked-list/
 //Problem: https://www.geeksforgeeks.org/problems/implement-stack-using-linked-list/1
 
+------------
+Approach:
+1. For approach see the blog 
+------------
+
+Time Complexity: O(1) - for every operation
+Space Complexity: O(1) - for using linked list
+
+#include <iostream>
+using namespace std;
+
+struct stackNode
+{
+    int data;
+    stackNode *next;
+    int size;
+    stackNode(int d)
+    {
+        data = d;
+        next = NULL;
+    }
+};
+struct stack
+{
+    stackNode *top;
+    int size;
+    stack()
+    {
+        top = NULL;
+        size = 0;
+    }
+    void stackPush(int x)
+    {
+        stackNode *element = new stackNode(x);
+        element->next = top;
+        top = element;
+        cout << "Element pushed" << "\n";
+        size++;
+    }
+    int stackPop()
+    {
+        if (top == NULL)
+        {
+            return -1;
+        }
+        int topData = top->data;
+        stackNode *temp = top;
+        top = top->next;
+        delete temp;
+        size--;
+        return topData;
+    }
+    int stackSize()
+    {
+        return size;
+    }
+    bool stackIsEmpty()
+    {
+        return top == NULL;
+    }
+    int stackPeek()
+    {
+        if (top == NULL)
+            return -1;
+        return top->data;
+    }
+    void printStack()
+    {
+        stackNode *current = top;
+        while (current != NULL)
+        {
+            cout << current->data << " ";
+            current = current->next;
+        }
+    }
+};
+int main()
+{
+    stack s;
+    s.stackPush(10);
+    cout << "Element popped: " << s.stackPop() << "\n";
+    cout << "Stack size: " << s.stackSize() << "\n";
+    cout << "Stack empty or not? " << s.stackIsEmpty() << "\n";
+    cout << "stack's top element: " << s.stackPeek() << "\n";
+    return 0;
+}
+
 //#######################################################################
 //#######-------1.6 Implement queue using Linkedlist--------########
 //Tutorial: https://takeuforward.org/data-structure/implement-queue-using-linked-list/
 //Problem: https://www.geeksforgeeks.org/problems/implement-queue-using-linked-list/1
+
+------------
+Approach:
+1. For approach see the blog 
+------------
+#include <bits/stdc++.h>
+using namespace std;
+
+class QueueNode
+{
+public:
+    int val;
+    QueueNode *next;
+    QueueNode(int data)
+    {
+        val = data;
+        next = nullptr;
+    }
+};
+QueueNode *Front = nullptr, *Rare = nullptr;
+
+class Queue
+{
+public:
+    int size = 0;
+    bool Empty();
+    void Enqueue(int value);
+    void Dequeue();
+    int Peek();
+};
+bool Queue ::Empty()
+{
+    return Front == nullptr;
+}
+int Queue ::Peek()
+{
+    if (Empty())
+    {
+        cout << "Queue is Empty" << endl;
+        return -1;
+    }
+    else
+        return Front->val;
+}
+void Queue ::Enqueue(int value)
+{
+    QueueNode *Temp;
+    Temp = new QueueNode(value);
+    if (Temp == nullptr) // When heap exhausted
+        cout << "Queue is Full" << endl;
+    else
+    {
+        if (Front == nullptr)
+        {
+            Front = Temp;
+            Rare = Temp;
+        }
+        else
+        {
+            Rare->next = Temp;
+            Rare = Temp;
+        }
+        cout << value << " Inserted into Queue " << endl;
+        size++;
+    }
+}
+void Queue ::Dequeue()
+{
+    if (Front == nullptr)
+        cout << "Queue is Empty" << endl;
+    else
+    {
+        cout << Front->val << " Removed From Queue" << endl;
+        QueueNode *Temp = Front;
+        Front = Front->next;
+        delete Temp;
+        size--;
+    }
+}
+int main()
+
+{
+    Queue Q;
+    Q.Enqueue(10);
+    Q.Enqueue(20);
+    Q.Enqueue(30);
+    Q.Enqueue(40);
+    Q.Enqueue(50);
+    Q.Dequeue();
+    cout << "The size of the Queue is " << Q.size << endl;
+    cout << "The Peek element of the Queue is " << Q.Peek() << endl;
+    return 0;
+}
 
 //#######################################################################
 //#######-------2. Check for Balanced Parentheses | Stack and Queue--------########
@@ -214,6 +550,7 @@ https://www.youtube.com/watch?v=92TmPsNRjwk
 1. Two operators of the same priority cannot stay together
 2. lowest priority ashle highest priority operator shob jabe ga, ulta hole push hobe stack e
 3. parenthese close hoile all operand e add kora
+
 
 //#######################################################################
 //#######-------4.2 Prefix to Infix Conversion--------########
@@ -499,31 +836,74 @@ vector<int> nextSmallerElement(vector<int> &arr, int n)
 
 //#######################################################################
 //#######-------9. Number of NGEs to the right--------########
-//Tutorial: 
+//Tutorial: https://www.geeksforgeeks.org/number-nges-right/
 //Problem: https://www.geeksforgeeks.org/problems/number-of-nges-to-the-right/1
 
 ------------
 Approach:
-1. 
+1. Brute force totally
 ------------
+class Solution{
+public:
+    vector<int> count_NGE(int n, vector<int> &arr, int queries, vector<int> &indices){
+        vector<int>ans;
+        for(int ind: indices){
+            int ct = 0;
+            for(int i=ind+1;i<n;i++){
+                if(arr[i] > arr[ind] ) ct++;
+            }
+            ans.push_back(ct);
+        }
+        return ans;
+    }
+};
 
 //#######################################################################
 //#######-------10. Trapping Rainwater | 2 Approaches--------########
 //Tutorial: https://takeuforward.org/data-structure/trapping-rainwater/
 //Problem: https://leetcode.com/problems/trapping-rain-water/description/
-https://www.geeksforgeeks.org/problems/trapping-rain-water-1587115621/1
 
+Formula: min(prefix_leftmax, suffix_rightmax) - arr[i]
 ------------
 Approach:
-1. 
+1. Get suffix max and prefix max 
+2. Use the formula 
 ------------
+Time Complexity: O(3N)
+Space Complexity: O(2N)
+
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        int n = height.size();
+        vector<int>pre(n), suf(n);
+        pre[0] = height[0];
+        suf[n-1] = height[n-1];
+        for(int i=1;i<n;i++){
+            pre[i] = max(height[i], pre[i-1]);
+        }
+        for(int i=n-2;i>=0;i--){
+            suf[i] = max(height[i], suf[i+1]);
+        }
+
+        int total = 0;
+        for(int i=0;i<n;i++){
+            total+= min(pre[i], suf[i]) - height[i];
+        }
+        return total;
+    }
+};
+
+//Approach 2 - Using Stack
+https://www.geeksforgeeks.org/trapping-rain-water/
+
 
 //#######################################################################
 //#######-------11. Sum of Subarray Minimum--------########
 //Tutorial: https://www.geeksforgeeks.org/sum-of-minimum-elements-of-all-subarrays/
 //Problem: https://leetcode.com/problems/sum-of-subarray-minimums/description/
 
-Gfg approach is simpler than striver
+GFG approach is simpler than striver
 ------------
 Formula: (number of previous greater element * number of next greater element) * that number
 Approach:
