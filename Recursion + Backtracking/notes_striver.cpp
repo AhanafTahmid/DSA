@@ -4,7 +4,6 @@
 
 - Recursion: Try every possible combination
 - If constraints are very low think in recursion, backtracking
-
 - Thinking depth wise a little bit tougher than breadth wise 
 
 ---------------------------------------------------------------------------------------------------------
