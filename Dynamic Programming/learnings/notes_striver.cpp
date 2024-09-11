@@ -1333,9 +1333,11 @@ bool canPartition(vector<int> &arr, int n)
 //Tutorial: https://takeuforward.org/data-structure/partition-set-into-2-subsets-with-min-absolute-sum-diff-dp-16/
 //Problem:  https://www.naukri.com/code360/problems/partition-a-set-into-two-subsets-such-that-the-difference-of-subset-sums-is-minimum_842494
 
-Steps:
+------------
+Approach:
 1. Generate the whole dp from dp[0][0] to dp[n-1][target] (target sum concept)
 2. The answer lies in dp[n-1][0] to dp[n-1][target], get the minimum from there, Going till half is enough
+------------
 
 //--------
 //Top Down
@@ -1522,10 +1524,12 @@ int findWays(vector<int>& arr, int k)
 //Tutorial: https://takeuforward.org/data-structure/count-partitions-with-given-difference-dp-18/
 //Problem:  https://www.naukri.com/code360/problems/partitions-with-given-difference_3751628
 
-Steps:
+------------
+Approach:
 (this is just dp 17 with modified target)
 1. count the subsets where sum is equal to , s2 = (tot - d)/2;
 2. 2 ta ghor fillup kora first row er(what if there is 0 in arr[0])
+------------
 
 //---------
 //Top Down
@@ -2615,9 +2619,10 @@ int32_t main(){
 //Tutorial: https://takeuforward.org/data-structure/minimum-insertions-to-make-string-palindrome-dp-29/
 //Problem:  https://www.naukri.com/code360/problems/minimum-insertions-to-make-palindrome_985293
 
-Steps:
+------------
+Approach:
 Longest Palindromic Subsequence and n - Longest Palindromic Subsequence
-
+------------
 //---------
 //Top Down
 //---------
@@ -2729,8 +2734,10 @@ int minimumInsertions(string &str)
 //Tutorial: https://takeuforward.org/data-structure/minimum-insertions-deletions-to-convert-string-dp-30/
 //Problem:  https://www.naukri.com/code360/problems/can-you-make_4244510
 
-Steps:
+------------
+Approach:
 (n - lcs(s1,s2)) + (m - lcs(s1,s2))
+------------
 
 //---------
 //Top Down
@@ -2813,11 +2820,13 @@ int canYouMake(string &s1, string &s2){
 //Tutorial: https://takeuforward.org/data-structure/shortest-common-supersequence-dp-31/
 //Problem:  https://www.naukri.com/code360/problems/shortest-supersequence_4244493
 
+------------
 The length is n + m - lcs(n,m)
-Steps:
+
+Approach:
 1. Apply LCS 
 2. Add string part of that is same(diagonal) + that is getting reduced(vertical or horizontal)
-
+------------
 
 //---------
 //Top Down
@@ -2891,10 +2900,11 @@ Just apply the steps portion
 //Tutorial: https://takeuforward.org/data-structure/distinct-subsequences-dp-32/
 //Problem:  https://www.naukri.com/code360/problems/subsequence-counting_3755256
 
-
-Steps:
+------------
+Approach:
 1. j == -1 means j has passed all, so return 1, and if i==-1 means i has passed all and did not matched, so return 0
 2. if(s1[i]==s2[j]) check in above and above left, else check only above
+------------
 
 //---------
 //Top Down
@@ -3133,13 +3143,15 @@ int editDistance(string str1, string str2)
 //Tutorial: https://takeuforward.org/data-structure/wildcard-matching-dp-34/
 //Problem:  https://www.naukri.com/code360/problems/wildcard-pattern-matching_701650
 
-Steps:
+------------
+Approach:
 1. if both are exhausted then it is true
    if i is exhausted and j is still remaining then it is never possible
    if j is exhausted and i is still remaining then all remaining in i must be '*'
 2. if both index has same value or '?' then shrink the string, f(i-1,j-1)
 3. if s1[i]=='*' then apply take or not take condition 
 4. else it is false(the both indices have different values)
+------------
 
 //---------
 //Top Down
@@ -3346,9 +3358,11 @@ We are solving smaller problems to solve bigger problems, this is why this is dp
 - It is also a constructive algorithm problem
 first buy, then sell
 
-Steps:
+------------
+Approach:
 1. first minimum is the first value and initially the answer is 0
 2. keep the minimum prices and keep the mamxium answer possible
+------------
 
 //---------
 //Top Down
@@ -3382,9 +3396,11 @@ int maximumProfit(vector<int> &prices){
 
 BSBSBSBS is allowed but BBBSSS not allowed
 
-Steps:
+------------
+Approach:
 1. On that day, kinle/sell krle profit kombe or barbe[this is take case]
 2. On that day, na kinle/sell krle profit kombe na or barbe na[this is not take case]
+------------
 
 //---------
 //Top Down
@@ -3464,9 +3480,10 @@ long getMaximumProfit(long *values, int n)
 only when buy + sell done a transaction is completed
 There are 3 changing states in this problem: index, total transactions, buy or not buy
 
-Steps:
+------------
+Approach:
 1. 
-
+------------
 
 //---------
 //Top Down(Partially Accepted)
@@ -3605,8 +3622,10 @@ int maxProfit(vector<int>& prices)
 //Tutorial: https://takeuforward.org/data-structure/buy-and-sell-stock-iv-dp-38/
 //Problem:  https://www.naukri.com/code360/problems/best-time-to-buy-and-sell-stock_1080698
 
-Steps:
+------------
+Approach:
 1. apply k in the transaction part, instead of 2(previous question)
+------------
 
 //---------
 //Top Down
@@ -3710,8 +3729,10 @@ int maximumProfit(vector<int> &prices, int n, int t)
 //Tutorial: https://takeuforward.org/data-structure/buy-and-sell-stocks-with-cooldown-dp-39/
 //Problem:  https://www.naukri.com/code360/problems/highway-billboards_3125969
 
-Steps:
+------------
+Approach:
 1. just apply i+2 on the selling day
+------------
 
 //---------
 //Top Down
@@ -3790,8 +3811,10 @@ int stockProfit(vector<int> &prices){
 //Tutorial:https://takeuforward.org/data-structure/buy-and-sell-stocks-with-transaction-fees-dp-40/
 //Problem:  https://www.naukri.com/code360/problems/rahul-and-his-chocolates_3118974
 
-Steps:
-1. Just delete fee everytime you buy or sell, [delete only 1 time]
+------------
+Approach:
+1. Just delete fee everytime you buy or sell, {delete only 1 time}
+------------
 
 //---------
 //Top Down
@@ -3890,11 +3913,12 @@ int longestIncreasingSubsequence(int arr[], int n)
 //Tutorial: https://takeuforward.org/data-structure/longest-increasing-subsequence-dp-41/
 //Problem:  https://www.naukri.com/code360/problems/longest-increasing-subsequence_630459
 
-Steps:
+------------
+Approach:
 1. At first set previous anything -1,-100 anything
 2. if taken, previous would be that index and move main index to index + 1    
    if not taken, previous would be same, index+1 would go on 
-
+------------
 
 //---------
 //Top Down(Runtime error because of constraints)
@@ -3922,8 +3946,10 @@ int longestIncreasingSubsequence(int arr[], int n)
 //Tutorial: https://takeuforward.org/data-structure/printing-longest-increasing-subsequence-dp-42/
 //Problem:  https://www.naukri.com/code360/problems/longest-increasing-subsequence_630459
 
-Steps:
+------------
+Approach:
 1. by backtracking print the array
+------------
 
 //---------
 //Bottom Up(TLE cause of constraints)
@@ -3988,10 +4014,12 @@ int longestIncreasingSubsequence(int arr[], int n)
 //Problem:  https://www.naukri.com/code360/problems/longest-increasing-subsequence_630459
 
 To regenerate the sequence you have to do a lot more things, but doing binary search you can get the length
-Steps:
+
+------------
+Approach:
 1. if the element is greater than the last element add it in the array 
    else change the value with arr[index]
-
+------------
 
 
 //---------
@@ -4015,9 +4043,11 @@ int longestIncreasingSubsequence(int arr[], int n)
 //Tutorial: https://takeuforward.org/data-structure/longest-common-subsequence-dp-25/
 //Problem:  https://www.naukri.com/code360/problems/divisible-set_3754960
 
-Steps:
+------------
+Approach:
 1. sort the array (and apply lIS)
 2. 1 -> 4 -> 8 -> 16 (to become divisible 16 must be 16%4==0, 8%4==0, previous should be divisible) 
+------------
 
 //---------
 //Bottom Up
@@ -4062,10 +4092,13 @@ vector<int> divisibleSet(vector<int> &arr)
 //Tutorial: https://takeuforward.org/data-structure/longest-string-chain-dp-45/
 //Problem:  https://www.naukri.com/code360/problems/longest-string-chain_3752111
 
-Steps:
+------------
+Approach:
 1. Apply LIS 
 2. sort the string array in terms of size
 3. write a check function and see if the s1.size() == s2.size() + 1 and all except 1 is different
+------------
+
 *****before comparing it must be sorted(missed in the video)
 //---------
 //Bottom Up
@@ -4115,9 +4148,11 @@ int longestStrChain(vector<string> &arr){
 
 bitonic: first increases then decreases
 
-Steps:
+------------
+Approach:
 1. Find LIS from front and from back, 
 2. the answer is max(front[i] + back[i] - 1)
+------------
 
 //---------
 //Bottom Up
@@ -4162,10 +4197,11 @@ array:  1 5 4 3 2 6 7 10 8 9
 length: 1 2 2 2 2 3 4 5 5 6 
 count:  1 1 1 1 1 4 4 4 4 4
 
-
-Steps:
+------------
+Approach:
 1. manage a max length(dp) and count of the sequences 
 2. at the end if found the max length count the total max 
+------------
 
 //---------
 //Bottom Up
@@ -4259,11 +4295,12 @@ int main() {
 - When there are multiple ways to solve it is partition dp 
 - solve portion and return  
 
-
-Steps:
+------------
+Approach:
 1. Start with entire block
 2. Try all partitions 
 3. Return the best possible 2 partition
+------------
 
 MCM DP/Partition DP CODE:
 
@@ -4295,9 +4332,10 @@ int matrixMultiplication(vector<int> &arr, int N)
 
 - col1, row2 must be same to multiply two matrices 
 
-Steps:
+------------
+Approach:
 1. the matrix is from 0 to n-1 index, multiply with any 3 index and find the minimum, i must be lesser than k, so start with 1
-
+------------
 
 //---------
 //Top Down
@@ -4327,8 +4365,10 @@ int matrixMultiplication(vector<int> &arr, int N)
 //Tutorial: https://takeuforward.org/data-structure/matrix-chain-multiplication-tabulation-method-dp-49/
 //Problem:  https://www.naukri.com/code360/problems/matrix-chain-multiplication_975344
 
-Steps:
+------------
+Approach:
 1. 
+------------
 
 //---------
 //Bottom Up
@@ -4360,9 +4400,10 @@ int matrixMultiplication(vector<int> &arr, int N)
 //Tutorial: https://takeuforward.org/data-structure/minimum-cost-to-cut-the-stick-dp-50/
 //Problem:  https://www.naukri.com/code360/problems/cost-to-cut-a-chocolate_3208460
 
-Steps:
+------------
+Approach:
 1. 
-
+------------
 
 Confused??? DRAW tabulation to understand
 
@@ -4386,8 +4427,10 @@ Confused??? DRAW tabulation to understand
 //Tutorial: https://takeuforward.org/data-structure/burst-balloons-partition-dp-dp-51/
 //Problem:  https://www.naukri.com/code360/problems/mining-diamonds_4244494
 
-Steps:
+------------
+Approach:
 1. 
+------------
 
 Confused??
 
@@ -4411,8 +4454,10 @@ Confused??
 //Tutorial: https://takeuforward.org/data-structure/evaluate-boolean-expression-to-true-partition-dp-dp-52/
 //Problem:  https://www.naukri.com/code360/problems/problem-name-boolean-evaluation_1214650
 
-Steps:
+------------
+Approach:
 1. 
+------------
 
 //---------
 //Top Down
@@ -4434,8 +4479,10 @@ Confused??
 //Tutorial: https://takeuforward.org/data-structure/palindrome-partitioning-ii-front-partition-dp-53/
 //Problem:  https://www.naukri.com/code360/problems/palindrome-partitioning_873266
 
-Steps:
+------------
+Approach:
 1. 
+------------
 
 //---------
 //Top Down
@@ -4505,8 +4552,10 @@ draw tabulation for this
 //Tutorial: https://takeuforward.org/data-structure/partition-array-for-maximum-sum-front-partition-dp-54/
 //Problem:  https://www.naukri.com/code360/problems/maximum-subarray_3755255
 
-Steps:
+------------
+Approach:
 1. 
+------------
 
 //---------
 //Top Down
@@ -4575,10 +4624,11 @@ int maximumSubarray(vector<int> &arr, int k){
 //Tutorial: https://takeuforward.org/data-structure/maximum-rectangle-area-with-all-1s-dp-on-rectangles-dp-55/
 //Problem:  https://www.naukri.com/code360/problems/maximum-size-rectangle-sub-matrix-with-all-1-s_893017
 
-Steps:
+------------
+Approach:
 1. Get the Histogram problem function 
 2. for every row run the Histogram problem function  and get the maximum rectangle
-
+------------
 
 //---------
 //Bottom Up
@@ -4621,8 +4671,10 @@ int maximalAreaOfSubMatrixOfAll1(vector<vector<int>> &mat, int n, int m){
 //Tutorial: https://takeuforward.org/data-structure/count-square-submatrices-with-all-1s-dp-on-rectangles-dp-56/
 //Problem:  https://www.naukri.com/code360/problems/count-square-submatrices-with-all-ones_3751502
 
-Steps:
+------------
+Approach:
 1. get the minimum from above, above left and left + 1 in the dp-th box if it is 1, else leave it as 0
+------------
 
 //---------
 //Bottom Up
