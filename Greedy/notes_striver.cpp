@@ -533,12 +533,71 @@ Approach:
 //#######-------15. Merge Intervals--------########
 //Tutorial: https://takeuforward.org/data-structure/merge-overlapping-sub-intervals/
 //Problem: https://leetcode.com/problems/merge-intervals/description/
-https://www.geeksforgeeks.org/problems/overlapping-intervals--170633/1
 
+//My Approach
+------------
+Khatai aro kora, aro bujhte chaile 
+
+Approach:
+1. Set start and end interval from intervals[0] 
+2. if end>=intervals[0][0] update end with the maximum end interval 
+3. else push_back answer and update new start and end interval 
+4. push_back the last interval
+------------
+Time Complexity: O(N)
+Space Complexity: O(1)
+
+class Solution {
+public:
+    vector<vector<int>> merge(vector<vector<int>>& intervals) {
+        vector<vector<int>> ans;
+        sort(intervals.begin(),intervals.end());
+        int n = intervals.size();
+        int st = intervals[0][0], end = intervals[0][1];
+        for(int i=1;i<n;i++){
+            if( end >= intervals[i][0] ){
+                if(end<intervals[i][1]) end = intervals[i][1];
+            }
+            else{
+                ans.push_back({st,end});
+                st = intervals[i][0], end = intervals[i][1];
+            }
+        }
+        ans.push_back({st,end});
+        return ans;
+    }
+};
+
+//Another Way(Striver Approach)
+------------------------------------------------
 ------------
 Approach:
-1. 
+1. if ans.empty() or intervals[i][0] > ans.back()[1] keep adding answer 
+2. else keep updating ans.back()[1] with max of (ans.back()[1], intervals[i][1])
+2. if end>=intervals[0][0] update end with the maximum end interval 
+3. else push_back answer and update new start and end interval 
+4. push_back the last interval
 ------------
+Time Complexity: O(N)
+Space Complexity: O(1)
+
+class Solution {
+public:
+    vector<vector<int>> merge(vector<vector<int>>& intervals) {
+        vector<vector<int>> ans;
+        sort(intervals.begin(),intervals.end());
+        int n = intervals.size();
+        for(int i=0;i<n;i++){
+            if( ans.empty() || intervals[i][0] > ans.back()[1] ){
+                ans.push_back({intervals[i][0],intervals[i][1]});
+            }
+            else{
+                ans.back()[1] = max( ans.back()[1], intervals[i][1] );
+            }
+        }
+        return ans;
+    }
+};
 
 //#######################################################################
 //#######-------16. Non-overlapping Intervals--------########

@@ -5,8 +5,7 @@
 - Typecasting int to long long ::::::=> 
 int s1 = arr[i], s2 = arr[j], s3 = arr[l], s4 = arr[r];
 long long total = 1LL - 1LL + s1+s2+s3+s4;
-
-- 
+- Think of hashing or two pointer in subarray type problems
 
 ---------------------------------------------------------------------------------------------------------
 Striver Array Playlist: https://www.youtube.com/playlist?list=PLgUwDviBIf0rENwdL0nEH0uGom9no0nyB
@@ -188,10 +187,10 @@ Approach:
 
 class Solution {
 public:
-    int removeDuplicates(vector<int>& nums) {
+    int removeDuplicates(vector<int>& arr) {
         
-        auto it = unique(nums.begin(),nums.end());
-        int k = distance(nums.begin(), it);
+        auto it = unique(arr.begin(),arr.end());
+        int k = distance(arr.begin(), it);
         return k;
     }
 };
@@ -505,7 +504,7 @@ Approach:
 2. Also, keep updating the - mx = max(mx, ct) everytime
 ------------
 Time Complexity: O(N)
-Space Complexity: O(2)
+Space Complexity: O(2) [as good as O(1)]
 
 class Solution {
 public:
@@ -527,7 +526,7 @@ public:
 
 ------------
 Approach:
-1. Use xor to find the single numbers, other numbers will omit in the xor 
+1. Use xor to find the single numbers, other numbers will omit in the xor because of duplicate
 ------------
 Time Complexity: O(N)
 Space Complexity: O(1)
@@ -579,6 +578,7 @@ int longestSubarrayWithSumK(vector<int> arr, long long k) {
 //Problem: https://leetcode.com/problems/subarray-sum-equals-k/
 
 - For positive and negative numbers Use Hashing
+- Only hashing method works when it has negative values
 
 ------------
 Approach:
@@ -789,23 +789,52 @@ public:
 
 ------------
 Approach:
-1. 
+1. Find maximum sum between two pairs
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O(N)
+Space Complexity: O(1)
+
+class Solution {
+  public:
+    int pairWithMaxSum(vector<int> &arr) {
+        int n = arr.size(), mxSum = 0;
+        for(int i=1;i<n;i++){
+            mxSum = max(mxSum, arr[i-1] + arr[i]);
+        }
+        return mxSum;
+    }
+};
 
 //#######################################################################
 //#######-------20. Stock Buy and Sell--------########
 //Tutorial: https://takeuforward.org/data-structure/stock-buy-and-sell/
 //Problem: https://leetcode.com/problems/best-time-to-buy-and-sell-stock/description/
-https://www.geeksforgeeks.org/problems/stock-buy-and-sell-1587115621/1
 
 ------------
 Approach:
-1. 
+1. Keep track of the minimum while traversing the loop 
+2. If minimum is not found, keep updating with ans = max(ans, mx-mn);
+3. ans would be what we need to output
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O(N)
+Space Complexity: O(1)
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int n = prices.size(), mn = INT_MAX, mx = INT_MIN, ans = 0;
+        for(int x: prices){
+            if(mn>x){
+                mn = x;
+                mx = x;
+            }
+            else{
+                if(mx<x) mx = x, ans = max(ans, mx-mn);
+            }
+        }
+        return ans;
+    }
+};
 
 //#######################################################################
 //#######-------21.1 Rearrange the array in alternating positive and negative items--------########
@@ -1032,15 +1061,57 @@ Space Complexity: O()
 //#######-------26. Rotate Matrix by 90 degrees--------########
 //Tutorial: https://takeuforward.org/data-structure/rotate-image-by-90-degree/
 //Problem: https://leetcode.com/problems/rotate-image/description/
-https://www.geeksforgeeks.org/problems/rotate-by-90-degree-1587115621/1
-https://www.geeksforgeeks.org/problems/rotate-a-2d-array-without-using-extra-space1004/1
 
+//1st Approach
 ------------
 Approach:
-1. 
+1. Take another matrix and keep pushing in their order
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O(N*N) 
+Space Complexity: O(N*N)
+
+class Solution {
+public:
+    void rotate(vector<vector<int>>& matrix) {
+        int n = matrix.size();
+        vector<vector<int>>ans(n, vector<int>(n));
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                ans[i][n-1-j] = matrix[j][i];
+            }
+        }
+        matrix = ans;
+    }
+};
+
+//2nd Approach
+------------------------------------------------
+------------
+Approach:
+1. Transpose and reverse
+For transposing, use swapping in diagonal wise
+
+Note: For anticlockwise, do reverse then transposing
+------------
+Time Complexity: O(N*N)
+Space Complexity: O(1) [without any extra space by myself]
+
+class Solution {
+public:
+    void rotate(vector<vector<int>>& matrix) {
+        int n = matrix.size();
+        //transpose
+        for(int i=0;i<n-1;i++){
+            for(int j=i+1;j<n;j++){
+                swap(matrix[i][j], matrix[j][i]);
+            }
+        }
+        //reverse
+        for(int i=0;i<n;i++){
+            reverse(matrix[i].begin(),matrix[i].end());
+        }
+    }
+};
 
 //#######################################################################
 //#######-------27. Print the matrix in spiral manner--------########
@@ -1050,25 +1121,41 @@ https://www.geeksforgeeks.org/problems/spirally-traversing-a-matrix-1587115621/1
 https://www.geeksforgeeks.org/problems/spiral-matrix--141631/1
 
 ------------
+Right -> Bottom -> Top -> Left
 Approach:
 1. 
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O(N*M)
+Space Complexity: O(N*M)
+
 
 //#######################################################################
 //#######-------28. Count subarrays with given sum--------########
 //Tutorial: https://takeuforward.org/arrays/count-subarray-sum-equals-k/
 //Problem: https://leetcode.com/problems/subarray-sum-equals-k/description/
-https://www.geeksforgeeks.org/problems/subarrays-with-sum-k/1
 
 ------------
 Approach:
-1. 
+1. Move ahead, keep track of sum
+2. Keep finding the hashing of hash[sum-k] and update ct+=hash[sum-k];
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O(N x logN)
+Space Complexity: O(N) [To store hashing]
 
+class Solution {
+public:
+    int subarraySum(vector<int>& arr, int k) {
+        map<int, int>mp;
+        mp[0] = 1;
+        int ct = 0, sum = 0;
+        for(int x: arr){
+            sum+=x;
+            if(mp.find(sum-k)!=mp.end()) ct+= mp[sum-k];
+            mp[sum]++;
+        }
+        return ct;
+    }
+};
 
 //#######################################################################
 //#######################################################################
@@ -1102,12 +1189,75 @@ Space Complexity: O()
 //Tutorial: https://takeuforward.org/data-structure/majority-elementsn-3-times-find-the-elements-that-appears-more-than-n-3-times-in-the-array/
 //Problem: https://leetcode.com/problems/majority-element-ii/description/
 
+//Hashing Approach
 ------------
 Approach:
-1. 
+1. if (element count == need) add element in answer 
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O(N)
+Space Complexity: O(N)
+
+class Solution {
+public:
+    vector<int> majorityElement(vector<int>& arr) {
+        int n = arr.size();
+        int need = (n/3) + 1;
+        vector<int>ans;
+        map<int, int>mp;
+        for(int x: arr){
+            mp[x]++;
+            if(mp[x]==need){//ekbar e hobe eta
+                ans.push_back(x);
+            }
+            if(ans.size()==2)break;
+        }
+        return ans;
+    }
+};
+
+------------------------------------------------------------
+// Moore's Voting Algorithm Approach
+Moore's Voting Algorithm:
+
+------------
+Observations:
+1. atmax the answer can have 2 integers (0, 1, 2 elements can be answer)
+
+Approach:
+1. Apply Moore's Voting Algorithm extended version
+2. Verify majority element[if appear more than n/3+1 times]
+------------
+Time Complexity: O(N)
+Space Complexity: O(1)
+
+class Solution {
+public:
+    vector<int> majorityElement(vector<int>& arr) {
+        int n = arr.size();
+        int need = (n/3) + 1, ct1 = 0, ct2 = 0, el1 = -1, el2 = -1;
+        vector<int>ans;
+        //Apply Moore's Voting Algorithm
+        for(int i=0;i<n;i++){
+            if(ct1==0 && el2!=arr[i]) ct1++, el1 = arr[i];
+            else if(ct2==0 && el1!=arr[i]) ct2++, el2 = arr[i];
+            else if(el1==arr[i]) ct1++;
+            else if(el2==arr[i]) ct2++;
+            else ct1--, ct2--;
+        }
+        //Verify Need
+        ct1 = 0, ct2 = 0;
+        for(int x: arr){
+            if(el1==x) ct1++;
+            else if(el2==x) ct2++;
+        }
+        if(need<=ct1) ans.push_back(el1);
+        if(need<=ct2) ans.push_back(el2);
+        return ans;
+    }
+};
+
+
+
 
 //#######################################################################
 //#######-------31. 3 Sum Problem--------########
@@ -1319,67 +1469,276 @@ public:
 //#######-------33. Largest Subarray with 0 Sum--------########
 //Tutorial: https://takeuforward.org/data-structure/length-of-the-longest-subarray-with-zero-sum/
 //Problem: https://www.geeksforgeeks.org/problems/largest-subarray-with-0-sum/1
-https://leetcode.com/problems/contiguous-array/description/
+//Problem2[same problem, just a variation]: https://leetcode.com/problems/contiguous-array/description/
 
 ------------
 Approach:
-1. 
+1. Keep increasing sum with arr[i]
+2. Keep mp[0] = -1;
+3. if mp[sum] is found, update answer with max(ans, i - mp[sum])
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O(N)
+Space Complexity: O(1)
+
+class Solution {
+  public:
+    int maxLen(vector<int>& arr, int n) {
+        int mxLength = 0, sum = 0;
+        map<int, int>mp;
+        mp[0] = -1;
+        for(int i=0;i<n;i++){
+            sum+=arr[i];
+            if(mp.find(sum)!=mp.end()){
+                mxLength = max(mxLength, i - mp[sum]);
+            }
+            else mp[sum] = i;
+        }
+        return mxLength;
+    }
+};
 
 //#######################################################################
 //#######-------34. Count number of subarrays with given xor K--------########
 //Tutorial: https://takeuforward.org/data-structure/count-the-number-of-subarrays-with-given-xor-k/
 //Problem: https://www.interviewbit.com/problems/subarray-with-given-xor/
-https://www.geeksforgeeks.org/problems/subsets-with-xor-value2023/1
+
+Formula: x = total xor ^ k
+Same as other hashing problems 
 
 ------------
 Approach:
-1. 
+1. Move ahead, keep track of xorSum
+2. Keep finding the hashing of hash[xorSum^k] and update ans+=mp[xorSum^k];
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O(N*logN)
+Space Complexity: O(N)
+
+int Solution::solve(vector<int> &arr, int k) {
+    int allXor = 0, ans = 0;
+    map<int, int>mp;
+    mp[0] = 1;
+    for(int x: arr){
+        allXor^=x;
+        int target = allXor^k;
+        ans+=mp[target];
+        mp[allXor]++;
+    }
+    return ans;
+}
 
 //#######################################################################
 //#######-------35. Merge Overlapping Subintervals--------########
 //Tutorial: https://takeuforward.org/data-structure/merge-overlapping-sub-intervals/
 //Problem: https://leetcode.com/problems/merge-intervals/description/
-https://www.geeksforgeeks.org/problems/overlapping-intervals--170633/1
 
+//My Approach
+------------
+Khatai aro kora, aro bujhte chaile 
+
+Approach:
+1. Set start and end interval from intervals[0] 
+2. if end>=intervals[0][0] update end with the maximum end interval 
+3. else push_back answer and update new start and end interval 
+4. push_back the last interval
+------------
+Time Complexity: O(N)
+Space Complexity: O(1)
+
+class Solution {
+public:
+    vector<vector<int>> merge(vector<vector<int>>& intervals) {
+        vector<vector<int>> ans;
+        sort(intervals.begin(),intervals.end());
+        int n = intervals.size();
+        int st = intervals[0][0], end = intervals[0][1];
+        for(int i=1;i<n;i++){
+            if( end >= intervals[i][0] ){
+                if(end<intervals[i][1]) end = intervals[i][1];
+            }
+            else{
+                ans.push_back({st,end});
+                st = intervals[i][0], end = intervals[i][1];
+            }
+        }
+        ans.push_back({st,end});
+        return ans;
+    }
+};
+
+//Another Way(Striver Approach)
+------------------------------------------------
 ------------
 Approach:
-1. 
+1. if ans.empty() or intervals[i][0] > ans.back()[1] keep adding answer 
+2. else keep updating ans.back()[1] with max of (ans.back()[1], intervals[i][1])
+2. if end>=intervals[0][0] update end with the maximum end interval 
+3. else push_back answer and update new start and end interval 
+4. push_back the last interval
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O(N)
+Space Complexity: O(1)
+
+class Solution {
+public:
+    vector<vector<int>> merge(vector<vector<int>>& intervals) {
+        vector<vector<int>> ans;
+        sort(intervals.begin(),intervals.end());
+        int n = intervals.size();
+        for(int i=0;i<n;i++){
+            if( ans.empty() || intervals[i][0] > ans.back()[1] ){
+                ans.push_back({intervals[i][0],intervals[i][1]});
+            }
+            else{
+                ans.back()[1] = max( ans.back()[1], intervals[i][1] );
+            }
+        }
+        return ans;
+    }
+};
 
 //#######################################################################
 //#######-------36. Merge two sorted arrays without extra space--------########
 //Tutorial: https://takeuforward.org/data-structure/merge-two-sorted-arrays-without-extra-space/
-//Problem: https://leetcode.com/problems/merge-sorted-array/description/
-https://www.geeksforgeeks.org/problems/merge-two-sorted-arrays-1587115620/1
-https://www.geeksforgeeks.org/problems/merge-and-sort5821/0
+//Problem: https://www.geeksforgeeks.org/problems/merge-two-sorted-arrays-1587115620/1
 
+//1st Optimal Solution
 ------------
 Approach:
-1. 
+1. Keep swapping until arr1[right] > arr1[left], else break 
+2. After that, sort arr1 and arr2
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O(N) + O(NlogN) + O(NlogN)
+Space Complexity: O(1)
+
+class Solution{
+    public:
+        void merge(long long arr1[], long long arr2[], int n, int m) 
+        { 
+            int right = n-1, left = 0;
+            while(right>=0 && left<m){
+                if( arr1[right] > arr2[left] ){
+                    swap(arr1[right], arr2[left]);
+                    right--, left++;
+                }
+                else{
+                    break;
+                }
+            }
+            
+            sort(arr1,arr1+n);
+            sort(arr2,arr2+m);
+        } 
+};
+
+------------------------------------------------
+//2nd Optimal Solution
+
+Shell sort algorithm
+//Tutorial: https://www.geeksforgeeks.org/shell-sort/
+
+------------
+Gap method: Comes from shell sort 
+Approach:
+1. Use Shell sort algorithm and sort the both array 
+2. There would be 3 cases while swapping 
+a. Both pointer is in the arr1
+b. Both pointer is in the arr2
+c. One pointer is in the arr1 and the other is in the arr2 
+------------
+Time Complexity: O(log2(n+m)) x O(n+m)
+Space Complexity: O(1)
+
+class Solution{
+    public:
+        void swapp(long long arr1[], long long arr2[], int ind1, int ind2) {
+            if (arr1[ind1] > arr2[ind2]) {
+                swap(arr1[ind1], arr2[ind2]);
+            }
+        }
+        void merge(long long arr1[], long long arr2[], int n, int m) 
+        {   
+            int len = n + m;
+            int gap = len + len%2;
+            while(1){
+                int l = 0, r = gap;
+                while(r<len){
+                    //both in arr1
+                    if(l<n && r<n){
+                        swapp(arr1, arr1,l,r);
+                    }
+                    //both in arr2
+                    else if(l>=n){
+                        swapp(arr2, arr2,l-n,r-n);
+                    }
+                    //one in arr1, one in arr2
+                    else{
+                        swapp(arr1, arr2,l,r-n);
+                    }
+                    l++,r++;
+                }
+                if(gap==1)break;
+                gap = gap/2 + gap%2;
+            }
+        } 
+};
 
 //#######################################################################
 //#######-------37. Find the repeating and missing number--------########
 //Tutorial: https://takeuforward.org/data-structure/find-the-repeating-and-missing-numbers/
 //Problem: https://www.geeksforgeeks.org/problems/find-missing-and-repeating2512/1
-https://leetcode.com/problems/find-missing-and-repeated-values/description/
 
+//1st Approach - Using Math
+------------
+Approach:
+1. Find first natural sum and first square natural sum 
+2. derive the missing and repeating using math formula[watch the video for the formula]
+------------
+Time Complexity: O(N)
+Space Complexity: O(1)
+
+class Solution {
+  public:
+    vector<int> findTwoElement(vector<int> arr) {
+        long long n = arr.size();
+        
+        long long sum = 0,    arr_sum = 0;
+        long long sq_sum = 0, sq_arr_sum = 0;
+        sq_sum = (n*(n+1)*(2*n+1))/6;
+        sum = (n*(n+1))/2;
+        
+        for(int x: arr){
+            arr_sum+= x;
+            sq_arr_sum+= 1LL*x*x;
+        }
+        
+        //x - y
+        long long v1 = sum - arr_sum;
+        //x^2 - y^2
+        long long v2 = sq_sum - sq_arr_sum;
+        
+        //(x+y)(x-y) = x^2 - y^2 = v2
+        // (x+y) = (x^2 - y^2) / (x-y)
+        
+        //x + y
+        v2 = v2/v1;
+        
+        long long x = (v1+v2)/2;
+        long long y = x - v1;
+        
+        return {(int)y,(int)x};
+    }
+};
+
+//2nd Approach - Using xor
+??confused
 ------------
 Approach:
 1. 
 ------------
 Time Complexity: O()
 Space Complexity: O()
+
+
 
 //#######################################################################
 //#######-------38. Count Inversions--------########
@@ -1388,36 +1747,174 @@ Space Complexity: O()
 
 ------------
 Approach:
-1. 
+1. Use merge sort to count the inversion
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O(Nlogn)
+Space Complexity: O(N)
+
+class Solution {
+  public:
+    long long merge(long long ar[],long long l,long long m, long long h){
+        vector<long long> temp;
+        long long cnt = 0;
+
+        long long i = l;     
+        long long j = m + 1; 
+    
+        while (i <= m && j <= h) {
+            if (ar[i] <= ar[j]) {
+                temp.push_back(ar[i]);
+                i++;
+            } else {
+                temp.push_back(ar[j]);
+                cnt+= (m + 1 - i);
+                j++;
+            }
+        }
+    
+        while (i <= m) {
+            temp.push_back(ar[i]);
+            i++;
+        }
+    
+        while (j <= h) {
+            temp.push_back(ar[j]);
+            j++;
+        }
+    
+        for (long long k = l; k <= h; k++) {
+            ar[k] = temp[k-l];//
+        }
+        return cnt;
+    }
+    
+    long long merge_sort(long long ar[], long long l,long long h){
+        long long cnt = 0;
+        if(l>=h){
+            return cnt;
+        }
+        long long m = l + (h-l)/2;
+        cnt+=merge_sort(ar,l,m);
+        cnt+=merge_sort(ar,m+1,h);
+    
+        cnt+=merge(ar,l,m,h);
+        return cnt;
+    }
+    long long int inversionCount(long long arr[], int n) {
+        return merge_sort(arr, 0LL, n-1);
+    }
+};
 
 //#######################################################################
 //#######-------39. Reverse Pairs--------########
 //Tutorial: https://takeuforward.org/data-structure/count-reverse-pairs/
 //Problem: https://leetcode.com/problems/reverse-pairs/description/
-https://www.geeksforgeeks.org/problems/count-reverse-pairs/0
 
 ------------
 Approach:
-1. 
+1. Use Merge Sort 
+2. Before merging count the number of reverse pair [watch the video for better understanding]
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O(2N*logN)
+Space Complexity: O(N)
+
+class Solution {
+public:
+    int merge(vector<int> &arr, int low, int mid, int high) {
+        vector<int> temp; 
+        int left = low;  
+        int right = mid + 1;
+
+        int cnt = 0;
+        int l = left, r = right;
+        for(int i=left;i<=mid;i++){
+            while(r<=high && arr[i] > 2LL * arr[r]) r++;
+            cnt+= (r - (mid+1));
+        }
+
+        while (left <= mid && right <= high) {
+            if (arr[left] <= arr[right]) {
+                temp.push_back(arr[left]);
+                left++;
+            }
+            else {
+                temp.push_back(arr[right]);
+                right++;
+            }
+        }
+
+        while (left <= mid) {
+            temp.push_back(arr[left]);
+            left++;
+        }
+
+        while (right <= high) {
+            temp.push_back(arr[right]);
+            right++;
+        }
+
+        for (int i = low; i <= high; i++) {
+            arr[i] = temp[i - low];
+        }
+
+        return cnt;
+    }
+
+    int mergeSort(vector<int> &arr, int low, int high) {
+        int cnt = 0;
+        if (low >= high) return cnt;
+        int mid = low + (high-low) / 2 ;
+        cnt += mergeSort(arr, low, mid);  
+        cnt += mergeSort(arr, mid + 1, high);
+        cnt += merge(arr, low, mid, high); 
+        return cnt;
+    }
+    int reversePairs(vector<int>& arr) {
+        int ans = mergeSort(arr, 0, arr.size()-1);
+        return ans;
+    }
+};
 
 //#######################################################################
 //#######-------40. Maximum Product Subarray--------########
 //Tutorial: https://takeuforward.org/data-structure/maximum-product-subarray-in-an-array/
 //Problem: https://leetcode.com/problems/maximum-product-subarray/description/
-https://www.geeksforgeeks.org/problems/maximum-product-subarray3604/1
 
 ------------
+Constraint Numbers are very small, that is a big hint of using prefix/suffix multiplication
+
 Approach:
-1. 
+4 Observations:
+1. All numbers are positive 
+2. Count of negative numbers are even
+3. Count of negative numbers are odd[in that case remove only 1 number]
+4. There are number 0 [in that case, change prefix or suffix to 1]
+
+Steps:
+Think of prefix,suffix multiplication
+1. In one loop, keep calculating prefix and suffix 
+and keep updating answer with the maximum multiplication
+
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O(N)
+Space Complexity: O(1)
+
+class Solution {
+public:
+    int maxProduct(vector<int>& arr) {
+        int n = arr.size();
+        int ans = INT_MIN;
+        int pre = 1, suff = 1;
+        for(int i=0;i<n;i++){
+            if(pre == 0) pre = 1;
+            if(suff == 0) suff = 1;
+            pre = pre * arr[i];
+            suff = suff * arr[n-i-1];
+            ans = max({ans, pre, suff});
+        }
+        return ans;
+    }
+};
 
 //#######################################################################
 //#######################################################################

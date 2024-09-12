@@ -54,6 +54,18 @@
         "spanstream": "cpp",
         "stop_token": "cpp",
         "syncstream": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "iterator": "cpp",
+        "barrier": "cpp",
+        "latch": "cpp",
+        "limits": "cpp",
+        "ratio": "cpp",
+        "semaphore": "cpp",
+        "algorithm": "cpp",
+        "__threading_support": "cpp",
+        "coroutine": "cpp",
+        "system_error": "cpp",
+        "type_traits": "cpp",
+        "typeindex": "cpp"
     }
 }
