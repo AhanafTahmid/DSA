@@ -1,4 +1,4 @@
-//Tree
+//Fenwick Tree + Segment Tree
 
 - See notion notes / striver notes for details
 - 
