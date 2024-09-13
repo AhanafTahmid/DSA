@@ -389,8 +389,12 @@ Lec 2: Learn Doubly LinkedList
 //Tutorial: https://takeuforward.org/data-structure/reverse-a-doubly-linked-list/
 //Problem: https://www.geeksforgeeks.org/problems/reverse-a-doubly-linked-list/1
 
-
-
+------------
+Approach:
+1. 
+------------
+Time Complexity: O()
+Space Complexity: O()
 
 
 
@@ -408,71 +412,193 @@ Lec 2: Learn Doubly LinkedList
 //#######################################################################
 //#######################################################################
 
-
 //#######################################################################
 //#######-------L5. Add 2 numbers in LinkedList | Dummy Node Approach--------########
-//Tutorial: 
-//Problem: 
+//Tutorial: https://takeuforward.org/data-structure/add-two-numbers-represented-as-linked-lists/
+//Problem: https://leetcode.com/problems/add-two-numbers/description/
+https://www.geeksforgeeks.org/problems/add-two-numbers-represented-by-linked-lists/1
 
-//#######################################################################
-//#######-------Used--------########
-//Tutorial: 
-//Problem: 
-
-//#######################################################################
-//#######-------Used--------########
-//Tutorial: 
-//Problem: 
-
-//#######################################################################
-//#######-------Used--------########
-//Tutorial: 
-//Problem: 
-
-//#######################################################################
-//#######-------Used--------########
-//Tutorial: 
-//Problem: 
-
-//#######################################################################
-//#######-------Used--------########
-//Tutorial: 
-//Problem: 
-
-//#######################################################################
-//#######-------Used--------########
-//Tutorial: 
-//Problem: 
-
-//#######################################################################
-//#######-------Used--------########
-//Tutorial: 
-//Problem: 
-
-//#######################################################################
-//#######-------Used--------########
-//Tutorial: 
-//Problem: 
-
-//#######################################################################
-//#######-------Used--------########
-//Tutorial: 
-//Problem: 
-
-//#######################################################################
-//#######-------Used--------########
-//Tutorial: 
-//Problem: 
-
+------------
+Approach:
+1. 
+------------
+Time Complexity: O()
+Space Complexity: O()
 
 
 //#######################################################################
+//#######-------L6. Odd Even Linked List | Multiple Approaches--------########
+//Tutorial: https://takeuforward.org/data-structure/segregate-even-and-odd-nodes-in-linkedlist
+//Problem: https://leetcode.com/problems/odd-even-linked-list/description/
+https://www.geeksforgeeks.org/problems/segregate-even-and-odd-nodes-in-a-linked-list5035/1
+
+
+------------
+Approach:
+1. 
+------------
+Time Complexity: O()
+Space Complexity: O()
+
+
+//#######################################################################
+//#######-------L7. Sort a LinkedList of 0's, 1's and 2's--------########
+//Tutorial: https://www.geeksforgeeks.org/sort-linked-list-0s-1s-2s-changing-links/
+//Problem: https://www.geeksforgeeks.org/problems/given-a-linked-list-of-0s-1s-and-2s-sort-it/1
+
+------------
+Approach:
+1. 
+------------
+Time Complexity: O()
+Space Complexity: O()
+
+
+//#######################################################################
+//#######-------L8. Remove Nth Node from the end of the LinkedList--------########
+//Tutorial: https://takeuforward.org/data-structure/remove-n-th-node-from-the-end-of-a-linked-list/
+//Problem: https://leetcode.com/problems/remove-nth-node-from-end-of-list/description/
+https://www.geeksforgeeks.org/problems/delete-a-node-in-single-linked-list/1
+
+------------
+Approach:
+1. 
+------------
+Time Complexity: O()
+Space Complexity: O()
+
+
+//#######################################################################
+//#######-------L9. Reverse a LinkedList | Iterative and Recursive--------########
+//Tutorial: https://takeuforward.org/data-structure/reverse-a-linked-list/
+//Problem: https://leetcode.com/problems/reverse-linked-list/description/
+https://www.geeksforgeeks.org/problems/reverse-a-linked-list/1
+
+------------
+Approach:
+1. 
+------------
+Time Complexity: O()
+Space Complexity: O()
+
+
+//#######################################################################
+//#######-------L10. Check if a LinkedList is Palindrome or Not--------########
+//Tutorial: https://takeuforward.org/data-structure/check-if-given-linked-list-is-plaindrome/
+//Problem: https://leetcode.com/problems/palindrome-linked-list/description/
+https://www.geeksforgeeks.org/problems/check-if-linked-list-is-pallindrome/1
+
+------------
+Approach:
+1. 
+------------
+Time Complexity: O()
+Space Complexity: O()
+
+
+//#######################################################################
+//#######-------L11. Add 1 to a number represented by LinkedList--------########
+//Tutorial: https://www.geeksforgeeks.org/add-1-number-represented-linked-list/
+//Problem: https://www.geeksforgeeks.org/problems/add-1-to-a-number-represented-as-linked-list/1
+
+------------
+Approach:
+1. 
+------------
+Time Complexity: O()
+Space Complexity: O()
+
+
+//#######################################################################
+//#######-------L12. Find the intersection point of Y LinkedList--------########
+//Tutorial: https://takeuforward.org/data-structure/find-intersection-of-two-linked-lists/
+//Problem: https://leetcode.com/problems/intersection-of-two-linked-lists/description/
+https://www.geeksforgeeks.org/problems/intersection-point-in-y-shapped-linked-lists/1
+
+------------
+Approach:
+1. 
+------------
+Time Complexity: O()
+Space Complexity: O()
+
+
+//#######################################################################
+//#######-------L13. Find the middle element of the LinkedList--------########
+//Tutorial: https://takeuforward.org/data-structure/find-middle-element-in-a-linked-list/
+//Problem: https://leetcode.com/problems/middle-of-the-linked-list/description/
+https://www.geeksforgeeks.org/problems/finding-middle-element-in-a-linked-list/1
+
+------------
+Approach:
+1. 
+------------
+Time Complexity: O()
+Space Complexity: O()
+
+
+//#######################################################################
+//#######-------L14. Detect a loop or cycle in LinkedList--------########
+//Tutorial: https://takeuforward.org/data-structure/detect-a-cycle-in-a-linked-list/
+//Problem: https://leetcode.com/problems/linked-list-cycle/description/
+https://www.geeksforgeeks.org/problems/detect-loop-in-linked-list/1
+
+------------
+Approach:
+1. 
+------------
+Time Complexity: O()
+Space Complexity: O()
+
+
+//#######################################################################
+//#######-------L15. Find the length of the Loop in LinkedList--------########
+//Tutorial: https://takeuforward.org/linked-list/length-of-loop-in-linked-list
+//Problem: https://www.geeksforgeeks.org/problems/find-length-of-loop/1
+
+------------
+Approach:
+1. 
+------------
+Time Complexity: O()
+Space Complexity: O()
+
+
+//#######################################################################
+//#######-------L16. Delete the middle node of the LinkedList--------########
+//Tutorial: https://takeuforward.org/linked-list/delete-the-middle-node-of-the-linked-list
+//Problem: https://leetcode.com/problems/delete-the-middle-node-of-a-linked-list/description/
+https://www.geeksforgeeks.org/problems/delete-middle-of-linked-list/1
+
+------------
+Approach:
+1. 
+------------
+Time Complexity: O()
+Space Complexity: O()
+
+
+//#######################################################################
+//#######-------L17. Find the starting point of the Loop/Cycle in LinkedList--------########
+//Tutorial: https://takeuforward.org/data-structure/starting-point-of-loop-in-a-linked-list/
+//Problem: https://leetcode.com/problems/linked-list-cycle-ii/description/
+https://www.geeksforgeeks.org/problems/find-the-first-node-of-loop-in-linked-list--170645/1
+
+------------
+Approach:
+1. 
+------------
+Time Complexity: O()
+Space Complexity: O()
+
+
 //#######################################################################
 //#######################################################################
 //#######################################################################
 //#######################################################################
 //#######################################################################
-//#########-------Lec 4: Medium Problems of DLL--------###################
+//#######################################################################
+//#########-------Lec 4: Medium Problems of DLL--------##################
 //#######################################################################
 //#######################################################################
 //#######################################################################
@@ -480,11 +606,45 @@ Lec 2: Learn Doubly LinkedList
 //#######################################################################
 //#######################################################################
 
+//#######################################################################
+//#######-------L18. Delete all occurrences of a Key in DLL--------########
+//Tutorial: https://www.geeksforgeeks.org/delete-occurrences-given-key-doubly-linked-list/
+//Problem: https://www.geeksforgeeks.org/problems/delete-all-occurrences-of-a-given-key-in-a-doubly-linked-list/1
+https://leetcode.com/problems/remove-linked-list-elements/description/
+
+------------
+Approach:
+1. 
+------------
+Time Complexity: O()
+Space Complexity: O()
+
 
 //#######################################################################
-//#######-------Used--------########
-//Tutorial: 
-//Problem: 
+//#######-------L19. Find all Pairs with given Sum in DLL--------########
+//Tutorial: https://www.geeksforgeeks.org/find-pairs-given-sum-doubly-linked-list/
+//Problem: https://www.geeksforgeeks.org/problems/find-pairs-with-given-sum-in-doubly-linked-list/1
+
+------------
+Approach:
+1. 
+------------
+Time Complexity: O()
+Space Complexity: O()
+
+
+//#######################################################################
+//#######-------L20. Remove duplicates from sorted DLL--------########
+//Tutorial: https://www.geeksforgeeks.org/remove-duplicates-sorted-doubly-linked-list/
+//Problem: https://www.geeksforgeeks.org/problems/remove-duplicates-from-a-sorted-doubly-linked-list/1
+https://leetcode.com/problems/remove-duplicates-from-sorted-list/description/
+
+------------
+Approach:
+1. 
+------------
+Time Complexity: O()
+Space Complexity: O()
 
 
 //#######################################################################
@@ -501,12 +661,116 @@ Lec 2: Learn Doubly LinkedList
 //#######################################################################
 //#######################################################################
 
+//#######################################################################
+//#######-------L21. Reverse Nodes in K Group Size of LinkedList--------########
+//Tutorial: https://takeuforward.org/data-structure/reverse-linked-list-in-groups-of-size-k/
+//Problem: https://leetcode.com/problems/reverse-nodes-in-k-group/description/
+https://www.geeksforgeeks.org/problems/reverse-a-linked-list-in-groups-of-given-size/1
+
+------------
+Approach:
+1. 
+------------
+Time Complexity: O()
+Space Complexity: O()
+
 
 //#######################################################################
-//#######-------Used--------########
-//Tutorial: 
-//Problem: 
+//#######-------L22. Rotate a LinkedList--------########
+//Tutorial: https://takeuforward.org/data-structure/rotate-a-linked-list/
+//Problem: https://leetcode.com/problems/rotate-list/description/
+https://www.geeksforgeeks.org/problems/rotate-a-linked-list/1
 
+------------
+Approach:
+1. 
+------------
+Time Complexity: O()
+Space Complexity: O()
+
+
+//#######################################################################
+//#######-------L23. Merge two sorted Linked Lists--------########
+//Tutorial: https://takeuforward.org/data-structure/merge-two-sorted-linked-lists/
+//Problem: https://leetcode.com/problems/merge-two-sorted-lists/description/
+https://www.geeksforgeeks.org/problems/merge-two-sorted-linked-lists/1
+
+------------
+Approach:
+1. 
+------------
+Time Complexity: O()
+Space Complexity: O()
+
+
+//#######################################################################
+//#######-------L24. Flattening a LinkedList--------########
+//Tutorial: https://takeuforward.org/data-structure/flattening-a-linked-list/
+//Problem: https://www.geeksforgeeks.org/problems/flattening-a-linked-list/1
+https://leetcode.com/problems/flatten-a-multilevel-doubly-linked-list/description/
+
+------------
+Approach:
+1. 
+------------
+Time Complexity: O()
+Space Complexity: O()
+
+
+//#######################################################################
+//#######-------L25. Merge K Sorted Lists--------########
+//Tutorial: https://takeuforward.org/linked-list/merge-k-sorted-linked-lists
+//Problem: https://leetcode.com/problems/merge-k-sorted-lists/description/
+https://www.geeksforgeeks.org/problems/merge-k-sorted-linked-lists/1
+
+------------
+Approach:
+1. 
+------------
+Time Complexity: O()
+Space Complexity: O()
+
+
+//#######################################################################
+//#######-------L26. Sort a Linked List | Merge Sort and Brute Force--------########
+//Tutorial: https://takeuforward.org/linked-list/sort-a-linked-list
+//Problem: https://leetcode.com/problems/sort-list/description/
+https://www.geeksforgeeks.org/problems/sort-a-linked-list/1
+
+------------
+Approach:
+1. 
+------------
+Time Complexity: O()
+Space Complexity: O()
+
+
+//#######################################################################
+//#######-------L27. Clone a LinkedList with Next and Random Pointers | Copy List with Random Pointers--------########
+//Tutorial: https://takeuforward.org/data-structure/clone-linked-list-with-random-and-next-pointer/
+//Problem: https://leetcode.com/problems/copy-list-with-random-pointer/description/
+https://www.geeksforgeeks.org/problems/clone-a-linked-list-with-next-and-random-pointer/1
+
+------------
+Approach:
+1. 
+------------
+Time Complexity: O()
+Space Complexity: O()
+
+
+//#######################################################################
+//#######-------L28. Design a Browser History | LinkedList Implementation--------########
+//Tutorial: https://takeuforward.org/linked-list/design-a-browser-history
+//Problem: https://leetcode.com/problems/design-browser-history/description/
+https://www.geeksforgeeks.org/problems/design-browser-history/0
+
+------------
+Approach:
+1. 
+------------
+Time Complexity: O()
+Space Complexity: O()
 
 
 //#######################################################################

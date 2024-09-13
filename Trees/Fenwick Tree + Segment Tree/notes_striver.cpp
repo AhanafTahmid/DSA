@@ -59,12 +59,12 @@ Fenwick tree update ans find operation in logn
 //Problem: 
 
 //#######################################################################
-//#######-------5. Masterclass: Range Query DS | Segment Trees | Fenwick Trees--------########
+//#######-------6. Masterclass: Range Query DS | Segment Trees | Fenwick Trees--------########
 //Tutorial: 
 //Problem: 
 
 //#######################################################################
-//#######-------6. Marathon Class on Range Query DS - 2 | Segment Trees | Fenwick Tree--------########
+//#######-------7. Marathon Class on Range Query DS - 2 | Segment Trees | Fenwick Tree--------########
 //Tutorial: 
 //Problem: 
 
