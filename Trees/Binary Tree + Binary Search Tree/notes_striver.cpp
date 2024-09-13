@@ -1,4 +1,4 @@
-//Tree
+//Binary Tree + Binary Search Tree
 
 - See notion notes / striver notes for details
 
@@ -18,7 +18,7 @@ void b(Node *root, int line, int height, map<int, int>&mp){
 
 
 ---------------------------------------------------------------------------------------------------------
-Striver Tree Playlist: https://www.youtube.com/playlist?list=PLgUwDviBIf0q8Hkd7bK2Bpryj2xVJk8Vk
+Striver Binary Tree + Binary Search Tree Playlist: https://www.youtube.com/playlist?list=PLgUwDviBIf0q8Hkd7bK2Bpryj2xVJk8Vk
 Resource: 
 ---------------------------------------------------------------------------------------------------------
 
