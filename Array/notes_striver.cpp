@@ -9,7 +9,8 @@ long long total = 1LL - 1LL + s1+s2+s3+s4;
 
 ---------------------------------------------------------------------------------------------------------
 Striver Array Playlist: https://www.youtube.com/playlist?list=PLgUwDviBIf0rENwdL0nEH0uGom9no0nyB
-Resource: https://takeuforward.org/blogs/array
+Resource: https://takeuforward.org/array/top-array-interview-questions-structured-path-with-video-solutions
+Resource2: https://takeuforward.org/blogs/array
 ---------------------------------------------------------------------------------------------------------
 
 //#######################################################################
@@ -759,7 +760,7 @@ public:
 //Tutorial: https://takeuforward.org/data-structure/kadanes-algorithm-maximum-subarray-sum-in-an-array/
 //Problem: https://leetcode.com/problems/maximum-subarray/description/
 
-Kadane's Algorithm
+Kadanes Algorithm
 ------------
 Approach:
 1. sum+=element;

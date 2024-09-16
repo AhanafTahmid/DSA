@@ -5,14 +5,16 @@
 - never ever change/temper your head, use a temporary node before traversing or manipulating it
 - be sure where to start and where to stop in linked list 
 - connect other nodes, then untie the tmp node, then delete tmp
+- Know where to link and where to not link
 
 Confusions:
 1. 
 
 
 ---------------------------------------------------------------------------------------------------------
-Stiver Linkedlist Playlist: https://www.youtube.com/playlist?list=PLgUwDviBIf0rAuz8tVcM0AymmhTRsfaLU
-Tutorials: https://takeuforward.org/blogs/linked-list
+Stiver LinkedList Playlist: https://www.youtube.com/playlist?list=PLgUwDviBIf0rAuz8tVcM0AymmhTRsfaLU
+Resource: https://takeuforward.org/linked-list/top-linkedlist-interview-questions-structured-path-with-video-solutions/
+Resource2: https://takeuforward.org/blogs/linked-list
 ---------------------------------------------------------------------------------------------------------
 
 //#######################################################################
@@ -150,11 +152,6 @@ class Solution{
        return head;
     }
 };
-
-
-
-
-
 
 //#######################################################################
 //#######################################################################
@@ -385,7 +382,7 @@ Lec 2: Learn Doubly LinkedList
 
 
 //#######################################################################
-//#######-------L4. Reverse a DLL | Multiple Approaches  --------########
+//#######-------L4. Reverse a DLL | Multiple Approaches--------########
 //Tutorial: https://takeuforward.org/data-structure/reverse-a-doubly-linked-list/
 //Problem: https://www.geeksforgeeks.org/problems/reverse-a-doubly-linked-list/1
 
@@ -416,15 +413,47 @@ Space Complexity: O()
 //#######-------L5. Add 2 numbers in LinkedList | Dummy Node Approach--------########
 //Tutorial: https://takeuforward.org/data-structure/add-two-numbers-represented-as-linked-lists/
 //Problem: https://leetcode.com/problems/add-two-numbers/description/
-https://www.geeksforgeeks.org/problems/add-two-numbers-represented-by-linked-lists/1
 
+- Prefer the concept of dummy node when you have to create a new list
 ------------
 Approach:
-1. 
-------------
-Time Complexity: O()
-Space Complexity: O()
+1. Create a dummy node which is the head of new linked list.
+2. Create a node curr, initialise it with dummy
+3. Initialize carry to 0.
+4. Loop through lists l1 and l2, Keep calculating sum and carry on the way
 
+Note: if carry remains at the end, create another node for that and move the curr
+------------
+Time Complexity: O(max(m,n)). Assume that m and n represent the length of l1 and l2 respectively
+Space Complexity: O(max(m,n)). The length of the new list is at most max(m,n)+1.
+
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        ListNode* dummy = new ListNode(-1);
+        ListNode* curr = dummy;
+        int sum = 0, carry = 0;
+        while(l1 || l2){
+            sum = 0;
+            if(l1) sum+=l1->val;
+            if(l2) sum+=l2->val;
+            sum = sum + carry;
+            ListNode* node = new ListNode( sum%10 );
+            curr->next = node;
+            curr = curr->next;
+            carry = sum/10;
+            if(l1) l1 = l1->next;
+            if(l2) l2 = l2->next;
+        }
+
+        if(carry){
+            ListNode* node = new ListNode( carry );
+            curr->next = node;
+            curr = curr->next;
+        }
+        return dummy->next;
+    }
+};
 
 //#######################################################################
 //#######-------L6. Odd Even Linked List | Multiple Approaches--------########
@@ -435,107 +464,600 @@ https://www.geeksforgeeks.org/problems/segregate-even-and-odd-nodes-in-a-linked-
 
 ------------
 Approach:
-1. 
+1. Even indices always odd indices er theke agai thakbe, (so even indices check kora)
+2. Move odd->next = odd->next->next; and even->next = even->next->next;
+3. After that, update even node 
+4. Last odd Node er sathe first even Node linkup kora 
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O(N)
+Space Complexity: O(1)
 
+class Solution {
+public:
+    ListNode* oddEvenList(ListNode* head) {
+        if(head==NULL  || head->next==NULL) return head;
+        ListNode* odd = head;
+        ListNode* even = head->next;
+        ListNode* even_head = head->next;
+        while(even!=NULL && even->next!=NULL){
+            odd->next = odd->next->next;
+            even->next = even->next->next;
+
+            odd = odd->next;
+            even = even->next;
+        }
+        odd->next = even_head;
+        return head;
+    }
+};
 
 //#######################################################################
 //#######-------L7. Sort a LinkedList of 0's, 1's and 2's--------########
 //Tutorial: https://www.geeksforgeeks.org/sort-linked-list-0s-1s-2s-changing-links/
 //Problem: https://www.geeksforgeeks.org/problems/given-a-linked-list-of-0s-1s-and-2s-sort-it/1
 
+//Better Approach
 ------------
 Approach:
-1. 
+1. count the frequency of the ones , zeros, twos 
+2. Make a new node, keep updating the node according to frequency
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O(2N)
+Space Complexity: O(N)
 
+class Solution {
+  public:
+    // Function to sort a linked list of 0s, 1s and 2s.
+    Node* segregate(Node* head) {
+        int z = 0, o = 0, t = 0;
+        Node *cur = head;
+        Node *ans = head;
+        if(cur==NULL) return NULL;
+        
+        while(cur){
+            if(cur->data==0)z++;
+            else if(cur->data==1)o++;
+            else if(cur->data==2)t++;
+            cur=cur->next;
+        }
+        
+        while(z--){
+            ans->data = 0;
+            ans = ans->next;
+        }
+        while(o--){
+            ans->data = 1;
+            ans = ans->next;
+        }
+        while(t--){
+            ans->data = 2;
+            ans = ans->next;
+        }
+        
+        return head;
+    }
+};
+
+
+//Optimal Approach
+------------
+Approach:
+1. Take 3 node for 0, 1, 2, and move the nodes when 0, 1, 2 found
+2. Link all of them after traversing the full array
+3. return the zeroHead->next; as answer
+------------
+Time Complexity: O(N)
+Space Complexity: O(1) [using the same nodes]
+class Solution {
+  public:
+    Node* segregate(Node* head) {
+        Node *cur = head;
+        
+        Node *zeroHead = new Node(-1);
+        Node *oneHead = new Node(-1);
+        Node *twoHead = new Node(-1);
+        
+        Node *zero = zeroHead;
+        Node *one = oneHead;
+        Node *two = twoHead;
+        
+        if(cur==NULL) return NULL;
+        
+        while(cur){
+            if(cur->data==0){
+                zero->next = cur;
+                zero = zero->next;
+            }
+            else if(cur->data==1){
+                one->next = cur;
+                one = one->next;
+            }
+            else if(cur->data==2){
+                two->next = cur;
+                two = two->next;
+            }
+            cur=cur->next;
+        }
+
+        zero->next = oneHead->next?oneHead->next: twoHead->next;
+        one->next = twoHead->next;
+        two->next = NULL;
+        Node *ans = zeroHead->next;
+        delete zeroHead;
+        delete oneHead;
+        delete twoHead;
+        return ans;
+    }
+};
 
 //#######################################################################
 //#######-------L8. Remove Nth Node from the end of the LinkedList--------########
 //Tutorial: https://takeuforward.org/data-structure/remove-n-th-node-from-the-end-of-a-linked-list/
 //Problem: https://leetcode.com/problems/remove-nth-node-from-end-of-list/description/
-https://www.geeksforgeeks.org/problems/delete-a-node-in-single-linked-list/1
 
+//Better Approach
 ------------
 Approach:
-1. 
-------------
-Time Complexity: O()
-Space Complexity: O()
+1. You will have to delete the length - k + 1 node 
+2. Calculate length, and find out the index to delete 
+3. after that delete that index and connect the pointers
 
+Note: keep a prev to connect prev ->next = delIndex->next;
+
+3 point deletion:
+a.first 
+b.middle
+c. last
+------------
+Time Complexity: O(2N)
+Space Complexity: O(1)
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int k) {
+        int ct = 0, ln = 0;
+        ListNode *curr = head;
+        if(curr==NULL) return curr;
+
+        while(curr){
+            curr = curr->next;
+            ln++;
+        }
+        curr = head;
+        int delIndex = ln - k + 1;
+        ListNode *delnode, *prev = NULL;
+        if(delIndex<0) return curr;//if delIndex > total length
+
+        while(curr){
+            if( delIndex == ++ct){
+                delnode = curr;
+                break;
+            }
+            prev = curr;
+            curr = curr->next;
+        }
+
+        //first
+        if(prev == NULL){
+            //delete 
+            return delnode->next;
+        }
+        //last
+        else if(delnode->next==NULL){
+            prev->next = NULL;
+            delete delnode;
+            return head;
+        }
+        //middle
+        else{
+            prev->next = delnode->next;
+            delete delnode;
+            return head;
+        }
+    }
+};
+
+//Optimal Approach
+------------
+Approach:
+1. Keep a fast pointer and keep a slow pointer, make slow pointer to be deleted inex
+2. Move fast and slow pointer simultaneouly
+3. at the end, remove the slow->next pointer
+
+------------
+Time Complexity: O(N)
+Space Complexity: O(1)
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int k) {
+        ListNode *fast = head;
+        ListNode *slow = head;
+        //if(head==NULL) return head;
+
+        for(int i=0;i<k;i++) fast = fast->next;
+
+        //removing the first node
+        if(fast==NULL){
+            return head->next;
+        }
+
+        while(fast->next){
+            slow = slow->next;
+            fast = fast->next;
+        }
+        
+        ListNode *delnode = slow->next;
+        slow->next = slow->next->next;
+        delete delnode;
+        return head;
+    }
+};
 
 //#######################################################################
 //#######-------L9. Reverse a LinkedList | Iterative and Recursive--------########
 //Tutorial: https://takeuforward.org/data-structure/reverse-a-linked-list/
 //Problem: https://leetcode.com/problems/reverse-linked-list/description/
-https://www.geeksforgeeks.org/problems/reverse-a-linked-list/1
+
+
+//Better Approach
 
 ------------
 Approach:
-1. 
+1. Put all elements in the stack
+2. change the links from st.top(), and move next 
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O(2N)
+Space Complexity: O(N) [for using the stack]
+
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        stack<ListNode*> st;
+        ListNode *curr = head;
+        if(curr==NULL) return NULL;
+        while(curr){
+            st.push(curr);
+            curr = curr->next;
+        }
+        
+        head = st.top();
+        curr = head;
+        st.pop();
+        while(!st.empty()){
+            curr->next = st.top();
+            st.pop();
+            curr = curr->next;
+        }
+        curr->next = NULL;
+        return head;
+    }
+};
+
+//Optimal Approach
+------------
+Approach:
+1. reverse the linking
+------------
+Time Complexity: O(N)
+Space Complexity: O(1)
+
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        ListNode *curr = head, *prev = NULL, *front = head;
+        if(curr==NULL) return NULL;
+
+        while(curr){
+            front = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = front;
+        }
+        return prev;
+    }
+};
+
+//Recursive Approach
+------------
+Approach:
+1. reverse the linking
+------------
+Time Complexity: O(N)
+Space Complexity: O(N)
+
+???????
 
 
 //#######################################################################
 //#######-------L10. Check if a LinkedList is Palindrome or Not--------########
 //Tutorial: https://takeuforward.org/data-structure/check-if-given-linked-list-is-plaindrome/
 //Problem: https://leetcode.com/problems/palindrome-linked-list/description/
-https://www.geeksforgeeks.org/problems/check-if-linked-list-is-pallindrome/1
+
+//Better Approach
+------------
+Approach:
+1. Keep a stack of the elements 
+2. cur->val == st.top(), if not equal then false, else true
+------------
+Time Complexity: O(2N)
+Space Complexity: O(N)
+
+class Solution {
+public:
+    bool isPalindrome(ListNode* head) {
+        stack<ListNode*> st;
+        ListNode *curr = head;
+        if(curr==NULL) return NULL;
+        while(curr){
+            st.push(curr);
+            curr = curr->next;
+        }
+        curr = head;
+        while(!st.empty()){
+            if (curr->val!=st.top()->val) return false;
+            st.pop();
+            curr = curr->next;
+        }
+        return true;
+    }
+};
+
+//Optimal Approach
+Using Tortoise and Hare Algorithm
+- Slow pointer goes 1 step 
+- Fast pointer goes 2 step
 
 ------------
 Approach:
-1. 
-------------
-Time Complexity: O()
-Space Complexity: O()
+1. Compare half of the list
+2. 
+- Slow pointer goes 1 step 
+- Fast pointer goes 2 step
 
+slow pointer is your middle element 
+after that compare head->data == slow->data and move 
+
+if head->data != slow->data then false, else true
+
+------------
+Time Complexity: O(N/2 + N/2 + N/2)
+Space Complexity: O(1)
+
+???? Where is wrong bujhtesi na
 
 //#######################################################################
 //#######-------L11. Add 1 to a number represented by LinkedList--------########
 //Tutorial: https://www.geeksforgeeks.org/add-1-number-represented-linked-list/
 //Problem: https://www.geeksforgeeks.org/problems/add-1-to-a-number-represented-as-linked-list/1
 
+//Better Approach
 ------------
 Approach:
-1. 
+1. Reverse the linked list 
+2. Add 1 to the elements in the list, Keep taking carry 
+3. If carry is 0, then break from the linked list and return the newhead as answer
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O(N) + O(2N) [for reversing] = O(3N)
+Space Complexity: O(1)
 
+class Solution{
+  public:
+    Node* reverseList(Node* head) {
+        Node *curr = head, *prev = NULL, *front = head;
+        if(curr==NULL) return NULL;
+
+        while(curr){
+            front = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = front;
+        }
+        return prev;
+    }
+    
+    Node* addOne(Node* head) {
+        Node *curr = head;
+        if(curr==NULL) return curr;
+        
+        Node* rev = reverseList(curr);
+        Node* newHead = rev;
+        if(rev->data!=9){
+            newHead->data = newHead->data + 1;// eg: 4 5 == 46 is the answer 
+            return reverseList(newHead);
+        }
+        
+        int carry = 0;
+        Node *prev = NULL;
+        while(rev){
+            if(rev->data == 9){
+                rev->data = 0;
+                carry = 1;
+            }
+            else{
+                rev->data = rev->data + carry;
+                carry = 0;//make carry as 0, and return: eg : 4 9 9 == 500 is the answer
+                break;
+            }
+            prev = rev;
+            rev = rev->next;
+        }
+        if(carry){//eg: 9 9 9 == 1000 is the answer
+            Node *node = new Node(1);
+            prev->next = node;
+        }
+        return reverseList(newHead);
+    }
+};
+
+
+//Optimal Approach
+------------
+Approach:
+1. while backtracking keep adding the carry 
+2. if carry remains, add a new node
+------------
+Time Complexity:  O(N) - Using recursion
+Space Complexity: O(N) [stack space of recursion]
+
+class Solution {
+  public:
+    int add(Node* head) {
+        if(head==NULL) return 1;
+        int carryNow = head->data + add(head->next);
+        head->data = carryNow;
+        carryNow/=10;
+        return carryNow;
+    }
+    
+    Node* addOne(Node* head) {
+        Node *curr = head;
+        int carry = add(curr);
+        if(carry){
+            Node *node = new Node(1);
+            node->next = head;
+            return node;
+        }
+        return head;
+    }
+};
 
 //#######################################################################
 //#######-------L12. Find the intersection point of Y LinkedList--------########
 //Tutorial: https://takeuforward.org/data-structure/find-intersection-of-two-linked-lists/
 //Problem: https://leetcode.com/problems/intersection-of-two-linked-lists/description/
-https://www.geeksforgeeks.org/problems/intersection-point-in-y-shapped-linked-lists/1
 
+//Better Approach(Using Hashing)
+------------
+Using Hashing
+Approach:
+1. Put the addressed of headA by traversing headA 
+2. Search for headA in unordered map while traversing headB
+------------
+Time Complexity: O(N*1) + O(N*1) [unordered set time complexity == O(1)] 
+Space Complexity: O(N)
+
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        unordered_set<ListNode*> us;
+        while(headA){
+            us.insert(headA);
+            headA = headA->next;
+        }
+
+        while(headB){
+            if( us.find(headB)!=us.end() ) return headB;
+            headB = headB->next;
+        }
+        return NULL;
+    }
+};
+
+//Better Approach(Using Length Difference)
 ------------
 Approach:
-1. 
+1. Find the length of both lists.
+2. move the list of which length are bigger
+3. Move both list simultaneously, if the both list length is similar after some time
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O(max(a_len, b_len)) + O(till intersion point)
+Space Complexity: O(1)
 
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        ListNode *currA = headA, *currB = headB;
+        int a_len = 0, b_len = 0; 
+        while(currA || currB){
+            if(currA){
+                a_len++;
+                currA = currA->next;
+            }
+            if(currB){
+                b_len++;
+                currB = currB->next;
+            }
+        }
+
+        currA = headA, currB = headB;
+        while(currA || currB){
+            if(currA == currB) return currA;
+            if(a_len == b_len){//both length is similar so move both simultaneouly
+                currA = currA->next;
+                currB = currB->next;
+            }
+            else if(a_len>b_len){
+                currA = currA->next;
+                a_len--;
+            }
+            else if(a_len<b_len){
+                currB = currB->next;
+                b_len--;
+            }
+        }
+        return NULL;
+    }
+};
+
+//Optimal Approach(Moving both list simultaneously)
+------------
+Approach:
+duitar length different holeo ekbar traverse korar porei length soman howe jabe
+
+1. Take two dummy nodes for each list. Point each to the head of the lists.
+2. Iterate over them. If anyone becomes null, point them to the head of the opposite lists 
+   and continue iterating until they collide.
+3. Handle the case for both become null, if both become null donot move further
+
+Important Oberservations: 
+a. For not intersecting nodes, If both of them are at there last node donot move, answer would be null in this case
+b. For intersecting nodes, If both of them are at the same node, answer would be that node
+------------
+Time Complexity: O(a_len + b_len)
+Space Complexity: O(1)
+
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        ListNode *currA = headA, *currB = headB;
+
+        while(currA != currB){
+            currA = currA->next;
+            currB = currB->next;
+            if(currA==currB) return currA;
+            if(currA==NULL) currA = headB;
+            if(currB==NULL) currB = headA;
+        }
+        return currA;
+    }
+};
 
 //#######################################################################
 //#######-------L13. Find the middle element of the LinkedList--------########
 //Tutorial: https://takeuforward.org/data-structure/find-middle-element-in-a-linked-list/
 //Problem: https://leetcode.com/problems/middle-of-the-linked-list/description/
-https://www.geeksforgeeks.org/problems/finding-middle-element-in-a-linked-list/1
+
+Use Hare and Tortoise Algorithm
 
 ------------
 Approach:
-1. 
+1. Move slow pointer one time and fast pointer two times 
+2. ultimately slow->next is the middle element 
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O(N/2)
+Space Complexity: O(1)
 
+class Solution {
+public:
+    ListNode* middleNode(ListNode* head) {
+        if(head == NULL || head->next==NULL) return head;
+        ListNode *slow = head, *fast = head->next;
+        while(fast->next && fast->next->next){
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        return slow->next;
+    }
+};
 
 //#######################################################################
 //#######-------L14. Detect a loop or cycle in LinkedList--------########
