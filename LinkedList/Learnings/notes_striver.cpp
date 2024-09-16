@@ -1063,7 +1063,6 @@ public:
 //#######-------L14. Detect a loop or cycle in LinkedList--------########
 //Tutorial: https://takeuforward.org/data-structure/detect-a-cycle-in-a-linked-list/
 //Problem: https://leetcode.com/problems/linked-list-cycle/description/
-https://www.geeksforgeeks.org/problems/detect-loop-in-linked-list/1
 
 ------------
 Approach:

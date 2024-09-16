@@ -47,6 +47,7 @@
         "tuple": "cpp",
         "variant": "cpp",
         "functional": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "stack": "cpp"
     }
 }
