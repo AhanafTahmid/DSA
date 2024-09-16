@@ -1,1 +1,0 @@
-//This section contains all the templates in one file
