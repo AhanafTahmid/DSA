@@ -6,10 +6,16 @@
 - be sure where to start and where to stop in linked list 
 - connect other nodes, then untie the tmp node, then delete tmp
 - Know where to link and where to not link
+- Concept of dummy nodes, when returning own head as answer
 
 Confusions:
-1. 
-
+1. Intution of L17. Find the starting point of the Loop/Cycle in LinkedList 
+2. 
+L18. Delete all occurrences of a Key in DLL
+//confused on this part
+if(curr == *head){
+    *head = (*head)->next;
+}
 
 ---------------------------------------------------------------------------------------------------------
 Stiver LinkedList Playlist: https://www.youtube.com/playlist?list=PLgUwDviBIf0rAuz8tVcM0AymmhTRsfaLU
@@ -503,7 +509,7 @@ Approach:
 2. Make a new node, keep updating the node according to frequency
 ------------
 Time Complexity: O(2N)
-Space Complexity: O(N)
+Space Complexity: O(1) [not creating any extra space to solve the problem]
 
 class Solution {
   public:
@@ -1064,54 +1070,145 @@ public:
 //Tutorial: https://takeuforward.org/data-structure/detect-a-cycle-in-a-linked-list/
 //Problem: https://leetcode.com/problems/linked-list-cycle/description/
 
+Hare and Tortoise Algorithm
+
 ------------
 Approach:
-1. 
+1. Move slow pointer one time and fast pointer two times 
+2. slow == fast hobe if there is a cycle, else fast exhaused hoi jabe 
+
+Observation: 
+a. In case of loops, there will never be a last node
 ------------
-Time Complexity: O()
-Space Complexity: O()
-ddd
+Time Complexity: O(N) [Depends on the testcase]
+Space Complexity: O(1)
+
+class Solution {
+public:
+    bool hasCycle(ListNode *head) {
+        if(head==NULL) return head;
+        ListNode *slow = head, *fast = head;
+        while(fast && fast->next){
+            slow = slow->next;
+            fast = fast->next->next;
+            if(slow==fast) return true;
+        }
+        return false;
+    }
+};
 
 //#######################################################################
 //#######-------L15. Find the length of the Loop in LinkedList--------########
 //Tutorial: https://takeuforward.org/linked-list/length-of-loop-in-linked-list
 //Problem: https://www.geeksforgeeks.org/problems/find-length-of-loop/1
 
+Hare and Tortoise Algorithm
+
 ------------
 Approach:
-1. 
+1. Apply Hare and Tortoise Algorithm to find out cycle
+2. If a cycle found, keep moving one of the pointer until matches again
+   Keep increasing answer while on the way 
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O(N)
+Space Complexity: O(1)
 
+class Solution {
+  public:
+    int countNodesinLoop(Node *head) {
+        if(head==NULL) return 0;
+        Node *slow = head, *fast = head;
+        while(fast && fast->next){
+            slow = slow->next;
+            fast = fast->next->next;
+            if(slow==fast){
+                int ans = 1;
+                fast = fast->next;
+                while(slow!=fast){
+                    ans++;
+                    fast = fast->next;
+                }
+                return ans;
+            }
+        }
+        return 0;
+    }
+};
 
 //#######################################################################
 //#######-------L16. Delete the middle node of the LinkedList--------########
 //Tutorial: https://takeuforward.org/linked-list/delete-the-middle-node-of-the-linked-list
 //Problem: https://leetcode.com/problems/delete-the-middle-node-of-a-linked-list/description/
-https://www.geeksforgeeks.org/problems/delete-middle-of-linked-list/1
+
+Hare and Tortoise Algorithm
 
 ------------
 Approach:
-1. 
+1. Apply Hare and Tortoise Algorithm to get middle element
+2.1 Link Before and after middle element
+2.2 Delete the middle element
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O(N/2)
+Space Complexity: O(1)
 
+class Solution {
+public:
+    ListNode* deleteMiddle(ListNode* head) {
+        if(head == NULL || head->next==NULL) return NULL;//0 or 1 element
+        ListNode *slow = head, *fast = head->next;
+        while(fast->next && fast->next->next){
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        ListNode* deleteme = slow->next;
+        slow->next = slow->next->next;//next element porer element theke nibo
+        delete deleteme;
+        return head;
+    }
+};
 
 //#######################################################################
 //#######-------L17. Find the starting point of the Loop/Cycle in LinkedList--------########
 //Tutorial: https://takeuforward.org/data-structure/starting-point-of-loop-in-a-linked-list/
 //Problem: https://leetcode.com/problems/linked-list-cycle-ii/description/
-https://www.geeksforgeeks.org/problems/find-the-first-node-of-loop-in-linked-list--170645/1
+
+Hare and Tortoise Algorithm
 
 ------------
 Approach:
-1. 
+1. Apply Hare and Tortoise Algorithm to detect the cycle 
+2. If cycle exits, Find the move slow = head, 
+3. Now, move both slow and fast, when they are equal that is our starting poin
+
+Intuition:
+Slow D distance par kore cycle e before meeting
+Fast 2D distance par kore cycle e before meeting
+
+After that head theke arekta pathaile oitao D distance por starting e collide korbe
+
 ------------
 Time Complexity: O()
 Space Complexity: O()
-
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        if(head==NULL) return head;
+        ListNode *slow = head, *fast = head;
+        while(fast && fast->next){
+            slow = slow->next;
+            fast = fast->next->next;
+            if(slow==fast){
+                slow = head;
+                while (slow != fast) {
+                    slow = slow->next;
+                    fast = fast->next;
+                }
+                return slow;
+            }
+        }
+        return NULL;
+    }
+};
 
 //#######################################################################
 //#######################################################################
@@ -1131,15 +1228,44 @@ Space Complexity: O()
 //#######-------L18. Delete all occurrences of a Key in DLL--------########
 //Tutorial: https://www.geeksforgeeks.org/delete-occurrences-given-key-doubly-linked-list/
 //Problem: https://www.geeksforgeeks.org/problems/delete-all-occurrences-of-a-given-key-in-a-doubly-linked-list/1
-https://leetcode.com/problems/remove-linked-list-elements/description/
 
 ------------
 Approach:
-1. 
-------------
-Time Complexity: O()
-Space Complexity: O()
+1. If values matches, keep deleting the current pointer and set the links correctly 
 
+Observation:
+a. head ei key thakle head->next e point kor
+b. Last node er previous thakbe na
+c. First node er next thakbe na
+------------
+Time Complexity: O(N)
+Space Complexity: O(1)
+
+class Solution {
+  public:
+    void deleteAllOccurOfX(struct Node** head, int key) {
+        Node *curr = *head;
+        while(curr){
+            if(curr->data == key){
+                //confused on this part
+                if(curr == *head){
+                    *head = (*head)->next;
+                }
+                
+                Node *nextNode = curr->next;
+                Node *prevNode = curr->prev;
+                
+                if(nextNode) nextNode->prev = prevNode;//last node er previous thakbe na
+                if(prevNode) prevNode->next = nextNode;//first node er next thakbe na
+                delete curr;
+                curr = nextNode;
+            }
+            else{
+                curr = curr->next;
+            }
+        }
+    }
+};
 
 //#######################################################################
 //#######-------L19. Find all Pairs with given Sum in DLL--------########
@@ -1148,25 +1274,103 @@ Space Complexity: O()
 
 ------------
 Approach:
-1. 
+1. Get the head and tail of the list 
+2. As the array is sorted, Apply two pointer to solve the problem
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O(2N)
+Space Complexity: O(1)
 
+class Solution
+{
+public:
+    vector<pair<int, int>> findPairsWithGivenSum(Node *head, int target)
+    {
+        vector<pair<int, int>> ans;
+        Node *curr = head;
+        while(curr->next){
+            curr = curr->next;
+        }
+        
+        //another condition: while(head->data < curr->data)
+        while(head!=curr && head->prev!=curr){//crossing each other
+            int s = head->data + curr->data;
+            if(s>target) curr = curr->prev;
+            else if(s<target) head = head->next;
+            else if(s==target){
+                ans.push_back({head->data, curr->data});
+                curr = curr->prev;
+                head = head->next;
+            }
+        }
+        return ans;
+    }
+};
 
 //#######################################################################
-//#######-------L20. Remove duplicates from sorted DLL--------########
+//#######-------L20.1 Remove duplicates from sorted DLL--------########
 //Tutorial: https://www.geeksforgeeks.org/remove-duplicates-sorted-doubly-linked-list/
 //Problem: https://www.geeksforgeeks.org/problems/remove-duplicates-from-a-sorted-doubly-linked-list/1
-https://leetcode.com/problems/remove-duplicates-from-sorted-list/description/
 
 ------------
 Approach:
-1. 
+1. if curr->data == previous_node->data link properly and delete current node 
+Do step 1 until the current pointer is exhausted
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O(N)
+Space Complexity: O(1)
 
+class Solution
+{
+public:
+
+    Node * removeDuplicates(struct Node *head)
+    {   
+        if(head==NULL ||head->next==NULL) return head;
+        Node *curr = head->next;
+        
+        while(curr){
+            Node *prevNode = curr->prev;
+            if(curr->data == prevNode->data){
+                Node *nextNode = curr->next;
+                if(nextNode) nextNode->prev = prevNode;//last element does not have previous, that is why
+                prevNode->next = nextNode;
+                delete curr;
+                curr = nextNode;
+            }
+            else curr = curr->next;
+        }
+        return head;
+    }
+};
+
+
+//#######-------L20.2 Remove duplicates from sorted LL--------########
+//Problem: https://leetcode.com/problems/remove-duplicates-from-sorted-list/description/
+------------
+Approach:
+1. if curr->data == previous_node->data link properly and delete current node 
+Do step 1 until the current pointer is exhausted
+------------
+Time Complexity: O(N)
+Space Complexity: O(1)
+class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        if(head==NULL ||head->next==NULL) return head;
+        ListNode *curr = head->next, *prev = head;
+        
+        while(curr){
+            if(curr->val == prev->val){
+                ListNode *nextNode = curr->next;
+                prev->next = nextNode;
+                delete curr;
+                curr = nextNode;
+            }
+            else prev = curr, curr = curr->next;
+        }
+        return head;
+    }
+};
 
 //#######################################################################
 //#######################################################################
@@ -1200,29 +1404,110 @@ Space Complexity: O()
 //#######-------L22. Rotate a LinkedList--------########
 //Tutorial: https://takeuforward.org/data-structure/rotate-a-linked-list/
 //Problem: https://leetcode.com/problems/rotate-list/description/
-https://www.geeksforgeeks.org/problems/rotate-a-linked-list/1
 
 ------------
 Approach:
-1. 
-------------
-Time Complexity: O()
-Space Complexity: O()
+1. Calculate the length of the list.
+2.1 Link the last node with first node
+2.2 make the modified kth node point to null
+2.3 make the modified k+1th node as your new head 
 
+modified k = total_length - actual k
+------------
+Time Complexity: O(N)
+Space Complexity: O(1)
+
+class Solution {
+public:
+    ListNode* rotateRight(ListNode* head, int k) {
+        if(head == NULL || head->next == NULL  || k==0) return head;
+
+        ListNode *curr = head;
+        int len = 1;
+        while(curr->next){
+            len++;
+            curr = curr->next;
+        }
+        k = k%len;
+        if(k == 0) return head;
+        k = len - k;
+
+        //last one link with first one 
+        curr->next = head;
+
+        curr = head;
+        while(--k){
+            curr = curr->next;
+        }
+
+        //link thik kora, jekhane rotation hoise
+        ListNode *newhead = curr->next;
+        curr->next = NULL;
+        curr = newhead;
+
+        return newhead;
+    }
+};
 
 //#######################################################################
 //#######-------L23. Merge two sorted Linked Lists--------########
 //Tutorial: https://takeuforward.org/data-structure/merge-two-sorted-linked-lists/
 //Problem: https://leetcode.com/problems/merge-two-sorted-lists/description/
-https://www.geeksforgeeks.org/problems/merge-two-sorted-linked-lists/1
 
 ------------
 Approach:
-1. 
-------------
-Time Complexity: O()
-Space Complexity: O()
+1. Create a dummy node, and point head to the dummy node 
+2. Move either of the pointer in which it has smaller value 
+Keep doing it until the both list1 and list2 gets exhausted
 
+3. Return dummynode->node as this is our head
+
+Note: Dummy node create kora v v important, nahole head empty value niyei boshe thakbe, we will never get head
+------------
+Time Complexity: O(N+M)
+Space Complexity: O(1) [for storing in list3, we are not creating any space]
+
+
+Q: Why Time complexity is not O(min(n1 + n2)) ?
+A:
+example:
+list1 = {1, 3, 5, 7, 9}
+list2 = {2, 4, 6, 8, 10}
+
+For this case, we would have to travel (n+m) times. Hence, time complexity would be O(n+m)
+----------
+
+class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+        ListNode *list3= new ListNode(-1), *head = list3;
+        while(list1 || list2){
+            if(list1 && list2){
+                if(list1->val < list2->val){
+                    list3->next = list1;
+                    list1 = list1->next;
+                }
+                else{
+                    list3->next = list2;
+                    list2 = list2->next;
+                }
+            }
+            else if(list1){
+                list3->next = list1;
+                list1 = list1->next;
+                break;//link rest and get out of the while loop
+            }
+            else if(list2){
+                list3->next = list2;
+                list2 = list2->next;
+                break;//link rest and get out of the while loop
+            }
+
+            list3 = list3->next;
+        }
+        return head->next;
+    }
+};
 
 //#######################################################################
 //#######-------L24. Flattening a LinkedList--------########
@@ -1236,6 +1521,7 @@ Approach:
 ------------
 Time Complexity: O()
 Space Complexity: O()
+
 
 
 //#######################################################################

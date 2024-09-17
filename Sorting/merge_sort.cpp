@@ -1,4 +1,43 @@
 //Merge sort algorithm
+void mergeSort(int arr[], int l, int r)
+{
+    if(l>=r) return;
+    int m = (l+r)/2;
+    mergeSort(arr, l, m);
+    mergeSort(arr, m+1, r);
+
+    int low = l, high = m + 1;
+    
+    vector<int>tmp;
+    while(low<=m && high<=r){
+        if(arr[low]<arr[high]){
+            tmp.push_back(arr[low]);
+            low++;
+        }
+        else{
+            tmp.push_back(arr[high]);
+            high++;
+        }
+    }
+    while(low<=m){
+        tmp.push_back(arr[low]);
+        low++;
+    }
+    
+    while(high<=r){
+        tmp.push_back(arr[high]);
+        high++;
+    }
+        
+    for(int i=l;i<=r;i++){
+        arr[i] = tmp[i-l];
+    }
+    
+    
+}
+
+
+-------------------------------------------------------------------------------------------------
 
 #include <bits/stdc++.h>
 using namespace std;

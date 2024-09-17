@@ -48,6 +48,14 @@
         "variant": "cpp",
         "functional": "cpp",
         "utility": "cpp",
-        "stack": "cpp"
+        "stack": "cpp",
+        "atomic": "cpp",
+        "bitset": "cpp",
+        "__memory": "cpp",
+        "locale": "cpp",
+        "optional": "cpp",
+        "system_error": "cpp",
+        "*.tcc": "cpp",
+        "expected": "cpp"
     }
 }
