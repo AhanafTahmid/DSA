@@ -56,6 +56,11 @@
         "optional": "cpp",
         "system_error": "cpp",
         "*.tcc": "cpp",
-        "expected": "cpp"
+        "expected": "cpp",
+        "istream": "cpp",
+        "memory": "cpp",
+        "iosfwd": "cpp",
+        "complex": "cpp",
+        "cmath": "cpp"
     }
 }

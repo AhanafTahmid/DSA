@@ -16,6 +16,15 @@ L18. Delete all occurrences of a Key in DLL
 if(curr == *head){
     *head = (*head)->next;
 }
+3. https://leetcode.com/problems/flatten-a-multilevel-doubly-linked-list/description/
+not sure how to solve it
+4.
+L10. Check if a LinkedList is Palindrome or Not
+???? Where is wrong bujhtesi na optimal approach e
+5. L9. Reverse a LinkedList | Iterative and Recursive
+recursive approach bujhi nai
+6. 
+L4. Reverse a DLL
 
 ---------------------------------------------------------------------------------------------------------
 Stiver LinkedList Playlist: https://www.youtube.com/playlist?list=PLgUwDviBIf0rAuz8tVcM0AymmhTRsfaLU
@@ -394,12 +403,25 @@ Lec 2: Learn Doubly LinkedList
 
 ------------
 Approach:
-1. 
+1. Keep swapping, swap(curr->prev, curr->next);
+2. at the end, return curr->prev->prev;
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O(N)
+Space Complexity: O(1)
 
-
+class Solution {
+  public:
+    DLLNode* reverseDLL(DLLNode* head) {
+        if(head == NULL || head->next==NULL) return head;
+        DLLNode* curr = head, *ans;
+        while(curr){
+            swap(curr->prev, curr->next);
+            ans = curr;
+            curr = curr->prev;//due to swap it is the next node actually
+        }
+        return ans;
+    }
+};
 
 //#######################################################################
 //#######################################################################
@@ -513,7 +535,6 @@ Space Complexity: O(1) [not creating any extra space to solve the problem]
 
 class Solution {
   public:
-    // Function to sort a linked list of 0s, 1s and 2s.
     Node* segregate(Node* head) {
         int z = 0, o = 0, t = 0;
         Node *cur = head;
@@ -1513,44 +1534,207 @@ public:
 //#######-------L24. Flattening a LinkedList--------########
 //Tutorial: https://takeuforward.org/data-structure/flattening-a-linked-list/
 //Problem: https://www.geeksforgeeks.org/problems/flattening-a-linked-list/1
-https://leetcode.com/problems/flatten-a-multilevel-doubly-linked-list/description/
 
 ------------
 Approach:
-1. 
+1. Apply flattenTwoLists algo(same as mergeTwoLists) 
+2. Keep solving the flattenTwoLists(head,head->next) until it gets exhausted
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O( N*(2M) ) ~ O(2 N*M) where N is the length of the linked list 
+along the next pointer and M is the length of the linked list along the child pointers.
+Space Complexity: O(1)
 
-
+class Solution {
+  public:
+    Node *flattenTwoLists(Node *list1, Node*list2){
+        Node *list3= new Node(-1), *head = list3;
+        while(list1 || list2){
+            if(list1 && list2){
+                if(list1->data < list2->data){
+                    list3->bottom = list1;
+                    list1 = list1->bottom;
+                }
+                else{
+                    list3->bottom = list2;
+                    list2 = list2->bottom;
+                }
+            }
+            else if(list1){
+                list3->bottom = list1;
+                list1 = list1->bottom;
+                break;
+            }
+            else if(list2){
+                list3->bottom = list2;
+                list2 = list2->bottom;
+                break;
+            }
+            list3 = list3->bottom;
+        }
+        return head->bottom;
+    }
+    
+    Node *flatten(Node *head) {
+        Node *curr = head;
+        while(curr->next){
+            head = flattenTwoLists(head, curr->next);
+            curr = curr->next;
+        }
+        return head;
+    }
+};
 
 //#######################################################################
 //#######-------L25. Merge K Sorted Lists--------########
 //Tutorial: https://takeuforward.org/linked-list/merge-k-sorted-linked-lists
 //Problem: https://leetcode.com/problems/merge-k-sorted-lists/description/
-https://www.geeksforgeeks.org/problems/merge-k-sorted-linked-lists/1
 
+//Better Approach(Taking minimum in every k steps)
 ------------
 Approach:
-1. 
+1. From the head of all the kth node, choose the one with the least value 
+2. After that, move that element of the least value 
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O( (N1 + N2 + .... + N*k) * k) ~ O(N * k^2)
+Space Complexity: O(1) [As no additional data structures or space is allocated for storing data]
 
+class Solution {
+public:
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        int k = lists.size();
+        ListNode *lis= new ListNode(-1), *headd = lis;
+        while(1){
+            ListNode *curr = NULL;
+            int ind = -1;//least node index
+            for(int i=0;i<k;i++){
+                ListNode *head = lists[i];
+                if(head){
+                    if(curr==NULL || curr && head->val < curr->val){
+                        curr = head;
+                        //head = head->next; this is not moving, move the actual lists[ind], 
+                        //not some temporary thing 
+                        ind = i;
+                    }
+                }
+            }
+            if(curr==NULL)break;
+            lis->next = curr;
+            lis = lis->next;
+
+            lists[ind] = lists[ind]->next;//move the least index value, use this for moving
+        }
+        return headd->next;
+    }
+};
+
+//Optimal Approach(Using Min Heap)
+------------
+Approach:
+1. If head is true in the kth node, push them in the priority queue
+2.1 After that, maintain the priority queue 
+2.2 update lis->next to current element in priority queue 
+2.3 if current head is not null push current element in the priority queue
+2.4 update lis until priority queue is empty
+------------
+Time Complexity: O(K log K) + O(N*K*(3*log K)) [first for loop, then for the priority queue list]
+Space Complexity: O(K) [at max k element priority queue te ase]
+
+class Solution {
+public:
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        int k = lists.size();
+        ListNode *lis= new ListNode(-1), *head = lis;
+        priority_queue< pair<int, ListNode*> , vector< pair<int, ListNode*> > , greater< pair<int, ListNode*> > > pq;
+        for(int i=0;i<k;i++){
+            if(lists[i])pq.push({lists[i]->val, lists[i]});
+        }
+
+        while(!pq.empty()){
+            auto [v, curr] = pq.top();
+            pq.pop();
+            
+            lis->next = curr;
+            lis = lis->next;
+
+            curr = curr->next;
+            if(curr) pq.push({curr->val, curr});
+        }
+        return head->next;
+    }
+};
 
 //#######################################################################
 //#######-------L26. Sort a Linked List | Merge Sort and Brute Force--------########
 //Tutorial: https://takeuforward.org/linked-list/sort-a-linked-list
 //Problem: https://leetcode.com/problems/sort-list/description/
-https://www.geeksforgeeks.org/problems/sort-a-linked-list/1
 
 ------------
 Approach:
-1. 
+1. Apply merge sort in the linked list 
+2. to get the middle element apply Hare and tortoise algo 
 ------------
-Time Complexity: O()
-Space Complexity: O()
+Time Complexity: O(logN x (N + N/2)) ~ O(NlogN)
+Space Complexity: O(1 * logN) [1 = memory space, Recursive stack space]
 
+class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+        ListNode *list3= new ListNode(-1), *head = list3;
+        while(list1 || list2){
+            if(list1 && list2){
+                if(list1->val < list2->val){
+                    list3->next = list1;
+                    list1 = list1->next;
+                }
+                else{
+                    list3->next = list2;
+                    list2 = list2->next;
+                }
+            }
+            else if(list1){
+                list3->next = list1;
+                list1 = list1->next;
+                break;
+            }
+            else if(list2){
+                list3->next = list2;
+                list2 = list2->next;
+                break;
+            }
+
+            list3 = list3->next;
+        }
+        return head->next;
+    }
+    
+    //O(N/2) for finding middle
+    ListNode* middleNode(ListNode* head) {
+        if(head == NULL || head->next==NULL) return head;
+        ListNode *slow = head, *fast = head->next;
+        while(fast && fast->next){
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        return slow;
+    }
+    
+    ListNode* merge_sort(ListNode *head){
+        if(head==NULL || head->next == NULL) return head;
+        
+        ListNode* middle = middleNode(head);
+        ListNode* left = head, *right = middle->next;
+        middle->next = NULL;//unlink the middle node, make it a seperate linkedlist
+        
+        ListNode* l = merge_sort(left);
+        ListNode* r = merge_sort(right);
+        return mergeTwoLists(l, r);
+    }
+
+    ListNode* sortList(ListNode* head) {
+        ListNode *h = merge_sort(head);
+        return h;
+    }
+};
 
 //#######################################################################
 //#######-------L27. Clone a LinkedList with Next and Random Pointers | Copy List with Random Pointers--------########
@@ -1558,6 +1742,16 @@ Space Complexity: O()
 //Problem: https://leetcode.com/problems/copy-list-with-random-pointer/description/
 https://www.geeksforgeeks.org/problems/clone-a-linked-list-with-next-and-random-pointer/1
 
+//Better Approach(Hashing)
+------------
+Approach:
+1. 
+------------
+Time Complexity: O()
+Space Complexity: O()
+
+
+//Optimal Approach
 ------------
 Approach:
 1. 
@@ -1570,15 +1764,56 @@ Space Complexity: O()
 //#######-------L28. Design a Browser History | LinkedList Implementation--------########
 //Tutorial: https://takeuforward.org/linked-list/design-a-browser-history
 //Problem: https://leetcode.com/problems/design-browser-history/description/
-https://www.geeksforgeeks.org/problems/design-browser-history/0
 
 ------------
 Approach:
-1. 
+1. Create a Custom Node for the problem
+2.1 BrowserHistory() : create a Node 
+2.2 visit() : create a Node, and link with preiovus and next 
+2.3 back() : move to back until the min(steps, first element) 
+2.4 forward() : move to forward until the min(steps, last element) 
 ------------
-Time Complexity: O()
-Space Complexity: O()
 
+class Node {
+public:
+    string data;
+    Node* next;
+    Node* prev;
+
+    Node(string x) : data(x), next(nullptr), prev(nullptr) {};
+};
+
+class BrowserHistory {
+public:
+    Node *curr = NULL;
+    //Time Complexity: O(1)
+    BrowserHistory(string homepage) {
+        curr = new Node(homepage);
+    }
+
+    //Time Complexity: O(1)
+    void visit(string url) {
+        curr->next = new Node(url);
+        curr->next->prev = curr;
+
+        curr = curr->next;//move to current
+    }
+
+    //Time Complexity: O( min(steps, remaining nodes) )
+    string back(int steps) {
+        while(steps-- && curr->prev){
+            curr = curr->prev;
+        }
+        return curr->data;
+    }
+    //Time Complexity: O( min(steps, remaining nodes) )
+    string forward(int steps) {
+        while(steps-- && curr->next){
+            curr = curr->next;
+        }
+        return curr->data;
+    }
+};
 
 //#######################################################################
 //#######################################################################
