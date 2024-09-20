@@ -9,6 +9,7 @@
 - Concept of dummy nodes, when returning own head as answer
 
 Confusions:
+
 1. Intution of L17. Find the starting point of the Loop/Cycle in LinkedList 
 2. 
 L18. Delete all occurrences of a Key in DLL
@@ -25,6 +26,9 @@ L10. Check if a LinkedList is Palindrome or Not
 recursive approach bujhi nai
 6. 
 L4. Reverse a DLL
+7.
+https://leetcode.com/problems/remove-linked-list-elements/
+solve it 
 
 ---------------------------------------------------------------------------------------------------------
 Stiver LinkedList Playlist: https://www.youtube.com/playlist?list=PLgUwDviBIf0rAuz8tVcM0AymmhTRsfaLU
@@ -38,7 +42,7 @@ Resource2: https://takeuforward.org/blogs/linked-list
 //#######################################################################
 //#######################################################################
 //#######################################################################
-//##########-------Singly LinkedList (Basics)--------####################
+//##########-------Lec 1: Learn 1D LinkedList--------####################
 //#######################################################################
 //#######################################################################
 //#######################################################################
@@ -77,6 +81,7 @@ int getCount(struct Node* head){
     }
     return ct;
 }
+
 //Search an element in the LL
 //Problem3: https://www.geeksforgeeks.org/problems/search-in-linked-list-1664434326/1
 class Solution {
@@ -92,8 +97,6 @@ class Solution {
     }
 };
 
-
-
 //#######################################################################
 //#######-------L2. Deletion and Insertion in LL | 8 Problems--------########
 //Tutorial: https://takeuforward.org/data-structure/maximum-sum-of-non-adjacent-elements-dp-5/
@@ -107,10 +110,10 @@ Delete, insert -> at head, at last, at a position, value wise (Total 8 problems)
 //Delete
 Tutorial: https://www.geeksforgeeks.org/deletion-in-linked-list/
 
-1. https://www.geeksforgeeks.org/remove-first-node-of-the-linked-list/
-2. https://www.geeksforgeeks.org/remove-last-node-of-the-linked-list/
-3. https://www.geeksforgeeks.org/problems/delete-a-node-in-single-linked-list/1
-4. Delete node with a value (same as 3 no)
+1. Delete First Node: https://www.geeksforgeeks.org/remove-first-node-of-the-linked-list/
+2. Delete last Node: https://www.geeksforgeeks.org/remove-last-node-of-the-linked-list/
+3. Delete any Node: https://www.geeksforgeeks.org/problems/delete-a-node-in-single-linked-list/1
+4. Delete with value: Delete node with a value (same as 3 no)
 delete any node: keep a track of previous and target->next->next er sathe link kora
 
 //delete node at a position
@@ -138,14 +141,12 @@ Node* deleteNode(Node *head,int x)
 }
 
 -------------------------------------------------------------------------
-//Insert
-Tutorial: https://www.geeksforgeeks.org/insertion-in-linked-list/
-https://www.geeksforgeeks.org/problems/linked-list-insertion-1587115620/0
-
 //Insert in linkedlist
+//Tutorial: https://www.geeksforgeeks.org/insertion-in-linked-list/
+//Problem: https://www.geeksforgeeks.org/problems/linked-list-insertion-1587115620/0
+
 class Solution{
   public:
-    //Function to insert a node at the beginning of the linked list.
     Node *insertAtBegining(Node *head, int x) {
        Node *tmp = new Node(x);
        tmp->next = head;
@@ -174,7 +175,7 @@ class Solution{
 //#######################################################################
 //#######################################################################
 //#######################################################################
-//##########-------Double LinkedList (Basics)--------####################
+//########-------Lec 2: Learn Doubly LinkedList--------##################
 //#######################################################################
 //#######################################################################
 //#######################################################################
@@ -205,16 +206,13 @@ Before kth: https://takeuforward.org/doubly-linked-list/insert-before-the-kth-no
 Before a node: https://takeuforward.org/doubly-linked-list/insert-before-a-given-node-of-a-dll/
 
 
-//**after the node(do it yourself) */
-
-
-
 
 //////////////////////////////////////////////////////////////
 
 problems:
 -------------------------------------------------------------------------
-Convert Array to DLL: https://www.naukri.com/code360/problems/introduction-to-doubly-linked-list_8160413
+//Convert Array to DLL
+//Problem: https://www.naukri.com/code360/problems/introduction-to-doubly-linked-list_8160413
 Node* constructDLL(vector<int>& arr) {
     Node *head = new Node(arr[0]);//cause we cannot temper head
     Node *mv = head;
@@ -226,9 +224,11 @@ Node* constructDLL(vector<int>& arr) {
     return head;
 }
 
-//Delete
 -------------------------------------------------------------------------
-Deletion of head of the DLL: https://www.naukri.com/code360/problems/insert-before-the-given-node-of-a-doubly-linked-list_9719100
+-------------------------------------------------------------------------
+//Deletion of head of the DLL
+//Problem: https://www.naukri.com/code360/problems/insert-before-the-given-node-of-a-doubly-linked-list_9719100
+
 Node * deleteHead(Node *head) {
     if(head->next == NULL){
         return NULL;
@@ -240,7 +240,9 @@ Node * deleteHead(Node *head) {
     return head;
 }
 -------------------------------------------------------------------------
-Deletion of tail of the DLL: https://www.naukri.com/code360/problems/delete-last-node-of-a-doubly-linked-list_8160469
+//Deletion of tail of the DLL
+//Problem: https://www.naukri.com/code360/problems/delete-last-node-of-a-doubly-linked-list_8160469
+ 
 Node * deleteLastNode(Node *head) {
     if(head->next == NULL) return nullptr;
     Node *move = head;
@@ -252,7 +254,9 @@ Node * deleteLastNode(Node *head) {
     return head;
 }
 -------------------------------------------------------------------------
-Deletion of the Kth node of the DLL: https://www.naukri.com/code360/problems/delete-k-th-node-from-doubly-linked-list_9723679
+//Deletion of the Kth node of the DLL
+//Problem: https://www.naukri.com/code360/problems/delete-k-th-node-from-doubly-linked-list_9723679
+ 
 - connect other nodes, then untie the tmp node, then delete 
 Node *deleteNode(Node *head, int k){
     if(k==1){
@@ -283,7 +287,9 @@ Node *deleteNode(Node *head, int k){
     return head;
 }
 -------------------------------------------------------------------------
-Deletion of a given node(!head): https://www.naukri.com/code360/problems/non-head-node-deletion_9719173
+//Deletion of a given node(!head)
+//Problem: https://www.naukri.com/code360/problems/non-head-node-deletion_9719173
+
 void deleteNode(Node* node) {
     Node *previous = node->prev;
     Node *front = node->next;
@@ -302,9 +308,11 @@ void deleteNode(Node* node) {
     return;
 }
 
-//INSERT
 -------------------------------------------------------------------------
-Insert at end: https://www.naukri.com/code360/problems/insert-at-end-of-doubly-linked-list_8160464
+-------------------------------------------------------------------------
+//Insert at end
+//Problem: https://www.naukri.com/code360/problems/insert-at-end-of-doubly-linked-list_8160464
+
 Node * insertAtTail(Node *head, int k) {
     if(head==NULL){
         return new Node(k);
@@ -320,7 +328,9 @@ Node * insertAtTail(Node *head, int k) {
 }
 
 -------------------------------------------------------------------------
-Insert at a position: https://www.geeksforgeeks.org/problems/insert-a-node-in-doubly-linked-list/1
+//Insert at a position
+//Problem: https://www.geeksforgeeks.org/problems/insert-a-node-in-doubly-linked-list/1
+
 void addNode(Node *head, int pos, int data)
 {
    Node *tmp = head;
@@ -346,55 +356,6 @@ void addNode(Node *head, int pos, int data)
     front->prev = newnode;
     return;
 }
-
-
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-//#######################################################################
-FIX linkedlist above
-
-Lec 2: Learn Doubly LinkedList
-
 
 //#######################################################################
 //#######-------L4. Reverse a DLL | Multiple Approaches--------########
