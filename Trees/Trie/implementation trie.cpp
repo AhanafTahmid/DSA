@@ -1,4 +1,5 @@
-//https://takeuforward.org/data-structure/implement-trie-1/                            
+//https://takeuforward.org/data-structure/implement-trie-1/    
+//Implement Trie  
 #include <iostream>
 using namespace std;
 
@@ -211,5 +212,86 @@ class Trie{
             else return;
         }
         node->decrementWordCount(); 
+    }
+};
+
+
+
+-----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------
+//Maximum XOR of Two Numbers in an Array
+struct Node {
+    Node* links[2];
+    bool flag = false;
+
+    bool containsKey(int bit) {
+        return links[bit] != NULL;
+    }
+
+    void put(int bit, Node* node) {
+        links[bit] = node;
+    }
+
+    Node* get(int bit) {
+        return links[bit];
+    }
+
+    void setEnd() {
+        flag = true;
+    }
+
+    bool isEnd() {
+        return flag;
+    }
+};
+class Trie{
+    public:
+    Node* root;
+
+    Trie(){
+        root = new Node();
+    }
+
+    void insert(int nums){
+        Node* node = root;
+        for(int i=31;i>=0;i--){
+            int bit = (nums>>i) & 1;
+            if (!node->containsKey(bit)) {
+                node->put(bit, new Node());
+            }
+            node = node->get(bit);
+        }
+        node->setEnd();
+    }
+
+    int getMax(int nums){
+        Node* node = root;
+        int mx = 0;
+        for(int i=31;i>=0;i--){
+            int bit = (nums>>i) & 1;
+            int opposite_bit = 1 - bit;
+            if (node->containsKey(opposite_bit)) {
+                mx |= (1<<i);
+                node = node->get(opposite_bit);
+            }
+            else{
+                node = node->get(bit);
+            }
+        }
+        return mx;
+    }
+};
+
+class Solution {
+public:
+    int findMaximumXOR(vector<int>& arr) {
+        Trie t;
+        for(int x: arr) t.insert(x);
+
+        int mx = 0;
+        for(int x: arr){
+            mx = max(mx , t.getMax(x));
+        }
+        return mx;
     }
 };

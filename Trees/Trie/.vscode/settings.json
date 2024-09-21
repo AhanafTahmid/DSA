@@ -29,6 +29,9 @@
         "queue": "cpp",
         "stack": "cpp",
         "valarray": "cpp",
-        "ranges": "cpp"
+        "ranges": "cpp",
+        "functional": "cpp",
+        "__locale": "cpp",
+        "ios": "cpp"
     }
 }
