@@ -1,7 +1,7 @@
 //Trie
 
 - Trie: string related problems, bit related problems
-
+- Putting every single character, bits in the trie tree
 
 ---------------------------------------------------------------------------------------------------------
 Striver Trie Playlist: https://www.youtube.com/playlist?list=PLgUwDviBIf0pcIDCZnxhv0LkHf5KzG9zp
