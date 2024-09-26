@@ -4,6 +4,8 @@
         "variant": "cpp",
         "vector": "cpp",
         "iosfwd": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "random": "cpp",
+        "compare": "cpp"
     }
 }

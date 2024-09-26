@@ -78,20 +78,21 @@ public:
             index = get_next(index);
         }
     }
+    
 
     // Construct the Fenwick Tree using the input array 'arr'
     vector<int> constructBITree(const vector<int>& arr, int n) {
         vector<int> BITree(n + 1, 0); // Initialize BITree with 0s
 
-        // Update BITree for all elements in the input array
         for (int i = 0; i < n; i++)
-            updateBIT(BITree, n, i, arr[i]);
+            // Update BITree for all elements in the input array
+            updateBIT(BITree, i, n, arr[i]);
 
         return BITree;
     }
 };
 
-int main() {
+int32_t main() {
     // Input array
     vector<int> arr = {2, 1, 1, 3, 2, 3, 4, 5, 6, 7, 8, 9};
     int n = arr.size();
