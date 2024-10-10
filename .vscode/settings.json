@@ -113,5 +113,6 @@
         "thread": "cpp",
         "climits": "cpp",
         "__memory": "cpp"
-    }
+    },
+    "cph.general.saveLocation": ""
 }
