@@ -1,3 +1,4 @@
+//binary search or constructive algorithms are mostly found in interactive problems
 //https://codeforces.com/gym/101021/problem/1
 #include <bits/stdc++.h>
 using namespace std;
@@ -18,9 +19,28 @@ void solve(){
 }
 
 int32_t main(){
-    //ios::sync_with_stdio(0);cin.tie(0);cout.tie(0);
     int t=1;
     //cin >> t;
     while(t--)solve(); 
     return 0;
 }
+
+
+------------------------------------------------------------
+// Template
+
+#include <bits/stdc++.h>
+using namespace std;
+#define int long long
+
+void solve(){
+    
+}
+
+int32_t main(){
+    int t=1;
+    //cin >> t;
+    while(t--)solve(); 
+    return 0;
+}
+

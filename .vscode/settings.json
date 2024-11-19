@@ -112,7 +112,11 @@
         "syncstream": "cpp",
         "thread": "cpp",
         "climits": "cpp",
-        "__memory": "cpp"
+        "__memory": "cpp",
+        "generator": "cpp",
+        "print": "cpp",
+        "stdfloat": "cpp",
+        "text_encoding": "cpp"
     },
     "cph.general.saveLocation": ""
 }

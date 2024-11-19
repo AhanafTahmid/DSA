@@ -30,6 +30,12 @@ L4. Reverse a DLL
 https://leetcode.com/problems/remove-linked-list-elements/
 solve it 
 
+todo:
+
+https://www.geeksforgeeks.org/problems/add-two-numbers-represented-by-linked-lists/1
+
+
+
 ---------------------------------------------------------------------------------------------------------
 Stiver LinkedList Playlist: https://www.youtube.com/playlist?list=PLgUwDviBIf0rAuz8tVcM0AymmhTRsfaLU
 Resource: https://takeuforward.org/linked-list/top-linkedlist-interview-questions-structured-path-with-video-solutions/
