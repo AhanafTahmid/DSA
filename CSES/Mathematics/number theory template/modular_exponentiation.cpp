@@ -97,6 +97,10 @@ ll power(ll a, ll b) {
 
 
 
+//Subtraction
+int sub(int a, int b){
+	return ( ( (a%md - b%md)%md)+md) %md;
+}
 
 //Mainnnnnnnnnn**********--------########
 int power(int a,int b){
@@ -125,3 +129,5 @@ int power(int a, int b, int m) {
     }
     return res;
 }
+
+
