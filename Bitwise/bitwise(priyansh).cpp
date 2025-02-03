@@ -38,7 +38,7 @@
 
     //Division
     // x >> k
-    cout<< (4 >> 1) <<endl;//0
+    cout<< (4 >> 1) <<endl;//2
     cout<< (16 >> 1) <<endl;//8
 
 //5. Find x % 2^k
