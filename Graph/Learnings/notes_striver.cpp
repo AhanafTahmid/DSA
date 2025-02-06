@@ -1627,7 +1627,7 @@ class Solution{
 //#######################################################################
 //#######################################################################
 
-Dijkstra's algorithm is necessary for graphs that can contain cycles because they cannot be topologically sorted. In other cases, the topological sort would work fine as we start from the first node, and then move on to the others in a directed manner.
+Dijkstras algorithm is necessary for graphs that can contain cycles because they cannot be topologically sorted. In other cases, the topological sort would work fine as we start from the first node, and then move on to the others in a directed manner.
 
 //#######################################################################
 //#######-------G-27. Shortest Path in Directed Acyclic Graph - Topological Sort--------########
