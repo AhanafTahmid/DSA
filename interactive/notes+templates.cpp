@@ -1,3 +1,14 @@
+In interactive problems, Use l = m+1, r = m binary search, sometimes l=m, r = m does not work
+//Code For this
+int l = 1, r = n, m;
+while(l<r){
+    m = (l+r)>>1;
+    if(  something ) l = m + 1;
+    else r = m;
+}
+cout<< "! " << l <<endl;
+------------------------------------------------------------
+
 //binary search or constructive algorithms are mostly found in interactive problems
 //https://codeforces.com/gym/101021/problem/1
 #include <bits/stdc++.h>
